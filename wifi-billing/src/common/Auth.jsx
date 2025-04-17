@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Auth = () => {
+  const [isLogin, setIsLogin] = useState(true); // Toggle between login and register
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -26,7 +27,7 @@ const Login = () => {
         const role = data.role;
         if (role === "user") {
           navigate("/user/dashboard");
-        } else if (role === "isp") {
+        } else if (role === "wifi_provider") {
           navigate("/isp/dashboard");
         } else {
           throw new Error("Unknown role received from server");
@@ -40,12 +41,47 @@ const Login = () => {
     }
   };
 
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setError(""); // Clear previous errors
+    try {
+      const response = await fetch("http://127.0.0.1:8000/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password, role: "user" }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        // Store the token
+        localStorage.setItem("token", data.access_token);
+
+        // Redirect to user dashboard (since role is "user")
+        navigate("/user/dashboard");
+      } else {
+        setError(data.detail || "Registration failed");
+      }
+    } catch (err) {
+      setError("An error occurred during registration. Please try again.");
+      console.error("Registration error:", err);
+    }
+  };
+
+  const toggleForm = () => {
+    setIsLogin(!isLogin);
+    setError(""); // Clear errors when switching forms
+    setUsername(""); // Clear form inputs
+    setPassword("");
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="bg-opacity-20 bg-white backdrop-blur-lg p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-4xl font-bold text-black text-center mb-6">Login</h2>
+        <h2 className="text-4xl font-bold text-black text-center mb-6">
+          {isLogin ? "Login" : "Register"}
+        </h2>
         {error && <p className="text-red-400 text-center mb-4">{error}</p>}
-        <form onSubmit={handleLogin}>
+        <form onSubmit={isLogin ? handleLogin : handleRegister}>
           <div className="mb-4">
             <label htmlFor="username" className="block text-sm text-black font-medium mb-2">
               Username
@@ -76,12 +112,21 @@ const Login = () => {
             type="submit"
             className="w-full bg-theme-blue text-white py-3 rounded-full bg-black hover:bg-blue-700 transition duration-300"
           >
-            Login
+            {isLogin ? "Login" : "Register"}
           </button>
         </form>
+        <p className="text-center text-black mt-4">
+          {isLogin ? "Don't have an account?" : "Already have an account?"}
+          <button
+            onClick={toggleForm}
+            className="text-theme-blue hover:underline ml-1"
+          >
+            {isLogin ? "Register" : "Login"}
+          </button>
+        </p>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default Auth;

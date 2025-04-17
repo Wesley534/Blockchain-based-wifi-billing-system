@@ -1,9 +1,9 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from database import Base, engine, get_db
+from database import Base, engine, get_db, SessionLocal
 from models import User, DataUsage
-from schemas import UserCreate, UserLogin, Token, DataUsageRequest, WalletUpdate
+from schemas import UserCreate, UserLogin, Token, DataUsageRequest, WalletUpdate, UserSchema
 from auth import get_password_hash, authenticate_user, create_access_token, get_current_user
 import time
 import random
@@ -25,41 +25,52 @@ app.add_middleware(
 # Create the database tables
 Base.metadata.create_all(bind=engine)
 
+# Hardcoded passwords for simulation (in production, use a more secure method)
+SIMULATION_PASSWORDS = {
+    "user1": "pass123",
+    "user2": "pass123",
+
+    # Add more users as needed
+}
+
 # Function to get all users with role "user" from the database
 def get_all_users(db: Session):
     return db.query(User).filter(User.role == "user").all()
 
 # Function to simulate data usage for all users
 def simulate_data_usage():
-    # Get a database session
-    db = next(get_db())
+    # Create a new database session
+    db = SessionLocal()
+    try:
+        # Fetch all users with role "user"
+        users = get_all_users(db)
+        if not users:
+            print("No users found in the database. Please register some users to simulate data usage.")
+            return
 
-    # Fetch all users with role "user"
-    users = get_all_users(db)
-    if not users:
-        print("No users found in the database. Please register some users to simulate data usage.")
+        # Dictionary to store JWT tokens for each user
+        user_tokens = {}
+
+        # Log in as each user to get their JWT token
+        for user in users:
+            password = SIMULATION_PASSWORDS.get(user.username)
+            if not password:
+                print(f"No simulation password found for {user.username}. Skipping simulation for this user.")
+                continue
+            login_data = {"username": user.username, "password": password}
+            try:
+                response = requests.post("http://127.0.0.1:8000/login", json=login_data)
+                if response.status_code == 200:
+                    token = response.json().get("access_token")
+                    user_tokens[user.username] = token
+                    print(f"Logged in as {user.username} for simulation.")
+                else:
+                    print(f"Failed to log in as {user.username}: {response.json()}")
+            except Exception as e:
+                print(f"Error logging in as {user.username}: {e}")
+    finally:
+        # Close the database session
         db.close()
-        return
-
-    # Dictionary to store JWT tokens for each user
-    user_tokens = {}
-
-    # Log in as each user to get their JWT token
-    for user in users:
-        login_data = {"username": user.username, "password": "pass123"}  # Assuming all users have the same password for simplicity
-        try:
-            response = requests.post("http://127.0.0.1:8000/login", json=login_data)
-            if response.status_code == 200:
-                token = response.json().get("access_token")
-                user_tokens[user.username] = token
-                print(f"Logged in as {user.username} for simulation.")
-            else:
-                print(f"Failed to log in as {user.username}: {response.json()}")
-        except Exception as e:
-            print(f"Error logging in as {user.username}: {e}")
-
-    # Close the database session
-    db.close()
 
     # If no users were successfully logged in, exit the simulation
     if not user_tokens:
@@ -99,7 +110,11 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     if db_user:
         raise HTTPException(status_code=400, detail="Username already registered")
     hashed_password = get_password_hash(user.password)
-    db_user = User(username=user.username, hashed_password=hashed_password, role=user.role)
+    db_user = User(
+        username=user.username,
+        hashed_password=hashed_password,
+        role=user.role
+    )
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -138,19 +153,19 @@ def get_user(db: Session = Depends(get_db), current_user: User = Depends(get_cur
     return current_user
 
 def get_isp(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    if current_user.role != "isp":
+    if current_user.role != "wifi_provider":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="User does not have the required role: wifi_provider",
         )
     return current_user
 
-@app.get("/user/dashboard")
+@app.get("/user/dashboard", response_model=dict)
 def user_dashboard(current_user: User = Depends(get_user)):
     """Protected endpoint for the user dashboard."""
     return {"message": f"Welcome to the User Dashboard, {current_user.username}!"}
 
-@app.get("/isp/dashboard")
+@app.get("/isp/dashboard", response_model=dict)
 def isp_dashboard(current_user: User = Depends(get_isp)):
     """Protected endpoint for the ISP (WiFi provider) dashboard."""
     return {"message": f"Welcome to the ISP Dashboard, {current_user.username}!"}
@@ -221,12 +236,34 @@ def isp_log_data_usage(
     db.commit()
     return {"message": f"Data usage of {usage_mb} MB logged successfully for {username}"}
 
-app.post("/update-wallet")
-def update_wallet(wallet_data: schemas.WalletUpdate, current_user: schemas.User = Depends(get_current_user), db: Session = Depends(get_db)):
+@app.post("/update-wallet")
+def update_wallet(wallet_data: WalletUpdate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    Update the wallet address for the authenticated user.
+    
+    Args:
+        wallet_data: The wallet address to update (WalletUpdate schema).
+        current_user: The authenticated user (automatically injected via JWT).
+        db: The database session.
+
+    Returns:
+        A success message if the wallet address is updated.
+
+    Raises:
+        HTTPException: If the user is not found or the update fails.
+    """
+    # Find the user in the database
     db_user = db.query(User).filter(User.id == current_user.id).first()
     if not db_user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    # Update the wallet address
     db_user.wallet_address = wallet_data.wallet_address
     db.commit()
     db.refresh(db_user)
     return {"message": "Wallet address updated successfully"}
+
+@app.get("/users", response_model=list[UserSchema])
+def get_all_users_endpoint(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
+    users = get_all_users(db)
+    return users
