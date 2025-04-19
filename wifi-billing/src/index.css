@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 body {
-  background: linear-gradient(135deg, #1a1a2e, #4b1c71);
+  background: linear-gradient(135deg, #1a1a2e, #9fc817);
   min-height: 100vh;
   color: white;
   font-family: 'Inter', sans-serif; /* Modern font */

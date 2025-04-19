@@ -1,6 +1,8 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Float, Enum
 from sqlalchemy.orm import relationship
 from database import Base
+import enum
+
 
 class User(Base):
     __tablename__ = "users"
@@ -25,3 +27,19 @@ class DataUsage(Base):
 
     # Optional: Add relationship to User
     user = relationship("User", back_populates="data_usage")
+
+class PlanDuration(str, enum.Enum):
+    HOURLY = "hourly"
+    DAILY = "daily"
+    WEEKLY = "weekly"
+    MONTHLY = "monthly"
+
+class WifiPlan(Base):
+    __tablename__ = "wifi_plans"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
+    duration = Column(Enum(PlanDuration), nullable=False)
+    price_kes = Column(Float, nullable=False)
+    data_mb = Column(Integer, nullable=False)
+    isp_id = Column(Integer, nullable=False)  # Links to the ISP user

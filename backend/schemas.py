@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
+from models import PlanDuration
 
 # Base class for User to define shared fields
 class UserBase(BaseModel):
@@ -31,3 +32,25 @@ class UserSchema(UserBase):
 
     class Config:
         from_attributes = True  # Enables compatibility with SQLAlchemy models
+
+class WifiPlanBase(BaseModel):
+    name: str
+    duration: PlanDuration
+    price_kes: float
+    data_mb: int
+
+class WifiPlanCreate(WifiPlanBase):
+    pass
+
+class WifiPlanUpdate(WifiPlanBase):
+    name: Optional[str] = None
+    duration: Optional[PlanDuration] = None
+    price_kes: Optional[float] = None
+    data_mb: Optional[int] = None
+
+class WifiPlan(WifiPlanBase):
+    id: int
+    isp_id: int
+
+    class Config:
+        from_attributes = True

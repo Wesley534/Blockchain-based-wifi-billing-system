@@ -10,14 +10,6 @@ const wiFiBillingABI = wiFiBillingArtifact.abi;
 // Smart contract address (from your deployment)
 const CONTRACT_ADDRESS = "0x0eB663F7c4b4cF38Ee264eA736a21eF7a9FB79D8";
 
-// Map usernames to Ganache addresses (replace with your Ganache addresses)
-const USER_ADDRESS_MAPPING = {
-  user1: "0xC4Deb43c6B729cA2EA7508E5f4C39f0129A93E5d", // Ganache account 0
-  user2: "0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e", // Ganache account 1
-  user3: "0x73455945eF835c5E4cBd4bDa6a300A8eA632F843", // Ganache account 2
-  // Add more users as needed
-};
-
 const UserDashboard = () => {
   const [dataUsage, setDataUsage] = useState([]);
   const [totalUsage, setTotalUsage] = useState(0);
@@ -28,41 +20,146 @@ const UserDashboard = () => {
   const [contract, setContract] = useState(null);
   const [signer, setSigner] = useState(null);
   const [userAddress, setUserAddress] = useState("");
-  const [tokenBalance, setTokenBalance] = useState(0); // New state for token balance
+  const [tokenBalance, setTokenBalance] = useState(0);
+  const [isWalletConnected, setIsWalletConnected] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false); // New state for connection status
   const navigate = useNavigate();
 
-  // Initialize ethers.js and connect to Ganache
+  // Initialize ethers.js and check MetaMask connection
   useEffect(() => {
-    const initBlockchain = async () => {
+    const checkWalletConnection = async () => {
+      if (!window.ethereum) {
+        setError("MetaMask is not installed. Please install MetaMask to continue.");
+        return;
+      }
+
       try {
-        // Validate the ABI
-        if (!Array.isArray(wiFiBillingABI)) {
-          throw new Error("Invalid ABI: ABI must be an array");
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const accounts = await provider.listAccounts();
+        if (accounts.length > 0) {
+          const signer = await provider.getSigner();
+          const address = await signer.getAddress();
+          const contract = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
+
+          setSigner(signer);
+          setUserAddress(ethers.getAddress(address));
+          setContract(contract);
+          setIsWalletConnected(true);
+
+          // Update wallet address in backend
+          await updateWalletAddress(address);
+
+          // Fetch data
+          await fetchAllData();
         }
-
-        const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
-        const signer = await provider.getSigner(0);
-        const contract = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
-
-        setContract(contract);
-        setSigner(signer);
-
-        // Get the username and map it to an Ethereum address
-        const username = localStorage.getItem("username") || "user1";
-        const address = USER_ADDRESS_MAPPING[username];
-        if (!address) {
-          throw new Error(`No Ethereum address mapped for username: ${username}`);
-        }
-        // Validate the address
-        const validatedAddress = ethers.getAddress(address);
-        setUserAddress(validatedAddress);
       } catch (err) {
-        setError("Failed to connect to blockchain: " + err.message);
+        setError("Failed to initialize blockchain connection: " + err.message);
         console.error(err);
       }
     };
-    initBlockchain();
+    checkWalletConnection();
+
+    // Listen for account changes in MetaMask
+    if (window.ethereum) {
+      window.ethereum.on("accountsChanged", async (accounts) => {
+        if (accounts.length > 0) {
+          const provider = new ethers.BrowserProvider(window.ethereum);
+          const signer = await provider.getSigner();
+          const address = await signer.getAddress();
+          const contract = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
+
+          setSigner(signer);
+          setUserAddress(ethers.getAddress(address));
+          setContract(contract);
+          setIsWalletConnected(true);
+
+          // Update wallet address in backend
+          await updateWalletAddress(address);
+
+          // Refresh data
+          await fetchAllData();
+        } else {
+          setIsWalletConnected(false);
+          setUserAddress("");
+          setContract(null);
+          setSigner(null);
+          setTokenBalance(0);
+        }
+      });
+    }
+
+    // Cleanup event listener
+    return () => {
+      if (window.ethereum) {
+        window.ethereum.removeListener("accountsChanged", () => {});
+      }
+    };
   }, []);
+
+  // Handle MetaMask wallet connection
+  const connectWallet = async () => {
+    if (!window.ethereum) {
+      setError("MetaMask is not installed. Please install MetaMask to continue.");
+      return;
+    }
+
+    setIsConnecting(true);
+    setError("");
+    try {
+      // Request account access (prompts MetaMask to open)
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const address = await signer.getAddress();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
+
+      setSigner(signer);
+      setUserAddress(ethers.getAddress(address));
+      setContract(contract);
+      setIsWalletConnected(true);
+
+      // Update wallet address in backend
+      await updateWalletAddress(address);
+
+      // Fetch data after connecting
+      await fetchAllData();
+    } catch (err) {
+      if (err.code === 4001) {
+        setError("Wallet connection rejected by user.");
+      } else {
+        setError("Failed to connect wallet: " + err.message);
+      }
+      console.error(err);
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  // Update wallet address in the backend
+  const updateWalletAddress = async (walletAddress) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("No authentication token found. Please log in again.");
+      }
+
+      const response = await fetch("http://127.0.0.1:8000/update-wallet", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ wallet_address: walletAddress }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update wallet address in backend");
+      }
+    } catch (err) {
+      setError("Failed to update wallet address: " + err.message);
+      console.error(err);
+    }
+  };
 
   // Fetch the user's token balance
   const fetchTokenBalance = async () => {
@@ -118,7 +215,7 @@ const UserDashboard = () => {
     }
   };
 
-  // Fetch data usage history from the blockchain (for consistency)
+  // Fetch data usage history from the blockchain
   const fetchDataUsageFromBlockchain = async () => {
     if (!contract || !userAddress) {
       console.warn("Cannot fetch data usage from blockchain: Contract or user address not set");
@@ -224,7 +321,7 @@ const UserDashboard = () => {
     try {
       const tx = await contract.mintTokens(userAddress, amount);
       await tx.wait();
-      await fetchTokenBalance(); // Refresh the token balance
+      await fetchTokenBalance();
       alert(`Successfully minted ${amount} WiFiTokens!`);
     } catch (err) {
       setError("Failed to mint tokens: " + err.message);
@@ -239,33 +336,18 @@ const UserDashboard = () => {
       return;
     }
     try {
-      // Get the cost per MB
-      const costPerMB = await contract.costPerMB();
-      const costPerMBNumber = Number(costPerMB);
-      console.log(`Cost per MB: ${costPerMBNumber}`);
+      const costPerMB = Number(await contract.costPerMB());
+      const totalCost = totalUsage * costPerMB;
+      const balance = Number(await contract.tokenBalances(userAddress));
 
-      // Calculate the total cost
-      const amount = totalUsage; // Amount in MB
-      const totalCost = amount * costPerMBNumber;
-      console.log(`Total cost for ${amount} MB: ${totalCost} WiFiTokens`);
-
-      // Check the user's token balance
-      const tokenBalance = await contract.tokenBalances(userAddress);
-      const balance = Number(tokenBalance);
-      console.log(`User token balance: ${balance} WiFiTokens`);
-
-      // Check if the user has enough tokens
       if (balance < totalCost) {
-        // Automatically mint tokens if balance is insufficient
-        const amountToMint = totalCost - balance + 100; // Mint a bit more than needed
+        const amountToMint = totalCost - balance + 100;
         await handleMintTokens(amountToMint);
       }
 
-      // Call makePayment
-      const tx = await contract.makePayment(userAddress, amount);
+      const tx = await contract.makePayment(userAddress, totalUsage);
       await tx.wait();
 
-      // Refresh data
       await fetchDataUsageFromDB();
       await fetchTransactions();
       await fetchBillingReport();
@@ -285,22 +367,26 @@ const UserDashboard = () => {
     navigate("/");
   };
 
-  // Fetch data on component mount and set up polling for real-time updates
-  useEffect(() => {
-    const fetchAllData = async () => {
-      await fetchDataUsageFromDB(); // Fetch from database for simulation data
+  // Fetch all data (called after wallet connection)
+  const fetchAllData = async () => {
+    await fetchDataUsageFromDB();
+    if (contract && userAddress) {
       await fetchTransactions();
       await fetchBillingReport();
-      await fetchTokenBalance(); // Fetch token balance
-    };
-    fetchAllData();
+      await fetchTokenBalance();
+    }
+  };
 
-    // Poll for real-time updates every 10 seconds
-    const interval = setInterval(fetchAllData, 10000);
-    return () => clearInterval(interval);
-  }, [contract, userAddress]);
+  // Fetch data on component mount and set up polling
+  useEffect(() => {
+    if (isWalletConnected) {
+      fetchAllData();
+      const interval = setInterval(fetchAllData, 10000);
+      return () => clearInterval(interval);
+    }
+  }, [isWalletConnected, contract, userAddress]);
 
-  // Prepare data for the line graph (including cumulative usage)
+  // Prepare data for the line graph
   const chartData = cumulativeUsage.map((entry) => ({
     timestamp: entry.timestamp,
     usage_mb: entry.usage_mb,
@@ -308,16 +394,33 @@ const UserDashboard = () => {
   }));
 
   return (
-    <div className="min-h-screen p-8 bg-gray-900">
-      {/* Header with Logout Button */}
+    <div className="min-h-screen p-8 bg-[linear-gradient(135deg,_#1a1a2e,_#9fc817)]">
+      {/* Header with Connect Wallet and Logout Buttons */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold text-white">User Dashboard</h1>
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-red-600 transition duration-300"
-        >
-          Logout
-        </button>
+        <div className="flex space-x-4">
+          {!isWalletConnected ? (
+            <button
+              onClick={connectWallet}
+              disabled={isConnecting}
+              className={`bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600 transition duration-300 ${
+                isConnecting ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            >
+              {isConnecting ? "Connecting..." : "Connect MetaMask"}
+            </button>
+          ) : (
+            <span className="text-white py-2 px-4">
+              Connected: {userAddress.slice(0, 6)}...{userAddress.slice(-4)}
+            </span>
+          )}
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-red-600 transition duration-300"
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
       {/* Error Message */}
@@ -327,130 +430,146 @@ const UserDashboard = () => {
         </div>
       )}
 
-      {/* Cards Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Billing Report Card */}
-        <div className="bg-gray-800 rounded-lg shadow-lg p-6 h-96 flex flex-col">
-          <h2 className="text-2xl font-semibold text-white mb-4">Billing Report</h2>
-          <div className="text-gray-300 flex-1">
-            <p className="mb-2">
-              Total Data Usage: <span className="font-bold text-white">{billingReport.total_usage_mb} MB</span>
-            </p>
-            <p>
-              Total Cost: <span className="font-bold text-white">{billingReport.total_cost_kes} KES</span>
-            </p>
-            <p>
-              Token Balance: <span className="font-bold text-white">{tokenBalance} WiFiTokens</span>
-            </p>
-          </div>
+      {/* Prompt if Wallet Not Connected */}
+      {!isWalletConnected && (
+        <div className="mb-8 p-6 bg-gray-800 rounded-lg shadow-lg text-center">
+          <p className="text-white mb-4">Please connect your MetaMask wallet to view your dashboard.</p>
+          <button
+            onClick={connectWallet}
+            disabled={isConnecting}
+            className={`bg-blue-500 text-white py-2 px-6 rounded-full hover:bg-blue-600 transition duration-300 ${
+              isConnecting ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            {isConnecting ? "Connecting..." : "Connect MetaMask"}
+          </button>
         </div>
+      )}
 
-        {/* Data Usage History Card */}
-        <div className="bg-gray-800 rounded-lg shadow-lg p-6 h-96 flex flex-col lg:col-span-2">
-          <h2 className="text-2xl font-semibold text-white mb-4">Data Usage History (Real-Time)</h2>
-          <p className="mb-4 text-gray-300">
-            Current Session Usage: <span className="font-bold text-white">{totalUsage} MB</span>
-          </p>
-          {/* Add a button to manually log data usage for testing */}
-          <div className="mb-4">
-            <button
-              onClick={() => handleLogDataUsage(50)} // Simulate 50 MB usage
-              className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition duration-300"
-            >
-              Log 50 MB Usage (Test)
-            </button>
+      {/* Dashboard Content (Hidden Until Wallet Connected) */}
+      {isWalletConnected && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Billing Report Card */}
+          <div className="bg-gray-800 rounded-lg shadow-lg p-6 h-96 flex flex-col">
+            <h2 className="text-2xl font-semibold text-white mb-4">Billing Report</h2>
+            <div className="text-gray-300 flex-1">
+              <p className="mb-2">
+                Total Data Usage: <span className="font-bold text-white">{billingReport.total_usage_mb} MB</span>
+              </p>
+              <p>
+                Total Cost: <span className="font-bold text-white">{billingReport.total_cost_kes} KES</span>
+              </p>
+              <p>
+                Token Balance: <span className="font-bold text-white">{tokenBalance} WiFiTokens</span>
+              </p>
+            </div>
           </div>
-          {/* Line Graph for Data Usage */}
-          <div className="flex-1">
-            {chartData.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#444" />
-                  <XAxis dataKey="timestamp" stroke="#ccc" tick={{ fill: "#ccc", fontSize: 12 }} />
-                  <YAxis stroke="#ccc" tick={{ fill: "#ccc", fontSize: 12 }} />
-                  <Tooltip
-                    contentStyle={{ backgroundColor: "#333", border: "none", color: "#fff" }}
-                    labelStyle={{ color: "#fff" }}
-                  />
-                  <Legend />
-                  <Line
-                    type="monotone"
-                    dataKey="usage_mb"
-                    stroke="#8884d8"
-                    strokeWidth={3} // Thicker line for better visibility
-                    activeDot={{ r: 8 }}
-                    name="Usage (MB)"
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="cumulative_mb"
-                    stroke="#82ca9d"
-                    strokeWidth={3} // Thicker line for better visibility
-                    activeDot={{ r: 8 }}
-                    name="Cumulative Usage (MB)"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+
+          {/* Data Usage History Card */}
+          <div className="bg-gray-800 rounded-lg shadow-lg p-6 h-96 flex flex-col lg:col-span-2">
+            <h2 className="text-2xl font-semibold text-white mb-4">Data Usage History (Real-Time)</h2>
+            <p className="mb-4 text-gray-300">
+              Current Session Usage: <span className="font-bold text-white">{totalUsage} MB</span>
+            </p>
+            <div className="mb-4">
+              <button
+                onClick={() => handleLogDataUsage(50)}
+                className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition duration-300"
+              >
+                Log 50 MB Usage (Test)
+              </button>
+            </div>
+            <div className="flex-1">
+              {chartData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#444" />
+                    <XAxis dataKey="timestamp" stroke="#ccc" tick={{ fill: "#ccc", fontSize: 12 }} />
+                    <YAxis stroke="#ccc" tick={{ fill: "#ccc", fontSize: 12 }} />
+                    <Tooltip
+                      contentStyle={{ backgroundColor: "#333", border: "none", color: "#fff" }}
+                      labelStyle={{ color: "#fff" }}
+                    />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="usage_mb"
+                      stroke="#8884d8"
+                      strokeWidth={3}
+                      activeDot={{ r: 8 }}
+                      name="Usage (MB)"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="cumulative_mb"
+                      stroke="#82ca9d"
+                      strokeWidth={3}
+                      activeDot={{ r: 8 }}
+                      name="Cumulative Usage (MB)"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : (
+                <p className="text-gray-300">No data usage history available.</p>
+              )}
+            </div>
+          </div>
+
+          {/* Simulate Payment Card */}
+          <div className="bg-gray-800 rounded-lg shadow-lg p-6 h-96 flex flex-col">
+            <h2 className="text-2xl font-semibold text-white mb-4">Simulate Payment</h2>
+            <div className="text-gray-300 flex-1">
+              <p className="mb-4">
+                You have used {totalUsage} MB. Simulate a payment to continue accessing WiFi.
+              </p>
+              <button
+                onClick={() => handleMintTokens(1000)}
+                className="bg-yellow-500 text-white py-2 px-4 rounded-full hover:bg-yellow-600 transition duration-300 mb-4"
+              >
+                Mint 1000 WiFiTokens (Test)
+              </button>
+              <button
+                onClick={handleSimulatePayment}
+                className="bg-theme-blue text-white py-3 px-6 rounded-full hover:bg-blue-700 transition duration-300"
+                disabled={totalUsage === 0}
+              >
+                Simulate Payment
+              </button>
+            </div>
+          </div>
+
+          {/* Transaction History Card */}
+          <div className="bg-gray-800 rounded-lg shadow-lg p-6 h-96 flex flex-col lg:col-span-4">
+            <h2 className="text-2xl font-semibold text-white mb-4">Transaction History</h2>
+            {transactions.length > 0 ? (
+              <div className="overflow-y-auto flex-1">
+                <table className="w-full border-collapse border border-gray-600">
+                  <thead>
+                    <tr className="bg-gray-700">
+                      <th className="border border-gray-600 p-3 text-left text-gray-300">Transaction ID</th>
+                      <th className="border border-gray-600 p-3 text-left text-gray-300">Amount (KES)</th>
+                      <th className="border border-gray-600 p-3 text-left text-gray-300">Timestamp</th>
+                      <th className="border border-gray-600 p-3 text-left text-gray-300">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {transactions.map((tx) => (
+                      <tr key={tx.id} className="bg-gray-600">
+                        <td className="border border-gray-600 p-3 text-white">{tx.id}</td>
+                        <td className="border border-gray-600 p-3 text-white">{tx.amount}</td>
+                        <td className="border border-gray-600 p-3 text-white">{tx.timestamp}</td>
+                        <td className="border border-gray-600 p-3 text-white">{tx.status}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             ) : (
-              <p className="text-gray-300">No data usage history available.</p>
+              <p className="text-gray-300 flex-1">No transaction history available.</p>
             )}
           </div>
         </div>
-
-        {/* Simulate Payment Card */}
-        <div className="bg-gray-800 rounded-lg shadow-lg p-6 h-96 flex flex-col">
-          <h2 className="text-2xl font-semibold text-white mb-4">Simulate Payment</h2>
-          <div className="text-gray-300 flex-1">
-            <p className="mb-4">
-              You have used {totalUsage} MB. Simulate a payment to continue accessing WiFi.
-            </p>
-            <button
-              onClick={() => handleMintTokens(1000)} // Mint 1000 tokens for testing
-              className="bg-yellow-500 text-white py-2 px-4 rounded-full hover:bg-yellow-600 transition duration-300 mb-4"
-            >
-              Mint 1000 WiFiTokens (Test)
-            </button>
-            <button
-              onClick={handleSimulatePayment}
-              className="bg-theme-blue text-white py-3 px-6 rounded-full hover:bg-blue-700 transition duration-300"
-              disabled={totalUsage === 0}
-            >
-              Simulate Payment
-            </button>
-          </div>
-        </div>
-
-        {/* Transaction History Card */}
-        <div className="bg-gray-800 rounded-lg shadow-lg p-6 h-96 flex flex-col lg:col-span-4">
-          <h2 className="text-2xl font-semibold text-white mb-4">Transaction History</h2>
-          {transactions.length > 0 ? (
-            <div className="overflow-y-auto flex-1">
-              <table className="w-full border-collapse border border-gray-600">
-                <thead>
-                  <tr className="bg-gray-700">
-                    <th className="border border-gray-600 p-3 text-left text-gray-300">Transaction ID</th>
-                    <th className="border border-gray-600 p-3 text-left text-gray-300">Amount (KES)</th>
-                    <th className="border border-gray-600 p-3 text-left text-gray-300">Timestamp</th>
-                    <th className="border border-gray-600 p-3 text-left text-gray-300">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {transactions.map((tx) => (
-                    <tr key={tx.id} className="bg-gray-600">
-                      <td className="border border-gray-600 p-3 text-white">{tx.id}</td>
-                      <td className="border border-gray-600 p-3 text-white">{tx.amount}</td>
-                      <td className="border border-gray-600 p-3 text-white">{tx.timestamp}</td>
-                      <td className="border border-gray-600 p-3 text-white">{tx.status}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <p className="text-gray-300 flex-1">No transaction history available.</p>
-          )}
-        </div>
-      </div>
+      )}
     </div>
   );
 };
