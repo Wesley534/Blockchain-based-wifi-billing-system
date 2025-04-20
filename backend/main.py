@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import OperationalError
 from database import Base, engine, get_db, SessionLocal
 from models import User, DataUsage, WifiPlan as WifiPlanModel, PlanDuration
 from schemas import (
@@ -9,16 +10,19 @@ from schemas import (
 )
 from auth import get_password_hash, authenticate_user, create_access_token, get_current_user
 import time
-import random
+import logging
 import threading
-import requests
+import random
 from datetime import datetime
 from typing import Dict
 from fastapi.security import OAuth2PasswordBearer
-import logging
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler()]
+)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
@@ -26,18 +30,22 @@ app = FastAPI()
 # CORS middleware configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Explicitly allow frontend origin
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # Create the database tables
-Base.metadata.create_all(bind=engine)
+try:
+    Base.metadata.create_all(bind=engine)
+    logger.info("Database tables created successfully")
+except Exception as e:
+    logger.error(f"Failed to create database tables: {str(e)}")
+    raise
 
 # In-memory store for active user sessions (username: JWT token)
 active_users: Dict[str, str] = {}
-active_users_lock = threading.Lock()
 
 # OAuth2 scheme for token validation
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
@@ -45,50 +53,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 # Function to get all users with role "user" from the database
 def get_all_users(db: Session):
     return db.query(User).filter(User.role == "user").all()
-
-# Function to simulate data usage for currently logged-in users
-def simulate_data_usage():
-    while True:
-        with active_users_lock:
-            if not active_users:
-                logger.info("No active users for simulation.")
-                time.sleep(10)
-                continue
-            # Create a copy to avoid modifying the dictionary during iteration
-            users_to_simulate = active_users.copy()
-        
-        for username, token in users_to_simulate.items():
-            usage_mb = random.randint(1, 100)
-            headers = {"Authorization": f"Bearer {token}"}
-            try:
-                response = requests.post(
-                    "http://127.0.0.1:8000/data-usage",
-                    json={"usage_mb": usage_mb},
-                    headers=headers,
-                )
-                if response.status_code == 200:
-                    logger.info(f"Simulated {usage_mb} MB usage for {username}: {response.json()}")
-                else:
-                    logger.error(f"Failed to simulate usage for {username}: {response.json()}")
-                    # Remove user if token is invalid (e.g., expired)
-                    if response.status_code == 401:
-                        with active_users_lock:
-                            active_users.pop(username, None)
-            except Exception as e:
-                logger.error(f"Error simulating usage for {username}: {e}")
-        time.sleep(10)  # Simulate usage every 10 seconds for all active users
-
-# Start the simulation and seed users when the app starts
-@app.on_event("startup")
-async def startup_event():
-    db = SessionLocal()
-    try:
-        seed_users(db)
-    finally:
-        db.close()
-    simulation_thread = threading.Thread(target=simulate_data_usage, daemon=True)
-    simulation_thread.start()
-    logger.info("Started data usage simulation for active users in the background.")
 
 # Seed the database with sample users
 def seed_users(db: Session):
@@ -109,10 +73,56 @@ def seed_users(db: Session):
     db.commit()
     logger.info("Seeded database with sample users.")
 
+# Simulate data usage for active users
+def simulate_data_usage():
+    """Simulate data usage for active users in the background."""
+    logger.info("Started data usage simulation in the background.")
+    while True:
+        try:
+            db = SessionLocal()
+            try:
+                if not active_users:
+                    logger.info("No active users for simulation.")
+                else:
+                    for username in active_users.keys():
+                        user = db.query(User).filter(User.username == username, User.role == "user").first()
+                        if user:
+                            usage_mb = random.uniform(0.1, 10.0)  # Simulate 0.1-10 MB
+                            timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+                            data_usage = DataUsage(user_id=user.id, usage_mb=usage_mb, timestamp=timestamp)
+                            db.add(data_usage)
+                            logger.info(f"Simulated {usage_mb:.2f} MB usage for {username}")
+                    db.commit()
+            except OperationalError as db_err:
+                logger.error(f"Database error in simulation: {str(db_err)}")
+                db.rollback()
+            finally:
+                db.close()
+        except Exception as e:
+            logger.error(f"Error in simulation thread: {str(e)}")
+        time.sleep(30)  # Run every 30 seconds
+
+@app.on_event("startup")
+async def startup_event():
+    db = SessionLocal()
+    try:
+        seed_users(db)
+    except Exception as e:
+        logger.error(f"Error seeding users: {str(e)}")
+        raise
+    finally:
+        db.close()
+    # Start simulation in a separate thread
+    simulation_thread = threading.Thread(target=simulate_data_usage, daemon=True)
+    simulation_thread.start()
+    logger.info("Data usage simulation started in the background.")
+
 @app.post("/register")
-def register(user: UserCreate, db: Session = Depends(get_db)):
+async def register(user: UserCreate, db: Session = Depends(get_db)):
     """Register a new user or WiFi provider."""
     try:
+        logger.info(f"Register attempt for username: {user.username}")
+        start_time = time.time()
         db_user = db.query(User).filter(User.username == user.username).first()
         if db_user:
             raise HTTPException(status_code=400, detail="Username already registered")
@@ -125,9 +135,8 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         db.add(db_user)
         db.commit()
         db.refresh(db_user)
-
         access_token = create_access_token(data={"sub": user.username})
-        logger.info(f"Registered user: {user.username}")
+        logger.info(f"Registered user: {user.username} in {time.time() - start_time:.2f} seconds")
         return {
             "access_token": access_token,
             "token_type": "bearer",
@@ -138,21 +147,28 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @app.post("/login")
-def login(user: UserLogin, db: Session = Depends(get_db)):
+async def login(user: UserLogin, db: Session = Depends(get_db)):
     """Log in a user or WiFi provider, return a JWT token, and track active session."""
     try:
-        db_user = authenticate_user(db, user.username, user.password)
+        start_time = time.time()
+        logger.info(f"Login attempt for username: {user.username}")
+        logger.debug(f"Starting authentication for: {user.username}")
+        try:
+            db_user = authenticate_user(db, user.username, user.password)
+        except OperationalError as db_err:
+            logger.error(f"Database error during authentication: {str(db_err)}")
+            raise HTTPException(status_code=500, detail="Database error, please try again later")
         if not db_user:
+            logger.warning(f"Authentication failed for username: {user.username}")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Incorrect username or password",
                 headers={"WWW-Authenticate": "Bearer"},
             )
+        logger.debug(f"Creating access token for: {user.username}")
         access_token = create_access_token(data={"sub": user.username})
-        # Store the user's token in active_users
-        with active_users_lock:
-            active_users[user.username] = access_token
-        logger.info(f"User {user.username} logged in and added to active users.")
+        active_users[user.username] = access_token
+        logger.info(f"User {user.username} logged in in {time.time() - start_time:.2f} seconds")
         return {
             "access_token": access_token,
             "token_type": "bearer",
@@ -163,18 +179,16 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @app.post("/logout")
-def logout(current_user: User = Depends(get_current_user)):
+async def logout(current_user: User = Depends(get_current_user)):
     """Log out the current user and remove them from active sessions."""
     try:
-        with active_users_lock:
-            active_users.pop(current_user.username, None)
-        logger.info(f"User {current_user.username} logged out and removed from active users.")
+        active_users.pop(current_user.username, None)
+        logger.info(f"User {current_user.username} logged out")
         return {"message": "Logged out successfully"}
     except Exception as e:
         logger.error(f"Error in logout: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
-# Define helper functions to create role-specific dependencies
 def get_user(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     if current_user.role != "user":
         raise HTTPException(
@@ -192,18 +206,15 @@ def get_isp(db: Session = Depends(get_db), current_user: User = Depends(get_curr
     return current_user
 
 @app.get("/user/dashboard", response_model=dict)
-def user_dashboard(current_user: User = Depends(get_user)):
-    """Protected endpoint for the user dashboard."""
+async def user_dashboard(current_user: User = Depends(get_user)):
     return {"message": f"Welcome to the User Dashboard, {current_user.username}!"}
 
 @app.get("/isp/dashboard", response_model=dict)
-def isp_dashboard(current_user: User = Depends(get_isp)):
-    """Protected endpoint for the ISP (WiFi provider) dashboard."""
+async def isp_dashboard(current_user: User = Depends(get_isp)):
     return {"message": f"Welcome to the ISP Dashboard, {current_user.username}!"}
 
 @app.post("/data-usage")
-def log_data_usage(data: DataUsageRequest, current_user: User = Depends(get_user), db: Session = Depends(get_db)):
-    """Log data usage in the database for the authenticated user."""
+async def log_data_usage(data: DataUsageRequest, current_user: User = Depends(get_user), db: Session = Depends(get_db)):
     try:
         timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
         data_usage = DataUsage(user_id=current_user.id, usage_mb=data.usage_mb, timestamp=timestamp)
@@ -216,8 +227,7 @@ def log_data_usage(data: DataUsageRequest, current_user: User = Depends(get_user
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @app.get("/data-usage")
-def get_data_usage(current_user: User = Depends(get_user), db: Session = Depends(get_db)):
-    """Retrieve data usage history for the authenticated user from the database."""
+async def get_data_usage(current_user: User = Depends(get_user), db: Session = Depends(get_db)):
     try:
         usage = db.query(DataUsage).filter(DataUsage.user_id == current_user.id).all()
         return [{"usage_mb": u.usage_mb, "timestamp": u.timestamp} for u in usage]
@@ -226,24 +236,35 @@ def get_data_usage(current_user: User = Depends(get_user), db: Session = Depends
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @app.post("/update-wallet")
-def update_wallet(wallet_data: WalletUpdate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    """Update the wallet address for the authenticated user."""
+async def update_wallet(wallet_data: WalletUpdate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     try:
         db_user = db.query(User).filter(User.id == current_user.id).first()
         if not db_user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        
+        # Check if wallet address is already used by another user
+        if wallet_data.wallet_address:
+            existing_user = db.query(User).filter(
+                User.wallet_address == wallet_data.wallet_address,
+                User.id != current_user.id
+            ).first()
+            if existing_user:
+                logger.warning(f"Wallet address {wallet_data.wallet_address} already associated with another user")
+                raise HTTPException(status_code=400, detail="Wallet address is already associated with another user")
+
         db_user.wallet_address = wallet_data.wallet_address
         db.commit()
         db.refresh(db_user)
-        logger.info(f"Updated wallet address for user {current_user.username}")
+        logger.info(f"Updated wallet address for user {current_user.username} to {wallet_data.wallet_address}")
         return {"message": "Wallet address updated successfully"}
+    except HTTPException as e:
+        raise e
     except Exception as e:
         logger.error(f"Error in update_wallet: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @app.get("/users", response_model=list[UserSchema])
-def get_all_users_endpoint(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
-    """Retrieve all users with role 'user' (ISP only)."""
+async def get_all_users_endpoint(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
     try:
         users = get_all_users(db)
         return users
@@ -252,8 +273,7 @@ def get_all_users_endpoint(current_user: User = Depends(get_isp), db: Session = 
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @app.get("/isp/users", response_model=list[UserSchema])
-def get_all_isp_users_endpoint(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
-    """Retrieve all users with role 'user' for ISP dashboard (ISP only)."""
+async def get_all_isp_users_endpoint(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
     try:
         users = get_all_users(db)
         return users
@@ -261,10 +281,8 @@ def get_all_isp_users_endpoint(current_user: User = Depends(get_isp), db: Sessio
         logger.error(f"Error in get_all_isp_users_endpoint: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
-# ISP-specific endpoints
 @app.get("/isp/data-usage")
-def get_total_data_usage(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
-    """Retrieve aggregated data usage history for all users (ISP only)."""
+async def get_total_data_usage(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
     try:
         all_usage = db.query(DataUsage).all()
         usage_by_time = {}
@@ -283,12 +301,11 @@ def get_total_data_usage(current_user: User = Depends(get_isp), db: Session = De
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @app.post("/isp/log-data-usage")
-def isp_log_data_usage(
+async def isp_log_data_usage(
     data: dict,
     current_user: User = Depends(get_isp),
     db: Session = Depends(get_db)
 ):
-    """Log data usage for a specific user (ISP only)."""
     try:
         username = data.get("username")
         usage_mb = data.get("usage_mb")
@@ -301,16 +318,14 @@ def isp_log_data_usage(
         data_usage = DataUsage(user_id=target_user.id, usage_mb=usage_mb, timestamp=timestamp)
         db.add(data_usage)
         db.commit()
-        logger.info(f"Logged {usage_mb} MB usage for {username} by ISP")
+        logger.info(f"Logged {data.usage_mb} MB usage for {username} by ISP")
         return {"message": f"Data usage of {usage_mb} MB logged successfully for {username}"}
     except Exception as e:
         logger.error(f"Error in isp_log_data_usage: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
-# WiFi Plan endpoints
 @app.get("/isp/wifi-plans", response_model=list[WifiPlan])
-def get_wifi_plans(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
-    """Retrieve all WiFi plans created by the ISP."""
+async def get_wifi_plans(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
     try:
         plans = db.query(WifiPlanModel).filter(WifiPlanModel.isp_id == current_user.id).all()
         return plans
@@ -319,12 +334,11 @@ def get_wifi_plans(current_user: User = Depends(get_isp), db: Session = Depends(
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @app.post("/isp/wifi-plans", response_model=WifiPlan)
-def create_wifi_plan(
+async def create_wifi_plan(
     plan: WifiPlanCreate,
     current_user: User = Depends(get_isp),
     db: Session = Depends(get_db)
 ):
-    """Create a new WiFi plan (ISP only)."""
     try:
         if plan.price_kes <= 0:
             raise HTTPException(status_code=400, detail="Price must be positive")
@@ -347,13 +361,12 @@ def create_wifi_plan(
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @app.put("/isp/wifi-plans/{plan_id}", response_model=WifiPlan)
-def update_wifi_plan(
+async def update_wifi_plan(
     plan_id: int,
     plan: WifiPlanUpdate,
     current_user: User = Depends(get_isp),
     db: Session = Depends(get_db),
 ):
-    """Update an existing WiFi plan (ISP only)."""
     try:
         db_plan = db.query(WifiPlanModel).filter(WifiPlanModel.id == plan_id, WifiPlanModel.isp_id == current_user.id).first()
         if not db_plan:
@@ -374,12 +387,11 @@ def update_wifi_plan(
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @app.delete("/isp/wifi-plans/{plan_id}")
-def delete_wifi_plan(
+async def delete_wifi_plan(
     plan_id: int,
     current_user: User = Depends(get_isp),
     db: Session = Depends(get_db)
 ):
-    """Delete a WiFi plan (ISP only)."""
     try:
         db_plan = db.query(WifiPlanModel).filter(WifiPlanModel.id == plan_id, WifiPlanModel.isp_id == current_user.id).first()
         if not db_plan:

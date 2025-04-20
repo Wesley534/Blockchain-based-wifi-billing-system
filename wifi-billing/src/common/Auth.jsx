@@ -1,76 +1,112 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(true); // Toggle between login and register
+  const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(""); // Clear previous errors
+    setError("");
+    setIsLoading(true);
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 20000); // 20-second timeout
+      console.log("Input username:", username);
+      console.log("Sending login request:", { username, password });
       const response = await fetch("http://127.0.0.1:8000/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
 
+      console.log("Login response status:", response.status);
+      console.log("Login response headers:", [...response.headers.entries()]);
       const data = await response.json();
-      if (response.ok) {
-        // Store the token
-        localStorage.setItem("token", data.access_token);
+      console.log("Login response data:", data);
 
-        // Redirect based on the role returned in the response
-        const role = data.role;
-        if (role === "user") {
-          navigate("/user/dashboard");
-        } else if (role === "wifi_provider") {
+      if (response.ok) {
+        localStorage.setItem("token", data.access_token);
+        localStorage.setItem("username", username);
+        localStorage.setItem("role", data.role);
+        if (data.role === "wifi_provider") {
           navigate("/isp/dashboard");
+        } else if (data.role === "user") {
+          navigate("/user/dashboard");
         } else {
           throw new Error("Unknown role received from server");
         }
       } else {
-        setError(data.detail || "Login failed");
+        setError(data.detail || "Login failed. Please check your username and password.");
       }
     } catch (err) {
-      setError("An error occurred. Please try again.");
-      console.error("Login error:", err);
+      console.error("Login error:", err, { name: err.name, message: err.message });
+      if (err.name === "AbortError") {
+        setError("Login request timed out after 20 seconds. Please check if the backend is running.");
+      } else if (err.name === "TypeError" && err.message.includes("Failed to fetch")) {
+        setError("Cannot connect to the server. Please ensure the backend is running at http://127.0.0.1:8000.");
+      } else {
+        setError("An error occurred during login. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    setError(""); // Clear previous errors
+    setError("");
+    setIsLoading(true);
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 20000); // 20-second timeout
+      console.log("Input username:", username);
+      console.log("Sending register request:", { username, password, role: "user" });
       const response = await fetch("http://127.0.0.1:8000/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password, role: "user" }),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
 
+      console.log("Register response status:", response.status);
+      console.log("Register response headers:", [...response.headers.entries()]);
       const data = await response.json();
-      if (response.ok) {
-        // Store the token
-        localStorage.setItem("token", data.access_token);
+      console.log("Register response data:", data);
 
-        // Redirect to user dashboard (since role is "user")
+      if (response.ok) {
+        localStorage.setItem("token", data.access_token);
+        localStorage.setItem("username", username);
+        localStorage.setItem("role", data.role);
         navigate("/user/dashboard");
       } else {
-        setError(data.detail || "Registration failed");
+        setError(data.detail || "Registration failed. Username may already exist.");
       }
     } catch (err) {
-      setError("An error occurred during registration. Please try again.");
-      console.error("Registration error:", err);
+      console.error("Registration error:", err, { name: err.name, message: err.message });
+      if (err.name === "AbortError") {
+        setError("Registration request timed out after 20 seconds. Please check if the backend is running.");
+      } else if (err.name === "TypeError" && err.message.includes("Failed to fetch")) {
+        setError("Cannot connect to the server. Please ensure the backend is running at http://127.0.0.1:8000.");
+      } else {
+        setError("An error occurred during registration. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const toggleForm = () => {
     setIsLogin(!isLogin);
-    setError(""); // Clear errors when switching forms
-    setUsername(""); // Clear form inputs
+    setError("");
+    setUsername("");
     setPassword("");
   };
 
@@ -111,8 +147,9 @@ const Auth = () => {
           <button
             type="submit"
             className="w-full bg-theme-blue text-white py-3 rounded-full bg-black hover:bg-blue-700 transition duration-300"
+            disabled={isLoading}
           >
-            {isLogin ? "Login" : "Register"}
+            {isLoading ? "Loading..." : (isLogin ? "Login" : "Register")}
           </button>
         </form>
         <p className="text-center text-black mt-4">

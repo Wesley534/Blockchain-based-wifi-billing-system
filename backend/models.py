@@ -12,7 +12,8 @@ class User(Base):
     hashed_password = Column(String)
     role = Column(String)  # "user" or "wifi_provider"
     is_active = Column(Boolean, default=True)
-    wallet_address = Column(String, nullable=True)
+    wallet_address = Column(String, unique=True, nullable=True)  # Added unique=True
+
 
     # Optional: Add relationship to DataUsage
     data_usage = relationship("DataUsage", back_populates="user")
