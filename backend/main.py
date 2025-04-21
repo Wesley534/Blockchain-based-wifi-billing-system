@@ -2,11 +2,12 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import OperationalError
+from typing import List, Dict
 from database import Base, engine, get_db, SessionLocal
 from models import User, DataUsage, WifiPlan as WifiPlanModel, PlanDuration
 from schemas import (
     UserCreate, UserLogin, Token, DataUsageRequest, WalletUpdate, UserSchema,
-    WifiPlan, WifiPlanCreate, WifiPlanUpdate
+    WifiPlan, WifiPlanCreate, WifiPlanUpdate, WiFiPlan, PlanPurchase
 )
 from auth import get_password_hash, authenticate_user, create_access_token, get_current_user
 import time
@@ -14,7 +15,6 @@ import logging
 import threading
 import random
 from datetime import datetime
-from typing import Dict
 from fastapi.security import OAuth2PasswordBearer
 
 # Configure logging
@@ -30,7 +30,7 @@ app = FastAPI()
 # CORS middleware configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://localhost:5173", "http://192.168.2.105:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -117,7 +117,7 @@ async def startup_event():
     simulation_thread.start()
     logger.info("Data usage simulation started in the background.")
 
-@app.post("/register")
+@app.post("/register", response_model=Token)
 async def register(user: UserCreate, db: Session = Depends(get_db)):
     """Register a new user or WiFi provider."""
     try:
@@ -135,7 +135,7 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
         db.add(db_user)
         db.commit()
         db.refresh(db_user)
-        access_token = create_access_token(data={"sub": user.username})
+        access_token = create_access_token(data={"sub": user.username, "role": user.role})
         logger.info(f"Registered user: {user.username} in {time.time() - start_time:.2f} seconds")
         return {
             "access_token": access_token,
@@ -146,7 +146,7 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
         logger.error(f"Error in register: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
-@app.post("/login")
+@app.post("/login", response_model=Token)
 async def login(user: UserLogin, db: Session = Depends(get_db)):
     """Log in a user or WiFi provider, return a JWT token, and track active session."""
     try:
@@ -166,7 +166,7 @@ async def login(user: UserLogin, db: Session = Depends(get_db)):
                 headers={"WWW-Authenticate": "Bearer"},
             )
         logger.debug(f"Creating access token for: {user.username}")
-        access_token = create_access_token(data={"sub": user.username})
+        access_token = create_access_token(data={"sub": user.username, "role": db_user.role})
         active_users[user.username] = access_token
         logger.info(f"User {user.username} logged in in {time.time() - start_time:.2f} seconds")
         return {
@@ -216,6 +216,8 @@ async def isp_dashboard(current_user: User = Depends(get_isp)):
 @app.post("/data-usage")
 async def log_data_usage(data: DataUsageRequest, current_user: User = Depends(get_user), db: Session = Depends(get_db)):
     try:
+        if data.usage_mb <= 0:
+            raise HTTPException(status_code=400, detail="Usage must be positive")
         timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
         data_usage = DataUsage(user_id=current_user.id, usage_mb=data.usage_mb, timestamp=timestamp)
         db.add(data_usage)
@@ -226,7 +228,7 @@ async def log_data_usage(data: DataUsageRequest, current_user: User = Depends(ge
         logger.error(f"Error in log_data_usage: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
-@app.get("/data-usage")
+@app.get("/data-usage", response_model=List[dict])
 async def get_data_usage(current_user: User = Depends(get_user), db: Session = Depends(get_db)):
     try:
         usage = db.query(DataUsage).filter(DataUsage.user_id == current_user.id).all()
@@ -263,7 +265,7 @@ async def update_wallet(wallet_data: WalletUpdate, current_user: User = Depends(
         logger.error(f"Error in update_wallet: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
-@app.get("/users", response_model=list[UserSchema])
+@app.get("/users", response_model=List[UserSchema])
 async def get_all_users_endpoint(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
     try:
         users = get_all_users(db)
@@ -272,7 +274,7 @@ async def get_all_users_endpoint(current_user: User = Depends(get_isp), db: Sess
         logger.error(f"Error in get_all_users_endpoint: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
-@app.get("/isp/users", response_model=list[UserSchema])
+@app.get("/isp/users", response_model=List[UserSchema])
 async def get_all_isp_users_endpoint(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
     try:
         users = get_all_users(db)
@@ -281,7 +283,7 @@ async def get_all_isp_users_endpoint(current_user: User = Depends(get_isp), db: 
         logger.error(f"Error in get_all_isp_users_endpoint: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
-@app.get("/isp/data-usage")
+@app.get("/isp/data-usage", response_model=List[dict])
 async def get_total_data_usage(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
     try:
         all_usage = db.query(DataUsage).all()
@@ -318,19 +320,19 @@ async def isp_log_data_usage(
         data_usage = DataUsage(user_id=target_user.id, usage_mb=usage_mb, timestamp=timestamp)
         db.add(data_usage)
         db.commit()
-        logger.info(f"Logged {data.usage_mb} MB usage for {username} by ISP")
+        logger.info(f"Logged {usage_mb} MB usage for {username} by ISP")
         return {"message": f"Data usage of {usage_mb} MB logged successfully for {username}"}
     except Exception as e:
         logger.error(f"Error in isp_log_data_usage: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
-@app.get("/isp/wifi-plans", response_model=list[WifiPlan])
-async def get_wifi_plans(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
+@app.get("/isp/wifi-plans", response_model=List[WifiPlan])
+async def get_wifi_plans_isp(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
     try:
         plans = db.query(WifiPlanModel).filter(WifiPlanModel.isp_id == current_user.id).all()
         return plans
     except Exception as e:
-        logger.error(f"Error in get_wifi_plans: {str(e)}")
+        logger.error(f"Error in get_wifi_plans_isp: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @app.post("/isp/wifi-plans", response_model=WifiPlan)
@@ -403,3 +405,83 @@ async def delete_wifi_plan(
     except Exception as e:
         logger.error(f"Error in delete_wifi_plan: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+@app.get("/wifi-plans", response_model=List[WiFiPlan])
+async def get_wifi_plans(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    try:
+        logger.info(f"Fetching WiFi plans for user {current_user.username}")
+        plans = db.query(WifiPlanModel).all()
+        return [
+            {
+                "id": plan.id,
+                "name": plan.name,
+                "duration": plan.duration.value,  # Convert Enum to string
+                "price_kes": plan.price_kes,
+                "data_mb": plan.data_mb
+            } for plan in plans
+        ]
+    except Exception as e:
+        logger.error(f"Error in get_wifi_plans: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to fetch WiFi plans: {str(e)}")
+
+@app.post("/purchase-plan")
+async def purchase_plan(purchase: PlanPurchase, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    try:
+        logger.info(f"Recording plan purchase for user {current_user.username}, plan_id {purchase.plan_id}")
+        # Verify the plan exists
+        db_plan = db.query(WifiPlanModel).filter(WifiPlanModel.id == purchase.plan_id).first()
+        if not db_plan:
+            raise HTTPException(status_code=404, detail="WiFi plan not found")
+        
+        # Record the purchase in a new UserPlanPurchase table
+        purchase_record = UserPlanPurchase(
+            user_id=current_user.id,
+            plan_id=purchase.plan_id,
+            purchase_date=datetime.utcnow()
+        )
+        db.add(purchase_record)
+        db.commit()
+        db.refresh(purchase_record)
+        
+        logger.info(f"Plan ID {purchase.plan_id} purchased by user {current_user.username}")
+        return {"message": f"Plan {db_plan.name} purchased successfully"}
+    except Exception as e:
+        logger.error(f"Error in purchase_plan: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to record plan purchase: {str(e)}")
+
+# Optional: Endpoint to add test WiFi plans for debugging
+@app.post("/wifi-plans/test")
+async def add_test_wifi_plan(db: Session = Depends(get_db)):
+    try:
+        # Ensure an ISP exists
+        isp = db.query(User).filter(User.role == "wifi_provider").first()
+        if not isp:
+            raise HTTPException(status_code=400, detail="No ISP user found. Please register an ISP first.")
+        
+        existing_plan = db.query(WifiPlanModel).filter(WifiPlanModel.id == 1).first()
+        if not existing_plan:
+            plan = WifiPlanModel(
+                id=1,
+                name="Daily 1GB",
+                duration=PlanDuration.DAILY,
+                price_kes=100.0,
+                data_mb=1000,
+                isp_id=isp.id
+            )
+            db.add(plan)
+            db.commit()
+            db.refresh(plan)
+            logger.info("Added test WiFi plan: Daily 1GB")
+        return {"message": "Test WiFi plan added or already exists"}
+    except Exception as e:
+        logger.error(f"Error in add_test_wifi_plan: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to add test WiFi plan: {str(e)}")
+
+# New model for recording plan purchases
+# from sqlalchemy import Column, Integer, ForeignKey, DateTime
+# class UserPlanPurchase(Base):
+#     __tablename__ = "user_plan_purchases"
+#     id = Column(Integer, primary_key=True, index=True)
+#     user_id = Column(Integer, ForeignKey("users.id"), index=True)
+#     plan_id = Column(Integer, ForeignKey("wifi_plans.id"), index=True)
+#     purchase_date = Column(DateTime, nullable=False)
