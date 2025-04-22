@@ -5,9 +5,9 @@ import wiFiBillingArtifact from "../utils/WiFiBilling.json";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 const wiFiBillingABI = wiFiBillingArtifact.abi;
-const CONTRACT_ADDRESS = "0xB4D58D26BDAd6c3f242bFe303eB0c020374920DE";
-const GANACHE_RPC_URL = "http://127.0.0.1:7545"; // Adjust if Ganache uses a different port
-const EXPECTED_CHAIN_ID = "0x539"; // Ganache default chain ID (1337 in hex)
+const CONTRACT_ADDRESS = "0x409037E14635378AB9e6c9266Ed1640a844E18B1"; // Update with deployed contract address
+const GANACHE_RPC_URL = "http://127.0.0.1:7545";
+const EXPECTED_CHAIN_ID = "0x539"; // Ganache chain ID (1337 in hex)
 const GANACHE_NETWORK_NAME = "Ganache";
 
 const UserDashboard = () => {
@@ -30,14 +30,12 @@ const UserDashboard = () => {
   // Add or switch to Ganache network
   const addOrSwitchNetwork = async () => {
     try {
-      // Try switching to Ganache
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
         params: [{ chainId: EXPECTED_CHAIN_ID }],
       });
       console.log("Switched to Ganache network");
     } catch (switchError) {
-      // If network doesn't exist (error code 4902), add it
       if (switchError.code === 4902) {
         try {
           await window.ethereum.request({
@@ -66,143 +64,16 @@ const UserDashboard = () => {
     }
   };
 
-  // Initialize MetaMask and check for existing connection
-  useEffect(() => {
-    const initialize = async () => {
-      if (!window.ethereum) {
-        setError("MetaMask is not installed. Please install MetaMask and connect to Ganache.");
-        return;
-      }
+  // Validate and normalize address without ENS
+  const normalizeAddress = async (address, provider) => {
+    if (!ethers.isAddress(address)) {
+      throw new Error(`Invalid Ethereum address: ${address}`);
+    }
+    // Explicitly avoid ENS resolution by not using provider.resolveName
+    return ethers.getAddress(address); // This will checksum the address without ENS
+  };
 
-      try {
-        // Check network
-        const chainId = await window.ethereum.request({ method: "eth_chainId" });
-        if (chainId !== EXPECTED_CHAIN_ID) {
-          await addOrSwitchNetwork();
-        }
-
-        const provider = new ethers.BrowserProvider(window.ethereum);
-        // Verify contract exists
-        const code = await provider.getCode(CONTRACT_ADDRESS);
-        if (code === "0x") {
-          setError("No contract found at the specified address. Please check CONTRACT_ADDRESS or redeploy.");
-          return;
-        }
-
-        const accounts = await window.ethereum.request({ method: "eth_accounts" });
-        if (accounts.length > 0) {
-          const signer = await provider.getSigner();
-          const address = await signer.getAddress();
-          const contract = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
-
-          setSigner(signer);
-          setUserAddress(ethers.getAddress(address));
-          setContract(contract);
-          setIsWalletConnected(true);
-          setError("");
-          console.log("Restored wallet connection:", address);
-
-          await updateWalletAddress(address);
-          await fetchAllData();
-        } else {
-          setError("Please connect your MetaMask wallet to access blockchain features.");
-        }
-      } catch (err) {
-        setError("Failed to restore wallet connection: " + err.message);
-        console.error("Initialize error:", err);
-      }
-
-      window.ethereum.on("accountsChanged", async (accounts) => {
-        if (accounts.length > 0) {
-          try {
-            const chainId = await window.ethereum.request({ method: "eth_chainId" });
-            if (chainId !== EXPECTED_CHAIN_ID) {
-              await addOrSwitchNetwork();
-            }
-
-            const provider = new ethers.BrowserProvider(window.ethereum);
-            const code = await provider.getCode(CONTRACT_ADDRESS);
-            if (code === "0x") {
-              setError("No contract found at the specified address. Please check CONTRACT_ADDRESS or redeploy.");
-              return;
-            }
-
-            const signer = await provider.getSigner();
-            const address = await signer.getAddress();
-            const contract = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
-
-            setSigner(signer);
-            setUserAddress(ethers.getAddress(address));
-            setContract(contract);
-            setIsWalletConnected(true);
-            setError("");
-            console.log("Reconnected wallet:", address);
-
-            await updateWalletAddress(address);
-            await fetchAllData();
-          } catch (err) {
-            setIsWalletConnected(false);
-            setUserAddress("");
-            setContract(null);
-            setSigner(null);
-            setTokenBalance(0);
-            setError("Failed to reconnect wallet: " + err.message);
-            console.error("Accounts changed error:", err);
-          }
-        } else {
-          setIsWalletConnected(false);
-          setUserAddress("");
-          setContract(null);
-          setSigner(null);
-          setTokenBalance(0);
-          setError("Wallet disconnected. Please reconnect your MetaMask wallet.");
-          console.log("Wallet disconnected");
-        }
-      });
-
-      window.ethereum.on("chainChanged", async (chainId) => {
-        if (chainId !== EXPECTED_CHAIN_ID) {
-          setError("Network changed. Please reconnect to Ganache (chain ID 1337).");
-          setIsWalletConnected(false);
-          setUserAddress("");
-          setContract(null);
-          setSigner(null);
-          setTokenBalance(0);
-          try {
-            await addOrSwitchNetwork();
-            const provider = new ethers.BrowserProvider(window.ethereum);
-            const signer = await provider.getSigner();
-            const address = await signer.getAddress();
-            const contract = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
-
-            setSigner(signer);
-            setUserAddress(ethers.getAddress(address));
-            setContract(contract);
-            setIsWalletConnected(true);
-            setError("");
-            console.log("Reconnected after chain change:", address);
-
-            await updateWalletAddress(address);
-            await fetchAllData();
-          } catch (err) {
-            setError("Failed to reconnect to Ganache after network change: " + err.message);
-            console.error("Chain changed error:", err);
-          }
-        }
-      });
-    };
-
-    initialize();
-
-    return () => {
-      if (window.ethereum) {
-        window.ethereum.removeListener("accountsChanged", () => {});
-        window.ethereum.removeListener("chainChanged", () => {});
-      }
-    };
-  }, []);
-
-  // Handle wallet connection
+  // Connect wallet
   const connectWallet = async () => {
     if (!window.ethereum) {
       setError("MetaMask is not installed. Please install MetaMask and connect to Ganache.");
@@ -212,7 +83,6 @@ const UserDashboard = () => {
     setIsConnecting(true);
     setError("");
     try {
-      // Add or switch to Ganache network
       await addOrSwitchNetwork();
 
       await window.ethereum.request({
@@ -238,23 +108,33 @@ const UserDashboard = () => {
 
       const signer = await provider.getSigner();
       const address = await signer.getAddress();
-      const contract = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
+      const normalizedAddress = await normalizeAddress(address, provider);
+      const contractInstance = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
 
-      await updateWalletAddress(address);
+      await updateWalletAddress(normalizedAddress);
+      const registered = await registerUserOnBlockchain(contractInstance, normalizedAddress);
+      if (!registered) {
+        console.warn("Registration failed, but proceeding with wallet connection");
+        setError("Failed to register user on blockchain. Please try registering manually or contact support.");
+      }
 
       setSigner(signer);
-      setUserAddress(ethers.getAddress(address));
-      setContract(contract);
+      setUserAddress(normalizedAddress);
+      setContract(contractInstance);
       setIsWalletConnected(true);
       setHasLoggedOut(false);
-      console.log("Wallet connected:", address);
+      console.log("Wallet connected:", normalizedAddress);
 
-      await fetchAllData();
+      if (registered) {
+        await fetchAllData();
+      }
     } catch (err) {
       let errorMessage = "Failed to connect wallet. Please try again.";
       if (err.code === 4001) {
         errorMessage = "Wallet connection rejected. Please connect your MetaMask wallet.";
-      } else if (err.message.includes("update wallet address")) {
+      } else if (err.code === -32603) {
+        errorMessage = `Internal JSON-RPC error: ${err.message}. Check Ganache or contract state.`;
+      } else if (err.message.includes("update wallet address") || err.message.includes("register user")) {
         errorMessage = err.message;
       } else {
         errorMessage += ` Error: ${err.message}`;
@@ -268,6 +148,53 @@ const UserDashboard = () => {
       console.error("Connect wallet error:", err);
     } finally {
       setIsConnecting(false);
+    }
+  };
+
+  // Register user on the blockchain
+  const registerUserOnBlockchain = async (contractInstance, address) => {
+    if (!contractInstance || !address) {
+      setError("Cannot register user: Missing contract or user address");
+      console.warn("Registration failed: Missing contract or userAddress");
+      return false;
+    }
+    try {
+      console.log(`Checking registration for user: ${address}`);
+      let isRegistered = false;
+      try {
+        isRegistered = await contractInstance.isUserRegistered(address);
+      } catch (err) {
+        if (err.code === "CALL_EXCEPTION") {
+          console.warn(`isUserRegistered reverted for ${address}: ${err.reason || "Assuming user not registered"}`);
+        } else {
+          throw err;
+        }
+      }
+
+      if (!isRegistered) {
+        console.log(`Registering user: ${address}`);
+        const tx = await contractInstance.registerUser();
+        const receipt = await tx.wait();
+        console.log(`User ${address} registered on blockchain, tx hash: ${receipt.hash}`);
+        return true;
+      } else {
+        console.log(`User ${address} already registered`);
+        return true;
+      }
+    } catch (err) {
+      let errorMessage = "Failed to register user on blockchain";
+      if (err.code === 4001) {
+        errorMessage = "Transaction rejected in MetaMask. Please approve the registration transaction.";
+      } else if (err.code === "CALL_EXCEPTION") {
+        errorMessage = `Contract call failed: ${err.reason || "Check contract restrictions (e.g., onlyOwner)"}`;
+      } else if (err.code === -32603) {
+        errorMessage = `Internal JSON-RPC error: ${err.message}. Check Ganache or contract state.`;
+      } else {
+        errorMessage += `: ${err.message}`;
+      }
+      setError(errorMessage);
+      console.error(`Register user error for ${address}:`, err);
+      return false;
     }
   };
 
@@ -340,9 +267,11 @@ const UserDashboard = () => {
     } catch (err) {
       let errorMessage = "Failed to fetch token balance";
       if (err.code === "BAD_DATA" && err.message.includes("could not decode result data")) {
-        errorMessage = "Unable to fetch token balance (possible unregistered user or contract error)";
+        errorMessage = "Unable to fetch token balance (possible contract error)";
       } else if (err.code === "CALL_EXCEPTION") {
-        errorMessage = "Contract call failed (possible revert or user not registered)";
+        errorMessage = `Contract call failed: ${err.reason || "Possible user not registered"}`;
+      } else if (err.code === -32603) {
+        errorMessage = `Internal JSON-RPC error: ${err.message}. Check Ganache or contract state.`;
       } else {
         errorMessage += `: ${err.message}`;
       }
@@ -374,7 +303,8 @@ const UserDashboard = () => {
         throw new Error("Session expired or access denied. Please log in again.");
       }
       if (!response.ok) {
-        throw new Error("Failed to fetch data usage from database");
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "Failed to fetch data usage from database");
       }
 
       const data = await response.json();
@@ -412,7 +342,15 @@ const UserDashboard = () => {
       console.log(`Blockchain data usage for ${userAddress}:`, formattedData);
       return formattedData;
     } catch (err) {
-      setError("Failed to fetch data usage from blockchain: " + err.message);
+      let errorMessage = "Failed to fetch data usage from blockchain";
+      if (err.code === "CALL_EXCEPTION") {
+        errorMessage = `Contract call failed: ${err.reason || "Possible user not registered"}`;
+      } else if (err.code === -32603) {
+        errorMessage = `Internal JSON-RPC error: ${err.message}. Check Ganache or contract state.`;
+      } else {
+        errorMessage += `: ${err.message}`;
+      }
+      setError(errorMessage);
       console.error(`Fetch blockchain data error for ${userAddress}:`, err);
       return [];
     }
@@ -436,7 +374,15 @@ const UserDashboard = () => {
       setTransactions(formattedTxs);
       console.log(`Transactions for ${userAddress}:`, formattedTxs);
     } catch (err) {
-      setError("Failed to fetch transactions: " + err.message);
+      let errorMessage = "Failed to fetch transactions";
+      if (err.code === "CALL_EXCEPTION") {
+        errorMessage = `Contract call failed: ${err.reason || "Possible user not registered"}`;
+      } else if (err.code === -32603) {
+        errorMessage = `Internal JSON-RPC error: ${err.message}. Check Ganache or contract state.`;
+      } else {
+        errorMessage += `: ${err.message}`;
+      }
+      setError(errorMessage);
       console.error(`Fetch transactions error for ${userAddress}:`, err);
     }
   };
@@ -459,9 +405,11 @@ const UserDashboard = () => {
     } catch (err) {
       let errorMessage = "Failed to fetch billing report";
       if (err.code === "BAD_DATA" && err.message.includes("could not decode result data")) {
-        errorMessage = "Unable to fetch billing report (possible unregistered user or contract error)";
+        errorMessage = "Unable to fetch billing report (possible contract error)";
       } else if (err.code === "CALL_EXCEPTION") {
-        errorMessage = "Contract call failed (possible revert or user not registered)";
+        errorMessage = `Contract call failed: ${err.reason || "Possible user not registered"}`;
+      } else if (err.code === -32603) {
+        errorMessage = `Internal JSON-RPC error: ${err.message}. Check Ganache or contract state.`;
       } else {
         errorMessage += `: ${err.message}`;
       }
@@ -493,12 +441,13 @@ const UserDashboard = () => {
         body: JSON.stringify({ usage_mb: usage_mb_int }),
       });
       if (!response.ok) {
-        throw new Error("Failed to log data usage to database");
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "Failed to log data usage to database");
       }
 
       if (contract && userAddress) {
         console.log(`Logging data usage: ${usage_mb_int} MB for ${userAddress}`);
-        const tx = await contract.logDataUsage(userAddress, usage_mb_int);
+        const tx = await contract.logDataUsage(usage_mb_int);
         await tx.wait();
         console.log(`Data usage logged on blockchain for ${userAddress}`);
       }
@@ -512,6 +461,10 @@ const UserDashboard = () => {
       let errorMessage = "Failed to log data usage";
       if (err.code === 4001) {
         errorMessage = "Transaction rejected in MetaMask. Please approve the transaction.";
+      } else if (err.code === "CALL_EXCEPTION") {
+        errorMessage = `Contract call failed: ${err.reason || "Check contract state"}`;
+      } else if (err.code === -32603) {
+        errorMessage = `Internal JSON-RPC error: ${err.message}. Check Ganache or contract state.`;
       } else {
         errorMessage += `: ${err.message}`;
       }
@@ -541,6 +494,10 @@ const UserDashboard = () => {
       let errorMessage = "Failed to mint tokens";
       if (err.code === 4001) {
         errorMessage = "Transaction rejected in MetaMask. Please approve the transaction.";
+      } else if (err.code === "CALL_EXCEPTION") {
+        errorMessage = `Contract call failed: ${err.reason || "Possible user not registered"}`;
+      } else if (err.code === -32603) {
+        errorMessage = `Internal JSON-RPC error: ${err.message}. Check Ganache or contract state.`;
       } else {
         errorMessage += `: ${err.message}`;
       }
@@ -583,8 +540,8 @@ const UserDashboard = () => {
         await handleMintTokens(amountToMint);
       }
 
-      console.log(`Calling makePayment with: ${userAddress}, ${totalUsageInt}`);
-      const tx = await contract.makePayment(userAddress, totalUsageInt);
+      console.log(`Calling makePayment with: ${totalUsageInt}`);
+      const tx = await contract.makePayment(totalUsageInt);
       await tx.wait();
 
       await fetchDataUsageFromDB();
@@ -600,9 +557,11 @@ const UserDashboard = () => {
       } else if (err.code === "INVALID_ARGUMENT" && err.message.includes("underflow")) {
         errorMessage = "Invalid usage value. Please ensure data usage is a whole number.";
       } else if (err.code === "BAD_DATA" && err.message.includes("could not decode result data")) {
-        errorMessage = "Unable to process payment (possible contract error or unregistered user)";
+        errorMessage = "Unable to process payment (possible contract error)";
       } else if (err.code === "CALL_EXCEPTION") {
-        errorMessage = "Contract call failed (possible revert or user not registered)";
+        errorMessage = `Contract call failed: ${err.reason || "Check contract state"}`;
+      } else if (err.code === -32603) {
+        errorMessage = `Internal JSON-RPC error: ${err.message}. Check Ganache or contract state.`;
       } else {
         errorMessage += `: ${err.message}`;
       }
@@ -622,37 +581,205 @@ const UserDashboard = () => {
     console.log(`Fetching all data for ${userAddress}`);
     await fetchDataUsageFromDB();
     try {
-      // Check if user is registered (if function exists)
-      let isRegistered = true;
+      let isRegistered;
       try {
-        if (contract.isUserRegistered) {
-          isRegistered = await contract.isUserRegistered(userAddress);
-          console.log(`Is ${userAddress} registered? ${isRegistered}`);
-        }
+        isRegistered = await contract.isUserRegistered(userAddress);
       } catch (err) {
-        console.warn("isUserRegistered not found or failed:", err.message);
+        if (err.code === "CALL_EXCEPTION") {
+          console.warn(`User ${userAddress} not registered, attempting to register`);
+          const registered = await registerUserOnBlockchain(contract, userAddress);
+          if (!registered) {
+            setError("Failed to register user in contract. Please try registering manually or contact support.");
+            return;
+          }
+          isRegistered = true;
+        } else {
+          throw err;
+        }
       }
+
       if (!isRegistered) {
-        setError("User not registered in contract. Please register or contact the ISP.");
-        return;
+        console.warn(`User ${userAddress} not registered, attempting to register`);
+        const registered = await registerUserOnBlockchain(contract, userAddress);
+        if (!registered) {
+          setError("Failed to register user in contract. Please try registering manually or contact support.");
+          return;
+        }
       }
+
       await fetchTransactions();
       await fetchBillingReport();
       await fetchTokenBalance();
     } catch (err) {
-      setError(`Failed to fetch blockchain data: ${err.message}`);
+      let errorMessage = "Failed to fetch blockchain data";
+      if (err.code === "CALL_EXCEPTION") {
+        errorMessage = `Contract call failed: ${err.reason || "Possible user not registered or contract issue"}`;
+      } else if (err.code === -32603) {
+        errorMessage = `Internal JSON-RPC error: ${err.message}. Check Ganache or contract state.`;
+      } else {
+        errorMessage += `: ${err.message}`;
+      }
+      setError(errorMessage);
       console.error(`Fetch all data error for ${userAddress}:`, err);
     }
   };
 
-  // Polling for data updates
+  // Initialize MetaMask and check for existing connection
   useEffect(() => {
-    if (isWalletConnected && contract && userAddress) {
-      fetchAllData();
-      const interval = setInterval(fetchAllData, 10000);
-      return () => clearInterval(interval);
-    }
-  }, [isWalletConnected, contract, userAddress]);
+    const initialize = async () => {
+      if (!window.ethereum) {
+        setError("MetaMask is not installed. Please install MetaMask and connect to Ganache.");
+        return;
+      }
+
+      try {
+        const chainId = await window.ethereum.request({ method: "eth_chainId" });
+        if (chainId !== EXPECTED_CHAIN_ID) {
+          await addOrSwitchNetwork();
+        }
+
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const code = await provider.getCode(CONTRACT_ADDRESS);
+        if (code === "0x") {
+          setError("No contract found at the specified address. Please check CONTRACT_ADDRESS or redeploy.");
+          return;
+        }
+
+        const accounts = await window.ethereum.request({ method: "eth_accounts" });
+        if (accounts.length > 0) {
+          const signer = await provider.getSigner();
+          const address = await signer.getAddress();
+          const normalizedAddress = await normalizeAddress(address, provider);
+          const contractInstance = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
+
+          setSigner(signer);
+          setUserAddress(normalizedAddress);
+          setContract(contractInstance);
+          setIsWalletConnected(true);
+          setError("");
+          console.log("Restored wallet connection:", normalizedAddress);
+
+          await updateWalletAddress(normalizedAddress);
+          const registered = await registerUserOnBlockchain(contractInstance, normalizedAddress);
+          if (registered) {
+            await fetchAllData();
+          } else {
+            console.warn("Registration failed during initialization, but wallet connected");
+          }
+        } else {
+          setError("Please connect your MetaMask wallet to access blockchain features.");
+        }
+      } catch (err) {
+        setError("Failed to restore wallet connection: " + err.message);
+        console.error("Initialize error:", err);
+      }
+
+      window.ethereum.on("accountsChanged", async (accounts) => {
+        if (accounts.length > 0) {
+          try {
+            const chainId = await window.ethereum.request({ method: "eth_chainId" });
+            if (chainId !== EXPECTED_CHAIN_ID) {
+              await addOrSwitchNetwork();
+            }
+
+            const provider = new ethers.BrowserProvider(window.ethereum);
+            const code = await provider.getCode(CONTRACT_ADDRESS);
+            if (code === "0x") {
+              setError("No contract found at the specified address. Please check CONTRACT_ADDRESS or redeploy.");
+              return;
+            }
+
+            const signer = await provider.getSigner();
+            const address = accounts[0]; // Use raw account address to avoid ENS
+            const normalizedAddress = await normalizeAddress(address, provider);
+            const contractInstance = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
+
+            setSigner(signer);
+            setUserAddress(normalizedAddress);
+            setContract(contractInstance);
+            setIsWalletConnected(true);
+            setError("");
+            console.log("Reconnected wallet:", normalizedAddress);
+
+            await updateWalletAddress(normalizedAddress);
+            const registered = await registerUserOnBlockchain(contractInstance, normalizedAddress);
+            if (registered) {
+              await fetchAllData();
+            } else {
+              console.warn("Registration failed during account change, but wallet connected");
+            }
+          } catch (err) {
+            setError("Failed to reconnect wallet: " + err.message);
+            console.error("Accounts changed error:", err);
+            // Do not reset wallet state to avoid logout
+            if (userAddress && contract && signer) {
+              console.log("Preserving existing wallet connection due to error");
+            } else {
+              setIsWalletConnected(false);
+              setUserAddress("");
+              setContract(null);
+              setSigner(null);
+              setTokenBalance(0);
+            }
+          }
+        } else {
+          setIsWalletConnected(false);
+          setUserAddress("");
+          setContract(null);
+          setSigner(null);
+          setTokenBalance(0);
+          setError("Wallet disconnected. Please reconnect your MetaMask wallet.");
+          console.log("Wallet disconnected");
+        }
+      });
+
+      window.ethereum.on("chainChanged", async (chainId) => {
+        if (chainId !== EXPECTED_CHAIN_ID) {
+          setError("Network changed. Please reconnect to Ganache (chain ID 1337).");
+          setIsWalletConnected(false);
+          setUserAddress("");
+          setContract(null);
+          setSigner(null);
+          setTokenBalance(0);
+          try {
+            await addOrSwitchNetwork();
+            const provider = new ethers.BrowserProvider(window.ethereum);
+            const signer = await provider.getSigner();
+            const address = await signer.getAddress();
+            const normalizedAddress = await normalizeAddress(address, provider);
+            const contractInstance = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
+
+            setSigner(signer);
+            setUserAddress(normalizedAddress);
+            setContract(contractInstance);
+            setIsWalletConnected(true);
+            setError("");
+            console.log("Reconnected after chain change:", normalizedAddress);
+
+            await updateWalletAddress(normalizedAddress);
+            const registered = await registerUserOnBlockchain(contractInstance, normalizedAddress);
+            if (registered) {
+              await fetchAllData();
+            } else {
+              console.warn("Registration failed during chain change, but wallet connected");
+            }
+          } catch (err) {
+            setError("Failed to reconnect to Ganache after network change: " + err.message);
+            console.error("Chain changed error:", err);
+          }
+        }
+      });
+    };
+
+    initialize();
+
+    return () => {
+      if (window.ethereum) {
+        window.ethereum.removeListener("accountsChanged", () => {});
+        window.ethereum.removeListener("chainChanged", () => {});
+      }
+    };
+  }, [navigate]);
 
   // Chart data
   const chartData = cumulativeUsage.map((entry) => ({
@@ -662,10 +789,12 @@ const UserDashboard = () => {
   }));
 
   // Calculate Y-axis domain for dynamic scaling
-  const yAxisDomain = chartData.length > 0 ? [
-    Math.min(...chartData.map((d) => Math.min(d.usage_mb, d.cumulative_mb))) * 0.95,
-    Math.max(...chartData.map((d) => Math.max(d.usage_mb, d.cumulative_mb))) * 1.05,
-  ] : [0, 100];
+  const yAxisDomain = chartData.length > 0
+    ? [
+        Math.min(...chartData.map((d) => Math.min(d.usage_mb, d.cumulative_mb))) * 0.95,
+        Math.max(...chartData.map((d) => Math.max(d.usage_mb, d.cumulative_mb))) * 1.05,
+      ]
+    : [0, 100];
 
   return (
     <div className="min-h-screen p-8 bg-[linear-gradient(135deg,_#1a1a2e,_#9fc817)]">
@@ -688,6 +817,12 @@ const UserDashboard = () => {
             {isConnecting ? "Connecting..." : isWalletConnected ? "Update Wallet Address" : "Connect MetaMask"}
           </button>
           <button
+            onClick={() => navigate("/wifi-plans")}
+            className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition duration-300"
+          >
+            View WiFi Plans
+          </button>
+          <button
             onClick={handleLogout}
             className="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-red-600 transition duration-300"
           >
@@ -700,6 +835,12 @@ const UserDashboard = () => {
       {error && (
         <div className="mb-8 p-4 bg-red-500 text-white rounded-lg shadow-lg">
           <p>{error}</p>
+          <button
+            onClick={() => setError("")}
+            className="mt-2 bg-gray-500 text-white py-1 px-2 rounded-full hover:bg-gray-600"
+          >
+            Clear Error
+          </button>
         </div>
       )}
 
@@ -727,7 +868,7 @@ const UserDashboard = () => {
 
       {/* Dashboard Content */}
       {isWalletConnected && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Billing Report Card */}
           <div className="bg-gray-800 rounded-lg shadow-lg p-6 h-96 flex flex-col">
             <h2 className="text-2xl font-semibold text-white mb-4">Billing Report</h2>
@@ -820,7 +961,7 @@ const UserDashboard = () => {
           </div>
 
           {/* Transaction History Card */}
-          <div className="bg-gray-800 rounded-lg shadow-lg p-6 h-96 flex flex-col lg:col-span-4">
+          <div className="bg-gray-800 rounded-lg shadow-lg p-6 h-96 flex flex-col lg:col-span-2">
             <h2 className="text-2xl font-semibold text-white mb-4">Transaction History</h2>
             {transactions.length > 0 ? (
               <div className="overflow-y-auto flex-1">

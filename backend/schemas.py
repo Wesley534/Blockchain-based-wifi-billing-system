@@ -54,3 +54,13 @@ class WifiPlan(WifiPlanBase):
 
     class Config:
         from_attributes = True
+
+class WiFiPlan(BaseModel):
+    id: int
+    name: str
+    duration: str  # Matches frontend expectation (e.g., "DAILY")
+    price_kes: float
+    data_mb: int
+
+class PlanPurchase(BaseModel):
+    plan_id: int
