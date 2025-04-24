@@ -1,21 +1,24 @@
-// src/App.jsx
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { WalletProvider } from "./context/WalletContext"; // Import WalletProvider
-import Auth from "./common/Auth";
+import { WalletProvider } from "./context/WalletContext";
+import Login from "./common/Login";
+import Register from "./common/Register";
+import OTPVerification from "./components/OTPVerification";
 import UserDashboard from "./users/UserDashboard";
 import ISPDashboard from "./isp/IspDashboard";
 import WiFiPlans from "./users/WiFiPlans";
 
 function App() {
   return (
-    <WalletProvider> {/* Wrap Router with WalletProvider */}
+    <WalletProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<Auth />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/otp-verification" element={<OTPVerification />} />
           <Route path="/user/dashboard" element={<UserDashboard />} />
           <Route path="/isp/dashboard" element={<ISPDashboard />} />
           <Route path="/wifi-plans" element={<WiFiPlans />} />
-          {/* Add more routes as needed */}
         </Routes>
       </Router>
     </WalletProvider>

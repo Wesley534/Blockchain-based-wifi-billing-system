@@ -31,7 +31,7 @@ const ISPDashboard = () => {
   const [error, setError] = useState("");
   const [isLoggingData, setIsLoggingData] = useState(false);
   const [isConfirmingRegistration, setIsConfirmingRegistration] = useState(false);
-  const [isLoading, setIsLoading] = useState(false); // New loading state for data fetching
+  const [isLoading, setIsLoading] = useState(false);
   const [ethToKesRate, setEthToKesRate] = useState(247789.20); // Fallback rate
   const navigate = useNavigate();
 
@@ -54,9 +54,17 @@ const ISPDashboard = () => {
     }
   }, [walletError]);
 
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      setError("No authentication token found. Redirecting to login...");
+      setTimeout(() => navigate("/login"), 2000);
+    }
+  }, [navigate]);
+
   const fetchPendingRegistrations = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No authentication token found. Please log in again.");
 
       const response = await fetch("http://127.0.0.1:8000/isp/pending-registrations", {
@@ -90,7 +98,7 @@ const ISPDashboard = () => {
       await tx.wait();
       console.log(`User ${walletAddress} registered on blockchain`);
 
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No authentication token found. Please log in again.");
 
       const response = await fetch("http://127.0.0.1:8000/isp/confirm-registration", {
@@ -121,7 +129,7 @@ const ISPDashboard = () => {
 
   const fetchAllUsersData = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No authentication token found. Please log in again.");
 
       const response = await fetch("http://127.0.0.1:8000/isp/users", {
@@ -200,7 +208,7 @@ const ISPDashboard = () => {
 
   const fetchTotalDataUsageFromDB = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No authentication token found. Please log in again.");
 
       const response = await fetch("http://127.0.0.1:8000/isp/data-usage", {
@@ -280,7 +288,7 @@ const ISPDashboard = () => {
 
   const fetchWifiPlans = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No authentication token found. Please log in again.");
 
       const response = await fetch("http://127.0.0.1:8000/isp/wifi-plans", {
@@ -307,7 +315,7 @@ const ISPDashboard = () => {
   const handleCreatePlan = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No authentication token found. Please log in again.");
 
       const data_mb = parseInt(newPlan.data_mb);
@@ -338,7 +346,7 @@ const ISPDashboard = () => {
   const handleEditPlan = async (e, planId) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No authentication token found. Please log in again.");
 
       const data_mb = parseInt(newPlan.data_mb);
@@ -369,7 +377,7 @@ const ISPDashboard = () => {
 
   const handleDeletePlan = async (planId) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No authentication token found. Please log in again.");
 
       const response = await fetch(`http://127.0.0.1:8000/isp/wifi-plans/${planId}`, {
@@ -404,7 +412,7 @@ const ISPDashboard = () => {
       const tx = await contract.logDataUsageByISP(userAddress, usage_mb_int);
       await tx.wait();
 
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No authentication token found. Please log in again.");
 
       const response = await fetch("http://127.0.0.1:8000/isp/log-data-usage", {
@@ -434,7 +442,7 @@ const ISPDashboard = () => {
   };
 
   const handleLogout = async () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("access_token");
     localStorage.removeItem("username");
     await disconnectWallet();
     navigate("/");
@@ -459,17 +467,32 @@ const ISPDashboard = () => {
   };
 
   useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      setError("No authentication token found. Redirecting to login...");
+      setTimeout(() => navigate("/login"), 2000);
+      return;
+    }
+
+    // Don't fetch data until wallet is connected and confirmed as ISP
     if (isWalletConnected && contract && isISP) {
       fetchAllData();
-      const interval = setInterval(fetchAllData, 10000);
+      const interval = setInterval(() => {
+        if (localStorage.getItem("access_token")) {
+          fetchAllData();
+        } else {
+          setError("Authentication token lost. Redirecting to login...");
+          clearInterval(interval);
+          setTimeout(() => navigate("/login"), 2000);
+        }
+      }, 10000);
       return () => clearInterval(interval);
     } else if (!isISP && isWalletConnected) {
       setError("Connected wallet is not the ISP. Please connect the ISP wallet.");
-      disconnectWallet();
     } else if (!isWalletConnected) {
       setError("Please connect your MetaMask wallet to access the ISP Dashboard.");
     }
-  }, [isWalletConnected, contract, isISP]);
+  }, [isWalletConnected, contract, isISP, navigate]);
 
   const chartData = cumulativeUsage.map((entry) => ({
     timestamp: new Date(entry.timestamp).toISOString().substring(0, 10),
@@ -491,9 +514,17 @@ const ISPDashboard = () => {
         <h1 className="text-4xl font-bold text-white">ISP Dashboard</h1>
         <div className="flex space-x-4">
           {isWalletConnected && userAddress ? (
-            <span className="text-white py-2 px-4">
-              Connected: {userAddress.slice(0, 6)}...{userAddress.slice(-4)}
-            </span>
+            <>
+              <span className="text-white py-2 px-4">
+                Connected: {userAddress.slice(0, 6)}...{userAddress.slice(-4)}
+              </span>
+              <button
+                onClick={disconnectWallet}
+                className="bg-yellow-500 text-white py-2 px-4 rounded-full hover:bg-yellow-600 transition duration-300"
+              >
+                Disconnect Wallet
+              </button>
+            </>
           ) : (
             <button
               onClick={connectWallet}
