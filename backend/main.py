@@ -183,6 +183,20 @@ async def login(user: UserLogin, db: Session = Depends(get_db)):
         logger.error(f"Error in login: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
+@app.post("/verify-token")
+async def verify_token(current_user: User = Depends(get_current_user)):
+    """Verify the JWT token and return user details if valid."""
+    try:
+        logger.info(f"Verifying token for user: {current_user.username}")
+        return {
+            "message": "Token is valid",
+            "username": current_user.username,
+            "role": current_user.role
+        }
+    except Exception as e:
+        logger.error(f"Error in verify_token: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
 @app.post("/logout")
 async def logout(current_user: User = Depends(get_current_user)):
     """Log out the current user and remove them from active sessions."""
