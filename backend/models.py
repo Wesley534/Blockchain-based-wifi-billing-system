@@ -1,7 +1,14 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Float, Enum
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Float, Enum, DateTime
 from sqlalchemy.orm import relationship
 from database import Base
 import enum
+
+
+class PlanDuration(str, enum.Enum):
+    HOURLY = "hourly"
+    DAILY = "daily"
+    WEEKLY = "weekly"
+    MONTHLY = "monthly"
 
 
 class User(Base):
@@ -12,27 +19,24 @@ class User(Base):
     hashed_password = Column(String)
     role = Column(String)  # "user" or "wifi_provider"
     is_active = Column(Boolean, default=True)
-    wallet_address = Column(String, nullable=True)
+    wallet_address = Column(String, unique=True, nullable=True)  # Unique wallet address, nullable
 
-    # Optional: Add relationship to DataUsage
-    data_usage = relationship("DataUsage", back_populates="user")
+    # Relationships
+    data_usage = relationship("DataUsage", back_populates="user", cascade="all, delete-orphan")
+    purchased_plans = relationship("UserPlanPurchase", back_populates="user", cascade="all, delete-orphan")
+
 
 class DataUsage(Base):
     __tablename__ = "data_usage"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), index=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), index=True)
     usage_mb = Column(Integer)  # Usage in MB
     timestamp = Column(String)  # When the usage was recorded
 
-    # Optional: Add relationship to User
+    # Relationship
     user = relationship("User", back_populates="data_usage")
 
-class PlanDuration(str, enum.Enum):
-    HOURLY = "hourly"
-    DAILY = "daily"
-    WEEKLY = "weekly"
-    MONTHLY = "monthly"
 
 class WifiPlan(Base):
     __tablename__ = "wifi_plans"
@@ -42,4 +46,21 @@ class WifiPlan(Base):
     duration = Column(Enum(PlanDuration), nullable=False)
     price_kes = Column(Float, nullable=False)
     data_mb = Column(Integer, nullable=False)
-    isp_id = Column(Integer, nullable=False)  # Links to the ISP user
+    isp_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)  # Links to ISP user
+
+    # Relationship
+    isp = relationship("User")
+    purchases = relationship("UserPlanPurchase", back_populates="plan", cascade="all, delete-orphan")
+
+
+class UserPlanPurchase(Base):
+    __tablename__ = "user_plan_purchases"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    plan_id = Column(Integer, ForeignKey("wifi_plans.id", ondelete="CASCADE"), index=True)
+    purchase_date = Column(DateTime, nullable=False)
+
+    # Relationships
+    user = relationship("User", back_populates="purchased_plans")
+    plan = relationship("WifiPlan", back_populates="purchases")
