@@ -28,6 +28,7 @@ contract WiFiBilling {
 
     // Events
     event UserRegistered(address indexed user);
+    event ISPRegistered(address indexed isp);
     event PlanPurchased(address indexed user, uint256 planId, uint256 priceEth, uint256 timestamp);
     event DataUsageLogged(address indexed user, uint256 usageMB, uint256 costEth, uint256 timestamp);
     event CostPerMBUpdated(uint256 newCostPerMB);
@@ -47,6 +48,19 @@ contract WiFiBilling {
     constructor() {
         isp = msg.sender;
         costPerMB = 1 wei; // Default cost per MB (adjustable via setCostPerMB)
+    }
+
+    // Register the ISP
+    function registerISP() external {
+        require(msg.sender == isp, "Only the ISP can register themselves");
+        require(!users[isp].isRegistered, "ISP already registered");
+
+        users[isp].isRegistered = true;
+        users[isp].totalUsageMB = 0;
+        users[isp].totalCostEth = 0;
+        users[isp].purchasedPlanIds = new uint256[](0);
+
+        emit ISPRegistered(isp);
     }
 
     // Register a user

@@ -1,10 +1,9 @@
-// src/context/WalletContext.jsx
 import { createContext, useState, useEffect } from "react";
 import { ethers } from "ethers";
 import wiFiBillingArtifact from "../utils/WiFiBilling.json";
 
 const wiFiBillingABI = wiFiBillingArtifact.abi;
-const CONTRACT_ADDRESS = "0x609E600Ff6d549685b8E5B71d20616390A5B5e0D"; // Update to your contract address
+const CONTRACT_ADDRESS = "0x83c792ceC89E5A23684aDc4A3d9ca4cA6F1f8355"; // Update to your new contract address
 const GANACHE_RPC_URL = "http://127.0.0.1:7545";
 const EXPECTED_CHAIN_ID = "0x539"; // Ganache chain ID (1337 in hex)
 const GANACHE_NETWORK_NAME = "Ganache";
@@ -23,8 +22,8 @@ export const WalletProvider = ({ children }) => {
   const [signer, setSigner] = useState(null);
   const [error, setError] = useState("");
   const [isConnecting, setIsConnecting] = useState(false);
+  const [isISP, setIsISP] = useState(false);
 
-  // Add or switch to Ganache network
   const addOrSwitchNetwork = async () => {
     try {
       await window.ethereum.request({
@@ -57,7 +56,6 @@ export const WalletProvider = ({ children }) => {
     }
   };
 
-  // Validate and normalize address
   const normalizeAddress = (address) => {
     if (!ethers.isAddress(address)) {
       throw new Error(`Invalid Ethereum address: ${address}`);
@@ -65,7 +63,16 @@ export const WalletProvider = ({ children }) => {
     return ethers.getAddress(address);
   };
 
-  // Connect wallet
+  const registerISP = async (contractInstance) => {
+    try {
+      const tx = await contractInstance.registerISP();
+      await tx.wait();
+      console.log(`ISP registered: ${await contractInstance.isp()}`);
+    } catch (err) {
+      throw new Error(`Failed to register ISP: ${err.reason || err.message}`);
+    }
+  };
+
   const connectWallet = async () => {
     if (!window.ethereum) {
       setError("MetaMask is not installed. Please install MetaMask and connect to Ganache.");
@@ -99,20 +106,48 @@ export const WalletProvider = ({ children }) => {
       const normalizedAddress = normalizeAddress(address);
       const contractInstance = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
 
-      // Check if user is registered
-      let isRegistered = false;
+      // Check if the user is the ISP
+      let isISPAccount = false;
       try {
-        isRegistered = await contractInstance.isUserRegistered(normalizedAddress);
+        const contractISP = await contractInstance.isp();
+        isISPAccount = ethers.getAddress(contractISP) === normalizedAddress;
       } catch (err) {
-        if (err.code === "CALL_EXCEPTION") {
-          console.warn(`isUserRegistered reverted for ${normalizedAddress}: ${err.reason || "Assuming user not registered"}`);
-        } else {
-          throw err;
-        }
+        console.warn("Error checking ISP address:", err);
       }
 
-      if (!isRegistered) {
-        throw new Error("User not registered on blockchain. Please contact your ISP to register your account.");
+      if (isISPAccount) {
+        // Check if ISP is registered
+        let isRegistered = false;
+        try {
+          isRegistered = await contractInstance.isUserRegistered(normalizedAddress);
+        } catch (err) {
+          if (err.code === "CALL_EXCEPTION") {
+            console.warn(`isUserRegistered reverted for ${normalizedAddress}: ${err.reason || "Assuming ISP not registered"}`);
+          } else {
+            throw err;
+          }
+        }
+
+        if (!isRegistered) {
+          await registerISP(contractInstance);
+        }
+        setIsISP(true);
+      } else {
+        // Non-ISP user: check registration
+        let isRegistered = false;
+        try {
+          isRegistered = await contractInstance.isUserRegistered(normalizedAddress);
+        } catch (err) {
+          if (err.code === "CALL_EXCEPTION") {
+            console.warn(`isUserRegistered reverted for ${normalizedAddress}: ${err.reason || "Assuming user not registered"}`);
+          } else {
+            throw err;
+          }
+        }
+
+        if (!isRegistered) {
+          throw new Error("User not registered on blockchain. Please contact your ISP to register your account.");
+        }
       }
 
       setSigner(signer);
@@ -133,13 +168,13 @@ export const WalletProvider = ({ children }) => {
       setUserAddress("");
       setContract(null);
       setSigner(null);
+      setIsISP(false);
       console.error("Connect wallet error:", err);
     } finally {
       setIsConnecting(false);
     }
   };
 
-  // Update wallet address in backend
   const updateWalletAddress = async (walletAddress) => {
     try {
       const token = localStorage.getItem("token");
@@ -161,12 +196,12 @@ export const WalletProvider = ({ children }) => {
     }
   };
 
-  // Disconnect wallet
   const disconnectWallet = async () => {
     setIsWalletConnected(false);
     setUserAddress("");
     setContract(null);
     setSigner(null);
+    setIsISP(false);
     setError("Wallet disconnected.");
     console.log("Wallet disconnected");
 
@@ -183,7 +218,6 @@ export const WalletProvider = ({ children }) => {
     }
   };
 
-  // Initialize wallet connection on app load
   useEffect(() => {
     const initializeWallet = async () => {
       if (!window.ethereum) {
@@ -210,21 +244,47 @@ export const WalletProvider = ({ children }) => {
           const normalizedAddress = normalizeAddress(address);
           const contractInstance = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
 
-          // Check if user is registered
-          let isRegistered = false;
+          // Check if the user is the ISP
+          let isISPAccount = false;
           try {
-            isRegistered = await contractInstance.isUserRegistered(normalizedAddress);
+            const contractISP = await contractInstance.isp();
+            isISPAccount = ethers.getAddress(contractISP) === normalizedAddress;
           } catch (err) {
-            if (err.code === "CALL_EXCEPTION") {
-              console.warn(`User ${normalizedAddress} not registered`);
-            } else {
-              throw err;
-            }
+            console.warn("Error checking ISP address:", err);
           }
 
-          if (!isRegistered) {
-            setError("User not registered on blockchain. Please contact your ISP to register your account.");
-            return;
+          if (isISPAccount) {
+            let isRegistered = false;
+            try {
+              isRegistered = await contractInstance.isUserRegistered(normalizedAddress);
+            } catch (err) {
+              if (err.code === "CALL_EXCEPTION") {
+                console.warn(`isUserRegistered reverted for ${normalizedAddress}: ${err.reason || "Assuming ISP not registered"}`);
+              } else {
+                throw err;
+              }
+            }
+
+            if (!isRegistered) {
+              await registerISP(contractInstance);
+            }
+            setIsISP(true);
+          } else {
+            let isRegistered = false;
+            try {
+              isRegistered = await contractInstance.isUserRegistered(normalizedAddress);
+            } catch (err) {
+              if (err.code === "CALL_EXCEPTION") {
+                console.warn(`User ${normalizedAddress} not registered`);
+              } else {
+                throw err;
+              }
+            }
+
+            if (!isRegistered) {
+              setError("User not registered on blockchain. Please contact your ISP to register your account.");
+              return;
+            }
           }
 
           setSigner(signer);
@@ -246,7 +306,6 @@ export const WalletProvider = ({ children }) => {
 
     initializeWallet();
 
-    // Handle MetaMask events
     if (window.ethereum) {
       window.ethereum.on("accountsChanged", async (accounts) => {
         if (accounts.length > 0 && localStorage.getItem("token")) {
@@ -267,22 +326,47 @@ export const WalletProvider = ({ children }) => {
             const normalizedAddress = normalizeAddress(address);
             const contractInstance = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
 
-            // Check if user is registered
-            let isRegistered = false;
+            let isISPAccount = false;
             try {
-              isRegistered = await contractInstance.isUserRegistered(normalizedAddress);
+              const contractISP = await contractInstance.isp();
+              isISPAccount = ethers.getAddress(contractISP) === normalizedAddress;
             } catch (err) {
-              if (err.code === "CALL_EXCEPTION") {
-                console.warn(`User ${normalizedAddress} not registered`);
-              } else {
-                throw err;
-              }
+              console.warn("Error checking ISP address:", err);
             }
 
-            if (!isRegistered) {
-              setError("User not registered on blockchain. Please contact your ISP to register your account.");
-              await disconnectWallet();
-              return;
+            if (isISPAccount) {
+              let isRegistered = false;
+              try {
+                isRegistered = await contractInstance.isUserRegistered(normalizedAddress);
+              } catch (err) {
+                if (err.code === "CALL_EXCEPTION") {
+                  console.warn(`isUserRegistered reverted for ${normalizedAddress}: ${err.reason || "Assuming ISP not registered"}`);
+                } else {
+                  throw err;
+                }
+              }
+
+              if (!isRegistered) {
+                await registerISP(contractInstance);
+              }
+              setIsISP(true);
+            } else {
+              let isRegistered = false;
+              try {
+                isRegistered = await contractInstance.isUserRegistered(normalizedAddress);
+              } catch (err) {
+                if (err.code === "CALL_EXCEPTION") {
+                  console.warn(`User ${normalizedAddress} not registered`);
+                } else {
+                  throw err;
+                }
+              }
+
+              if (!isRegistered) {
+                setError("User not registered on blockchain. Please contact your ISP to register your account.");
+                await disconnectWallet();
+                return;
+              }
             }
 
             setSigner(signer);
@@ -317,22 +401,47 @@ export const WalletProvider = ({ children }) => {
               const normalizedAddress = normalizeAddress(address);
               const contractInstance = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
 
-              // Check if user is registered
-              let isRegistered = false;
+              let isISPAccount = false;
               try {
-                isRegistered = await contractInstance.isUserRegistered(normalizedAddress);
+                const contractISP = await contractInstance.isp();
+                isISPAccount = ethers.getAddress(contractISP) === normalizedAddress;
               } catch (err) {
-                if (err.code === "CALL_EXCEPTION") {
-                  console.warn(`User ${normalizedAddress} not registered`);
-                } else {
-                  throw err;
-                }
+                console.warn("Error checking ISP address:", err);
               }
 
-              if (!isRegistered) {
-                setError("User not registered on blockchain. Please contact your ISP to register your account.");
-                await disconnectWallet();
-                return;
+              if (isISPAccount) {
+                let isRegistered = false;
+                try {
+                  isRegistered = await contractInstance.isUserRegistered(normalizedAddress);
+                } catch (err) {
+                  if (err.code === "CALL_EXCEPTION") {
+                    console.warn(`isUserRegistered reverted for ${normalizedAddress}: ${err.reason || "Assuming ISP not registered"}`);
+                  } else {
+                    throw err;
+                  }
+                }
+
+                if (!isRegistered) {
+                  await registerISP(contractInstance);
+                }
+                setIsISP(true);
+              } else {
+                let isRegistered = false;
+                try {
+                  isRegistered = await contractInstance.isUserRegistered(normalizedAddress);
+                } catch (err) {
+                  if (err.code === "CALL_EXCEPTION") {
+                    console.warn(`User ${normalizedAddress} not registered`);
+                  } else {
+                    throw err;
+                  }
+                }
+
+                if (!isRegistered) {
+                  setError("User not registered on blockchain. Please contact your ISP to register your account.");
+                  await disconnectWallet();
+                  return;
+                }
               }
 
               setSigner(signer);
@@ -371,6 +480,7 @@ export const WalletProvider = ({ children }) => {
         error,
         setError,
         isConnecting,
+        isISP,
         connectWallet,
         disconnectWallet,
         updateWalletAddress,
