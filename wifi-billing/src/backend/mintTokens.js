@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 // Configuration
-const CONTRACT_ADDRESS = "0x569aa3A5E71D6e45960890bfD7b2924E836e9513"; // Your contract address
+const CONTRACT_ADDRESS = "0x83d14bB2192e6040841b148f96A3B85ded6A2C94"; // Your contract address
 const GANACHE_RPC_URL = "http://127.0.0.1:7545";
 const ISP_PRIVATE_KEY = "01af554b3f973a792653269027b5fe13e71ce44e4ed2729f4208cbb92b711de6"; // Replace with ISP’s private key from Ganache
 const ETH_PER_KES = 190000; // 1 ETH ≈ 190,000 KES

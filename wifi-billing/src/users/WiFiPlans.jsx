@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 import wiFiBillingArtifact from "../utils/WiFiBilling.json";
 
 const wiFiBillingABI = wiFiBillingArtifact.abi;
-const CONTRACT_ADDRESS = "0x409037E14635378AB9e6c9266Ed1640a844E18B1"; // Verify this matches deployed contract
+const CONTRACT_ADDRESS = "0x83d14bB2192e6040841b148f96A3B85ded6A2C94"; // Verify this matches deployed contract
 const GANACHE_RPC_URL = "http://127.0.0.1:7545";
 const EXPECTED_CHAIN_ID = "0x539"; // Ganache chain ID (1337 in hex)
 const GANACHE_NETWORK_NAME = "Ganache";

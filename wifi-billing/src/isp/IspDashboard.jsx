@@ -8,7 +8,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 const wiFiBillingABI = wiFiBillingArtifact.abi;
 
 // Smart contract address
-const CONTRACT_ADDRESS = "0x76f5c47e11ea31A097b724F968BdcD6001f1871A"; // Verify this matches your deployed contract
+const CONTRACT_ADDRESS = "0x83d14bB2192e6040841b148f96A3B85ded6A2C94"; // Verify this matches your deployed contract
 const GANACHE_RPC_URL = "http://127.0.0.1:7545"; // Adjust if Ganache uses a different port
 const EXPECTED_CHAIN_ID = "0x539"; // Ganache chain ID (1337 in hex)
 const GANACHE_NETWORK_NAME = "Ganache";
