@@ -25,7 +25,7 @@ const WiFiPlans = () => {
   const [isWalletConnected, setIsWalletConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isPurchasing, setIsPurchasing] = useState(false);
-  const [ethToKesRate, setEthToKesRate] = useState(247789.20); // Fallback rate[](https://www.coinbase.com/en-gb/converter/eth/kes)
+  const [ethToKesRate, setEthToKesRate] = useState(247789.20); // Fallback rate
   const navigate = useNavigate();
 
   // Fetch exchange rate on mount
@@ -112,6 +112,22 @@ const WiFiPlans = () => {
       const normalizedAddress = normalizeAddress(address);
       const contractInstance = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
 
+      // Check if user is registered
+      let isRegistered = false;
+      try {
+        isRegistered = await contractInstance.isUserRegistered(normalizedAddress);
+      } catch (err) {
+        if (err.code === "CALL_EXCEPTION") {
+          console.warn(`isUserRegistered reverted for ${normalizedAddress}: ${err.reason || "Assuming user not registered"}`);
+        } else {
+          throw err;
+        }
+      }
+
+      if (!isRegistered) {
+        throw new Error("User not registered on blockchain. Please contact your ISP to register your account.");
+      }
+
       setSigner(signer);
       setUserAddress(normalizedAddress);
       setContract(contractInstance);
@@ -124,6 +140,7 @@ const WiFiPlans = () => {
       let errorMessage = "Failed to connect wallet. Please try again.";
       if (err.code === 4001) errorMessage = "Wallet connection rejected. Please connect your MetaMask wallet.";
       else if (err.code === -32603) errorMessage = `Internal JSON-RPC error: ${err.message}. Check Ganache or contract state.`;
+      else if (err.message.includes("User not registered")) errorMessage = err.message;
       else errorMessage += ` Error: ${err.message}`;
       setError(errorMessage);
       setIsWalletConnected(false);
@@ -200,6 +217,23 @@ const WiFiPlans = () => {
       return;
     }
     try {
+      // Check if user is registered
+      let isRegistered = false;
+      try {
+        isRegistered = await contract.isUserRegistered(userAddress);
+      } catch (err) {
+        if (err.code === "CALL_EXCEPTION") {
+          console.warn(`User ${userAddress} not registered`);
+        } else {
+          throw err;
+        }
+      }
+
+      if (!isRegistered) {
+        setError("User not registered on blockchain. Please contact your ISP to register your account.");
+        return;
+      }
+
       const planIds = await contract.getPurchasedPlans(userAddress);
       const token = localStorage.getItem("token");
       if (!token) throw new Error("No authentication token found. Please log in again.");
@@ -260,6 +294,22 @@ const WiFiPlans = () => {
     try {
       console.log(`Purchasing plan ID ${planId} for ${userAddress} with price ${priceKes} KES`);
 
+      // Check if user is registered
+      let isRegistered = false;
+      try {
+        isRegistered = await contract.isUserRegistered(userAddress);
+      } catch (err) {
+        if (err.code === "CALL_EXCEPTION") {
+          console.warn(`User ${userAddress} not registered`);
+        } else {
+          throw err;
+        }
+      }
+
+      if (!isRegistered) {
+        throw new Error("User not registered on blockchain. Please contact your ISP to register your account.");
+      }
+
       // Convert price from KES to ETH
       const priceEth = priceKes / ethToKesRate; // e.g., 100 KES ÷ 247,789.20 KES/ETH ≈ 0.0004036 ETH
       const priceWei = ethers.parseEther(priceEth.toFixed(18)); // Convert to wei
@@ -278,6 +328,7 @@ const WiFiPlans = () => {
       if (err.code === 4001) errorMessage = "Transaction rejected in MetaMask. Please approve the transaction.";
       else if (err.code === "CALL_EXCEPTION") errorMessage = `Contract call failed: ${err.reason || "Check plan ID or contract state"}`;
       else if (err.code === -32603) errorMessage = `Internal JSON-RPC error: ${err.message}. Check Ganache or contract state.`;
+      else if (err.message.includes("User not registered")) errorMessage = err.message;
       else if (err.message.includes("Insufficient ETH")) errorMessage = "Insufficient ETH to purchase this plan.";
       else errorMessage += `: ${err.message}`;
       setError(errorMessage);
@@ -345,6 +396,23 @@ const WiFiPlans = () => {
           const normalizedAddress = normalizeAddress(address);
           const contractInstance = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
 
+          // Check if user is registered
+          let isRegistered = false;
+          try {
+            isRegistered = await contractInstance.isUserRegistered(normalizedAddress);
+          } catch (err) {
+            if (err.code === "CALL_EXCEPTION") {
+              console.warn(`User ${normalizedAddress} not registered`);
+            } else {
+              throw err;
+            }
+          }
+
+          if (!isRegistered) {
+            setError("User not registered on blockchain. Please contact your ISP to register your account.");
+            return;
+          }
+
           setSigner(signer);
           setUserAddress(normalizedAddress);
           setContract(contractInstance);
@@ -380,6 +448,23 @@ const WiFiPlans = () => {
             const address = accounts[0];
             const normalizedAddress = normalizeAddress(address);
             const contractInstance = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
+
+            // Check if user is registered
+            let isRegistered = false;
+            try {
+              isRegistered = await contractInstance.isUserRegistered(normalizedAddress);
+            } catch (err) {
+              if (err.code === "CALL_EXCEPTION") {
+                console.warn(`User ${normalizedAddress} not registered`);
+              } else {
+                throw err;
+              }
+            }
+
+            if (!isRegistered) {
+              setError("User not registered on blockchain. Please contact your ISP to register your account.");
+              return;
+            }
 
             setSigner(signer);
             setUserAddress(normalizedAddress);
@@ -426,6 +511,23 @@ const WiFiPlans = () => {
             const normalizedAddress = normalizeAddress(address);
             const contractInstance = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
 
+            // Check if user is registered
+            let isRegistered = false;
+            try {
+              isRegistered = await contractInstance.isUserRegistered(normalizedAddress);
+            } catch (err) {
+              if (err.code === "CALL_EXCEPTION") {
+                console.warn(`User ${normalizedAddress} not registered`);
+              } else {
+                throw err;
+              }
+            }
+
+            if (!isRegistered) {
+              setError("User not registered on blockchain. Please contact your ISP to register your account.");
+              return;
+            }
+
             setSigner(signer);
             setUserAddress(normalizedAddress);
             setContract(contractInstance);
@@ -451,18 +553,29 @@ const WiFiPlans = () => {
         window.ethereum.removeListener("chainChanged", () => {});
       }
     };
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="min-h-screen p-8 bg-[linear-gradient(135deg,_#1a1a2e,_#9fc817)]">
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold text-white">WiFi Plans</h1>
-        <div className="flex space-x-4">
+        <div className="flex space-x-4 items-center">
           {isWalletConnected && userAddress ? (
-            <span className="text-white py-2 px-4">
-              Connected: {userAddress.slice(0, 6)}...{userAddress.slice(-4)}
-            </span>
+            <>
+              <span className="text-white py-2 px-4">
+                Connected: {userAddress.slice(0, 6)}...{userAddress.slice(-4)}
+              </span>
+              <button
+                onClick={connectWallet}
+                disabled={isConnecting}
+                className={`bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600 transition duration-300 ${
+                  isConnecting ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                {isConnecting ? "Connecting..." : "Update Wallet Address"}
+              </button>
+            </>
           ) : (
             <button
               onClick={connectWallet}
@@ -474,6 +587,12 @@ const WiFiPlans = () => {
               {isConnecting ? "Connecting..." : "Connect MetaMask"}
             </button>
           )}
+          <button
+            onClick={() => navigate("/user/dashboard")}
+            className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition duration-300"
+          >
+            Back to Dashboard
+          </button>
           <button
             onClick={handleLogout}
             className="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-red-600 transition duration-300"
