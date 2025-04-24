@@ -4,10 +4,11 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import OperationalError
 from typing import List, Dict
 from database import Base, engine, get_db, SessionLocal
-from models import User, DataUsage, WifiPlan as WifiPlanModel, PlanDuration
+from models import User, DataUsage, WifiPlan as WifiPlanModel, PlanDuration, PendingRegistration
 from schemas import (
     UserCreate, UserLogin, Token, DataUsageRequest, WalletUpdate, UserSchema,
-    WifiPlan, WifiPlanCreate, WifiPlanUpdate, WiFiPlan, PlanPurchase
+    WifiPlan, WifiPlanCreate, WifiPlanUpdate, WiFiPlan, PlanPurchase,
+    PendingRegistrationRequest, PendingRegistrationResponse, ConfirmRegistrationRequest
 )
 from auth import get_password_hash, authenticate_user, create_access_token, get_current_user
 import time
@@ -126,6 +127,9 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
         db_user = db.query(User).filter(User.username == user.username).first()
         if db_user:
             raise HTTPException(status_code=400, detail="Username already registered")
+        db_pending = db.query(PendingRegistration).filter(PendingRegistration.username == user.username).first()
+        if db_pending:
+            raise HTTPException(status_code=400, detail="Username is pending registration")
         hashed_password = get_password_hash(user.password)
         db_user = User(
             username=user.username,
@@ -136,6 +140,7 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(db_user)
         access_token = create_access_token(data={"sub": user.username, "role": user.role})
+        active_users[user.username] = access_token
         logger.info(f"Registered user: {user.username} in {time.time() - start_time:.2f} seconds")
         return {
             "access_token": access_token,
@@ -205,9 +210,120 @@ def get_isp(db: Session = Depends(get_db), current_user: User = Depends(get_curr
         )
     return current_user
 
+@app.post("/request-registration")
+async def request_registration(
+    request: PendingRegistrationRequest,
+    current_user: User = Depends(get_user),
+    db: Session = Depends(get_db)
+):
+    """Request registration with a wallet address, adding to pending_registrations."""
+    try:
+        logger.info(f"Registration request for user: {current_user.username}, wallet: {request.wallet_address}")
+        
+        # Validate wallet address format (basic check for Ethereum address)
+        if not request.wallet_address or not request.wallet_address.startswith("0x") or len(request.wallet_address) != 42:
+            raise HTTPException(status_code=400, detail="Invalid wallet address format")
+        
+        # Check if wallet address is already used in users or pending_registrations
+        existing_user = db.query(User).filter(User.wallet_address == request.wallet_address).first()
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Wallet address is already associated with another user")
+        existing_pending = db.query(PendingRegistration).filter(
+            PendingRegistration.wallet_address == request.wallet_address
+        ).first()
+        if existing_pending:
+            raise HTTPException(status_code=400, detail="Wallet address is already pending registration")
+        
+        # Check if user already has a pending registration
+        existing_request = db.query(PendingRegistration).filter(
+            PendingRegistration.username == current_user.username
+        ).first()
+        if existing_request:
+            raise HTTPException(status_code=400, detail="User already has a pending registration")
+        
+        # Create pending registration
+        pending = PendingRegistration(
+            username=current_user.username,
+            wallet_address=request.wallet_address,
+            user_id=current_user.id
+        )
+        db.add(pending)
+        db.commit()
+        db.refresh(pending)
+        logger.info(f"Pending registration created for {current_user.username} with wallet {request.wallet_address}")
+        return {"message": "Registration request submitted successfully"}
+    except Exception as e:
+        logger.error(f"Error in request_registration: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+@app.get("/isp/pending-registrations", response_model=List[PendingRegistrationResponse])
+async def get_pending_registrations(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
+    """Fetch all pending registrations for the ISP."""
+    try:
+        logger.info(f"Fetching pending registrations for ISP {current_user.username}")
+        pending = db.query(PendingRegistration).all()
+        return [
+            {
+                "id": p.id,
+                "username": p.username,
+                "wallet_address": p.wallet_address,
+                "created_at": p.created_at
+            } for p in pending
+        ]
+    except Exception as e:
+        logger.error(f"Error in get_pending_registrations: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+@app.post("/isp/confirm-registration")
+async def confirm_registration(
+    request: ConfirmRegistrationRequest,
+    current_user: User = Depends(get_isp),
+    db: Session = Depends(get_db)
+):
+    """Confirm a pending registration, update the user's wallet address, and remove from pending."""
+    try:
+        logger.info(f"Confirming registration for pending_id: {request.pending_id} by ISP {current_user.username}")
+        pending = db.query(PendingRegistration).filter(PendingRegistration.id == request.pending_id).first()
+        if not pending:
+            raise HTTPException(status_code=404, detail="Pending registration not found")
+        
+        # Update user's wallet address
+        db_user = db.query(User).filter(User.id == pending.user_id).first()
+        if not db_user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Check if wallet address is still unique
+        existing_user = db.query(User).filter(
+            User.wallet_address == pending.wallet_address,
+            User.id != db_user.id
+        ).first()
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Wallet address is already associated with another user")
+        
+        db_user.wallet_address = pending.wallet_address
+        db.delete(pending)
+        db.commit()
+        db.refresh(db_user)
+        logger.info(f"Confirmed registration for {db_user.username}, wallet: {db_user.wallet_address}")
+        return {"message": f"Registration confirmed for {db_user.username}"}
+    except Exception as e:
+        logger.error(f"Error in confirm_registration: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
 @app.get("/user/dashboard", response_model=dict)
-async def user_dashboard(current_user: User = Depends(get_user)):
-    return {"message": f"Welcome to the User Dashboard, {current_user.username}!"}
+async def user_dashboard(current_user: User = Depends(get_user), db: Session = Depends(get_db)):
+    """User dashboard with registration status."""
+    try:
+        pending = db.query(PendingRegistration).filter(PendingRegistration.user_id == current_user.id).first()
+        status = "registered" if current_user.wallet_address else ("pending" if pending else "not_registered")
+        return {
+            "message": f"Welcome to the User Dashboard, {current_user.username}!",
+            "registration_status": status,
+            "wallet_address": current_user.wallet_address
+        }
+    except Exception as e:
+        logger.error(f"Error in user_dashboard: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @app.get("/isp/dashboard", response_model=dict)
 async def isp_dashboard(current_user: User = Depends(get_isp)):
@@ -244,7 +360,7 @@ async def update_wallet(wallet_data: WalletUpdate, current_user: User = Depends(
         if not db_user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
         
-        # Check if wallet address is already used by another user
+        # Check if wallet address is already used by another user or pending
         if wallet_data.wallet_address:
             existing_user = db.query(User).filter(
                 User.wallet_address == wallet_data.wallet_address,
@@ -253,6 +369,11 @@ async def update_wallet(wallet_data: WalletUpdate, current_user: User = Depends(
             if existing_user:
                 logger.warning(f"Wallet address {wallet_data.wallet_address} already associated with another user")
                 raise HTTPException(status_code=400, detail="Wallet address is already associated with another user")
+            existing_pending = db.query(PendingRegistration).filter(
+                PendingRegistration.wallet_address == wallet_data.wallet_address
+            ).first()
+            if existing_pending:
+                raise HTTPException(status_code=400, detail="Wallet address is already pending registration")
 
         db_user.wallet_address = wallet_data.wallet_address
         db.commit()
@@ -425,7 +546,7 @@ async def get_wifi_plans(db: Session = Depends(get_db), current_user: User = Dep
         raise HTTPException(status_code=500, detail=f"Failed to fetch WiFi plans: {str(e)}")
 
 @app.post("/purchase-plan")
-async def purchase_plan(purchase: PlanPurchase, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+async def purchase_plan(purchase: PlanPurchase, db: Session = Depends(get_db), current_user: User = Depends(get_user)):
     try:
         logger.info(f"Recording plan purchase for user {current_user.username}, plan_id {purchase.plan_id}")
         # Verify the plan exists
@@ -433,7 +554,7 @@ async def purchase_plan(purchase: PlanPurchase, db: Session = Depends(get_db), c
         if not db_plan:
             raise HTTPException(status_code=404, detail="WiFi plan not found")
         
-        # Record the purchase in a new UserPlanPurchase table
+        # Record the purchase in UserPlanPurchase table
         purchase_record = UserPlanPurchase(
             user_id=current_user.id,
             plan_id=purchase.plan_id,
@@ -476,12 +597,3 @@ async def add_test_wifi_plan(db: Session = Depends(get_db)):
     except Exception as e:
         logger.error(f"Error in add_test_wifi_plan: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to add test WiFi plan: {str(e)}")
-
-# New model for recording plan purchases
-# from sqlalchemy import Column, Integer, ForeignKey, DateTime
-# class UserPlanPurchase(Base):
-#     __tablename__ = "user_plan_purchases"
-#     id = Column(Integer, primary_key=True, index=True)
-#     user_id = Column(Integer, ForeignKey("users.id"), index=True)
-#     plan_id = Column(Integer, ForeignKey("wifi_plans.id"), index=True)
-#     purchase_date = Column(DateTime, nullable=False)

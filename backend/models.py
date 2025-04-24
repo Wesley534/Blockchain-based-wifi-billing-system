@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Float, Enum
 from sqlalchemy.orm import relationship
 from database import Base
 import enum
+from datetime import datetime
 
 
 class PlanDuration(str, enum.Enum):
@@ -24,6 +25,7 @@ class User(Base):
     # Relationships
     data_usage = relationship("DataUsage", back_populates="user", cascade="all, delete-orphan")
     purchased_plans = relationship("UserPlanPurchase", back_populates="user", cascade="all, delete-orphan")
+    pending_registrations = relationship("PendingRegistration", back_populates="user", cascade="all, delete-orphan")
 
 
 class DataUsage(Base):
@@ -31,7 +33,7 @@ class DataUsage(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), index=True)
-    usage_mb = Column(Integer)  # Usage in MB
+    usage_mb = Column(Float)  # Changed to Float to match simulation
     timestamp = Column(String)  # When the usage was recorded
 
     # Relationship
@@ -64,3 +66,16 @@ class UserPlanPurchase(Base):
     # Relationships
     user = relationship("User", back_populates="purchased_plans")
     plan = relationship("WifiPlan", back_populates="purchases")
+
+
+class PendingRegistration(Base):
+    __tablename__ = "pending_registrations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, index=True)
+    wallet_address = Column(String, unique=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+    # Relationship
+    user = relationship("User", back_populates="pending_registrations")
