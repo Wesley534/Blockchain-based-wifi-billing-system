@@ -1,4 +1,3 @@
-// src/users/UserDashboard.jsx
 import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { WalletContext } from "../context/WalletContext";
@@ -17,6 +16,7 @@ const UserDashboard = () => {
     isWalletConnected,
     userAddress,
     contract,
+    isConnecting,
     connectWallet,
     disconnectWallet,
     error: walletError,
@@ -26,7 +26,7 @@ const UserDashboard = () => {
   // Check authentication on mount
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) {
         setLocalError("Please log in to access the dashboard.");
         navigate("/");
@@ -43,7 +43,7 @@ const UserDashboard = () => {
         });
 
         if (response.status === 401) {
-          localStorage.removeItem("token");
+          localStorage.removeItem("access_token");
           localStorage.removeItem("username");
           setLocalError("Session expired. Please log in again.");
           await disconnectWallet();
@@ -62,7 +62,7 @@ const UserDashboard = () => {
         }
       } catch (err) {
         setLocalError(`Failed to verify session: ${err.message}`);
-        localStorage.removeItem("token");
+        localStorage.removeItem("access_token");
         localStorage.removeItem("username");
         await disconnectWallet();
         navigate("/");
@@ -75,7 +75,7 @@ const UserDashboard = () => {
   // Fetch data usage from database
   const fetchDataUsageFromDB = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) {
         throw new Error("No authentication token found. Please log in again.");
       }
@@ -88,7 +88,7 @@ const UserDashboard = () => {
         },
       });
       if (response.status === 403) {
-        localStorage.removeItem("token");
+        localStorage.removeItem("access_token");
         localStorage.removeItem("username");
         navigate("/");
         throw new Error("Session expired or access denied. Please log in again.");
@@ -213,7 +213,7 @@ const UserDashboard = () => {
   // Log data usage
   const handleLogDataUsage = async (usage_mb) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) {
         throw new Error("No authentication token found. Please log in again.");
       }
@@ -365,7 +365,7 @@ const UserDashboard = () => {
 
   // Handle logout
   const handleLogout = async () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("access_token");
     localStorage.removeItem("username");
     await disconnectWallet();
     navigate("/");
@@ -392,16 +392,25 @@ const UserDashboard = () => {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold text-white">User Dashboard</h1>
         <div className="flex space-x-4 items-center">
-          {isWalletConnected && userAddress && (
-            <span className="text-white py-2 px-4">
-              Connected: {userAddress.slice(0, 6)}...{userAddress.slice(-4)}
-            </span>
-          )}
+          {isWalletConnected && userAddress ? (
+            <>
+              <span className="text-white py-2 px-4">
+                Connected: {userAddress.slice(0, 6)}...{userAddress.slice(-4)}
+              </span>
+              <button
+                onClick={disconnectWallet}
+                className="bg-yellow-500 text-white py-2 px-4 rounded-full hover:bg-yellow-600 transition duration-300"
+              >
+                Disconnect Wallet
+              </button>
+            </>
+          ) : null}
           <button
             onClick={connectWallet}
             className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600 transition duration-300"
+            disabled={isConnecting}
           >
-            {isWalletConnected ? "Update Wallet Address" : "Connect MetaMask"}
+            {isConnecting ? "Connecting..." : isWalletConnected ? "Update Wallet Address" : "Connect MetaMask"}
           </button>
           <button
             onClick={() => navigate("/wifi-plans")}
@@ -446,8 +455,9 @@ const UserDashboard = () => {
             <button
               onClick={connectWallet}
               className="bg-blue-500 text-white py-2 px-6 rounded-full hover:bg-blue-600 transition duration-300"
+              disabled={isConnecting}
             >
-              Connect MetaMask
+              {isConnecting ? "Connecting..." : "Connect MetaMask"}
             </button>
           )}
         </div>
@@ -479,7 +489,7 @@ const UserDashboard = () => {
               <button
                 onClick={() => handleLogDataUsage(50)}
                 className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition duration-300"
-                disabled={isSimulatingPayment || !isWalletConnected}
+                disabled={isSimulatingPayment || !isWalletConnected || isConnecting}
               >
                 Log 50 MB Usage (Test)
               </button>
@@ -530,7 +540,7 @@ const UserDashboard = () => {
               <button
                 onClick={handleSimulatePayment}
                 className="bg-blue-500 text-white py-3 px-6 rounded-full hover:bg-blue-600 transition duration-300"
-                disabled={totalUsage === 0 || !isWalletConnected || isSimulatingPayment}
+                disabled={totalUsage === 0 || !isWalletConnected || isSimulatingPayment || isConnecting}
               >
                 {isSimulatingPayment ? "Processing..." : "Simulate Payment"}
               </button>

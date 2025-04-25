@@ -1,21 +1,24 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import Request  # Add this import
+from jose import jwt, JWTError
+
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import OperationalError
 from typing import List, Dict
 from database import Base, engine, get_db, SessionLocal
-from models import User, DataUsage, WifiPlan as WifiPlanModel, PlanDuration, PendingRegistration
+from models import User, DataUsage, WifiPlan as WifiPlanModel, PlanDuration, PendingRegistration, UserPlanPurchase
 from schemas import (
     UserCreate, UserLogin, Token, DataUsageRequest, WalletUpdate, UserSchema,
     WifiPlan, WifiPlanCreate, WifiPlanUpdate, WiFiPlan, PlanPurchase,
-    PendingRegistrationRequest, PendingRegistrationResponse, ConfirmRegistrationRequest
+    PendingRegistrationRequest, PendingRegistrationResponse, ConfirmRegistrationRequest, OTPVerificationRequest
 )
 from auth import get_password_hash, authenticate_user, create_access_token, get_current_user
+from emailutils import generate_otp, send_otp_email
 import time
 import logging
 import threading
-import random
-from datetime import datetime
+from datetime import datetime, timedelta
 from fastapi.security import OAuth2PasswordBearer
 
 # Configure logging
@@ -48,51 +51,55 @@ except Exception as e:
 # In-memory store for active user sessions (username: JWT token)
 active_users: Dict[str, str] = {}
 
+# In-memory store for OTPs (user_id: {otp, expiry})
+otp_store: Dict[int, Dict[str, any]] = {}
+
 # OAuth2 scheme for token validation
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+SECRET_KEY = "your-secret-key"  # Replace with a secure key
+ALGORITHM = "HS256"
 
-# Function to get all users with role "user" from the database
-def get_all_users(db: Session):
-    return db.query(User).filter(User.role == "user").all()
-
-# Seed the database with sample users
-def seed_users(db: Session):
-    users_to_seed = [
-        {"username": "user1", "password": "pass123", "role": "user"},
-        {"username": "user2", "password": "pass123", "role": "user"},
-        {"username": "isp1", "password": "isp_pass", "role": "wifi_provider"},
-    ]
-    for user_data in users_to_seed:
-        if not db.query(User).filter(User.username == user_data["username"]).first():
-            hashed_password = get_password_hash(user_data["password"])
-            db_user = User(
-                username=user_data["username"],
-                hashed_password=hashed_password,
-                role=user_data["role"]
-            )
-            db.add(db_user)
-    db.commit()
-    logger.info("Seeded database with sample users.")
-
-# Simulate data usage for active users
+# Simulate data usage for users with active plans
 def simulate_data_usage():
-    """Simulate data usage for active users in the background."""
+    """Simulate data usage for users with active plans until data is depleted."""
     logger.info("Started data usage simulation in the background.")
     while True:
         try:
             db = SessionLocal()
             try:
-                if not active_users:
-                    logger.info("No active users for simulation.")
+                # Get users with active plan purchases
+                active_purchases = db.query(UserPlanPurchase).join(WifiPlanModel).all()
+                if not active_purchases:
+                    logger.info("No active plan purchases for simulation.")
                 else:
-                    for username in active_users.keys():
-                        user = db.query(User).filter(User.username == username, User.role == "user").first()
-                        if user:
-                            usage_mb = random.uniform(0.1, 10.0)  # Simulate 0.1-10 MB
+                    for purchase in active_purchases:
+                        user = db.query(User).filter(User.id == purchase.user_id).first()
+                        plan = db.query(WifiPlanModel).filter(WifiPlanModel.id == purchase.plan_id).first()
+                        if not user or not plan:
+                            continue
+
+                        # Calculate total data used for this plan
+                        total_used_mb = db.query(DataUsage).filter(
+                            DataUsage.user_id == user.id,
+                            DataUsage.timestamp >= purchase.purchase_date.strftime("%Y-%m-%d %H:%M:%S")
+                        ).with_entities(db.func.sum(DataUsage.usage_mb)).scalar() or 0
+
+                        # Check if data is depleted
+                        if total_used_mb >= plan.data_mb:
+                            logger.info(f"User {user.username} has depleted {plan.name} plan ({total_used_mb}/{plan.data_mb} MB).")
+                            continue
+
+                        # Simulate data usage
+                        usage_mb = random.uniform(0.1, 5.0)  # Smaller usage for simulation
+                        if total_used_mb + usage_mb > plan.data_mb:
+                            usage_mb = plan.data_mb - total_used_mb  # Cap at remaining data
+                        
+                        if usage_mb > 0:
                             timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
                             data_usage = DataUsage(user_id=user.id, usage_mb=usage_mb, timestamp=timestamp)
                             db.add(data_usage)
-                            logger.info(f"Simulated {usage_mb:.2f} MB usage for {username}")
+                            logger.info(f"Simulated {usage_mb:.2f} MB usage for {user.username} on plan {plan.name}")
+                    
                     db.commit()
             except OperationalError as db_err:
                 logger.error(f"Database error in simulation: {str(db_err)}")
@@ -101,19 +108,10 @@ def simulate_data_usage():
                 db.close()
         except Exception as e:
             logger.error(f"Error in simulation thread: {str(e)}")
-        time.sleep(30)  # Run every 30 seconds
+        time.sleep(30)
 
 @app.on_event("startup")
 async def startup_event():
-    db = SessionLocal()
-    try:
-        seed_users(db)
-    except Exception as e:
-        logger.error(f"Error seeding users: {str(e)}")
-        raise
-    finally:
-        db.close()
-    # Start simulation in a separate thread
     simulation_thread = threading.Thread(target=simulate_data_usage, daemon=True)
     simulation_thread.start()
     logger.info("Data usage simulation started in the background.")
@@ -130,11 +128,14 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
         db_pending = db.query(PendingRegistration).filter(PendingRegistration.username == user.username).first()
         if db_pending:
             raise HTTPException(status_code=400, detail="Username is pending registration")
+        if db.query(User).filter(User.email == user.email).first():
+            raise HTTPException(status_code=400, detail="Email already registered")
         hashed_password = get_password_hash(user.password)
         db_user = User(
             username=user.username,
             hashed_password=hashed_password,
-            role=user.role
+            role=user.role,
+            email=user.email
         )
         db.add(db_user)
         db.commit()
@@ -151,38 +152,99 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
         logger.error(f"Error in register: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
-@app.post("/login", response_model=Token)
-async def login(user: UserLogin, db: Session = Depends(get_db)):
-    """Log in a user or WiFi provider, return a JWT token, and track active session."""
+@app.post("/login")
+async def login(user: UserLogin, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    """Log in a user, send OTP to email, and return a temporary token."""
     try:
         start_time = time.time()
         logger.info(f"Login attempt for username: {user.username}")
-        logger.debug(f"Starting authentication for: {user.username}")
-        try:
-            db_user = authenticate_user(db, user.username, user.password)
-        except OperationalError as db_err:
-            logger.error(f"Database error during authentication: {str(db_err)}")
-            raise HTTPException(status_code=500, detail="Database error, please try again later")
+        db_user = authenticate_user(db, user.username, user.password)
         if not db_user:
             logger.warning(f"Authentication failed for username: {user.username}")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Incorrect username or password",
+                detail="Incorrect username, password, or email",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-        logger.debug(f"Creating access token for: {user.username}")
-        access_token = create_access_token(data={"sub": user.username, "role": db_user.role})
-        active_users[user.username] = access_token
-        logger.info(f"User {user.username} logged in in {time.time() - start_time:.2f} seconds")
+        if db_user.email != user.email:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Email does not match",
+            )
+        temp_token = create_access_token(
+            data={"sub": user.username, "role": db_user.role, "temp": True},
+            expires_delta=timedelta(minutes=10)
+        )
+        otp = generate_otp()
+        expiry = datetime.utcnow() + timedelta(minutes=5)
+        otp_store[db_user.id] = {"otp": otp, "expiry": expiry}
+        background_tasks.add_task(send_otp_email, db_user.email, otp)
+        logger.info(f"OTP sent for user {user.username} in {time.time() - start_time:.2f} seconds")
         return {
-            "access_token": access_token,
-            "token_type": "bearer",
-            "role": db_user.role
+            "temp_token": temp_token,
+            "message": "OTP sent to your email. Please verify to complete login."
         }
+    except HTTPException as e:
+        raise e
     except Exception as e:
         logger.error(f"Error in login: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
+
+@app.post("/verify-otp")
+async def verify_otp(otp_data: OTPVerificationRequest, temp_token: str = Depends(oauth2_scheme), db: Session = Depends(get_db), request: Request = None):
+    """Verify OTP and complete login."""
+    try:
+        # Log raw request headers and body for debugging
+        logger.info(f"Received /verify-otp request: headers={request.headers}, body={await request.json()}")
+        logger.info(f"Parsed OTP: {otp_data.otp}, temp_token={temp_token[:10]}...")
+
+        logger.info("Verifying OTP")
+        payload = jwt.decode(temp_token, SECRET_KEY, algorithms=[ALGORITHM])
+        if not payload.get("temp"):
+            logger.warning("Token is not a temporary token")
+            raise HTTPException(status_code=400, detail="Invalid token")
+        username: str = payload.get("sub")
+        role: str = payload.get("role")
+        if not username or not role:
+            logger.warning("Token missing username or role")
+            raise HTTPException(status_code=400, detail="Invalid token")
+        
+        db_user = db.query(User).filter(User.username == username).first()
+        if not db_user:
+            logger.warning(f"User not found: {username}")
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        otp_data_store = otp_store.get(db_user.id)
+        if not otp_data_store:
+            logger.warning(f"OTP not found for user: {username}")
+            raise HTTPException(status_code=400, detail="OTP not found or expired")
+        if otp_data_store["expiry"] < datetime.utcnow():
+            logger.warning(f"OTP expired for user: {username}")
+            del otp_store[db_user.id]
+            raise HTTPException(status_code=400, detail="OTP expired")
+        if otp_data_store["otp"] != otp_data.otp:
+            logger.warning(f"Invalid OTP for user: {username}")
+            raise HTTPException(status_code=400, detail="Invalid OTP")
+        
+        access_token = create_access_token(data={"sub": username, "role": role})
+        active_users[username] = access_token
+        del otp_store[db_user.id]
+        logger.info(f"OTP verified for user {username}")
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "role": role
+        }
+    except jwt.JWTError as jwt_err:
+        logger.error(f"JWT validation failed: {str(jwt_err)}")
+        raise HTTPException(status_code=401, detail="Invalid token")
+    except HTTPException as http_err:
+        raise http_err
+    except Exception as e:
+        logger.error(f"Error in verify_otp: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+    
 @app.post("/verify-token")
 async def verify_token(current_user: User = Depends(get_current_user)):
     """Verify the JWT token and return user details if valid."""
@@ -233,12 +295,8 @@ async def request_registration(
     """Request registration with a wallet address, adding to pending_registrations."""
     try:
         logger.info(f"Registration request for user: {current_user.username}, wallet: {request.wallet_address}")
-        
-        # Validate wallet address format (basic check for Ethereum address)
         if not request.wallet_address or not request.wallet_address.startswith("0x") or len(request.wallet_address) != 42:
             raise HTTPException(status_code=400, detail="Invalid wallet address format")
-        
-        # Check if wallet address is already used in users or pending_registrations
         existing_user = db.query(User).filter(User.wallet_address == request.wallet_address).first()
         if existing_user:
             raise HTTPException(status_code=400, detail="Wallet address is already associated with another user")
@@ -247,15 +305,11 @@ async def request_registration(
         ).first()
         if existing_pending:
             raise HTTPException(status_code=400, detail="Wallet address is already pending registration")
-        
-        # Check if user already has a pending registration
         existing_request = db.query(PendingRegistration).filter(
             PendingRegistration.username == current_user.username
         ).first()
         if existing_request:
             raise HTTPException(status_code=400, detail="User already has a pending registration")
-        
-        # Create pending registration
         pending = PendingRegistration(
             username=current_user.username,
             wallet_address=request.wallet_address,
@@ -300,20 +354,15 @@ async def confirm_registration(
         pending = db.query(PendingRegistration).filter(PendingRegistration.id == request.pending_id).first()
         if not pending:
             raise HTTPException(status_code=404, detail="Pending registration not found")
-        
-        # Update user's wallet address
         db_user = db.query(User).filter(User.id == pending.user_id).first()
         if not db_user:
             raise HTTPException(status_code=404, detail="User not found")
-        
-        # Check if wallet address is still unique
         existing_user = db.query(User).filter(
             User.wallet_address == pending.wallet_address,
             User.id != db_user.id
         ).first()
         if existing_user:
             raise HTTPException(status_code=400, detail="Wallet address is already associated with another user")
-        
         db_user.wallet_address = pending.wallet_address
         db.delete(pending)
         db.commit()
@@ -326,14 +375,31 @@ async def confirm_registration(
 
 @app.get("/user/dashboard", response_model=dict)
 async def user_dashboard(current_user: User = Depends(get_user), db: Session = Depends(get_db)):
-    """User dashboard with registration status."""
+    """User dashboard with registration status and data usage."""
     try:
         pending = db.query(PendingRegistration).filter(PendingRegistration.user_id == current_user.id).first()
         status = "registered" if current_user.wallet_address else ("pending" if pending else "not_registered")
+        
+        # Get active plan and remaining data
+        active_purchase = db.query(UserPlanPurchase).filter(UserPlanPurchase.user_id == current_user.id).order_by(UserPlanPurchase.purchase_date.desc()).first()
+        remaining_mb = 0
+        plan_name = None
+        if active_purchase:
+            plan = db.query(WifiPlanModel).filter(WifiPlanModel.id == active_purchase.plan_id).first()
+            if plan:
+                total_used_mb = db.query(DataUsage).filter(
+                    DataUsage.user_id == current_user.id,
+                    DataUsage.timestamp >= active_purchase.purchase_date.strftime("%Y-%m-%d %H:%M:%S")
+                ).with_entities(db.func.sum(DataUsage.usage_mb)).scalar() or 0
+                remaining_mb = max(0, plan.data_mb - total_used_mb)
+                plan_name = plan.name
+
         return {
             "message": f"Welcome to the User Dashboard, {current_user.username}!",
             "registration_status": status,
-            "wallet_address": current_user.wallet_address
+            "wallet_address": current_user.wallet_address,
+            "active_plan": plan_name,
+            "remaining_mb": remaining_mb
         }
     except Exception as e:
         logger.error(f"Error in user_dashboard: {str(e)}")
@@ -348,6 +414,25 @@ async def log_data_usage(data: DataUsageRequest, current_user: User = Depends(ge
     try:
         if data.usage_mb <= 0:
             raise HTTPException(status_code=400, detail="Usage must be positive")
+        
+        # Check if user has an active plan
+        active_purchase = db.query(UserPlanPurchase).filter(UserPlanPurchase.user_id == current_user.id).order_by(UserPlanPurchase.purchase_date.desc()).first()
+        if not active_purchase:
+            raise HTTPException(status_code=400, detail="No active plan found. Purchase a plan to log data usage.")
+        
+        plan = db.query(WifiPlanModel).filter(WifiPlanModel.id == active_purchase.plan_id).first()
+        if not plan:
+            raise HTTPException(status_code=404, detail="Plan not found")
+        
+        # Check if data is depleted
+        total_used_mb = db.query(DataUsage).filter(
+            DataUsage.user_id == current_user.id,
+            DataUsage.timestamp >= active_purchase.purchase_date.strftime("%Y-%m-%d %H:%M:%S")
+        ).with_entities(db.func.sum(DataUsage.usage_mb)).scalar() or 0
+        
+        if total_used_mb + data.usage_mb > plan.data_mb:
+            raise HTTPException(status_code=400, detail="Data limit exceeded for the active plan")
+        
         timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
         data_usage = DataUsage(user_id=current_user.id, usage_mb=data.usage_mb, timestamp=timestamp)
         db.add(data_usage)
@@ -373,8 +458,6 @@ async def update_wallet(wallet_data: WalletUpdate, current_user: User = Depends(
         db_user = db.query(User).filter(User.id == current_user.id).first()
         if not db_user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-        
-        # Check if wallet address is already used by another user or pending
         if wallet_data.wallet_address:
             existing_user = db.query(User).filter(
                 User.wallet_address == wallet_data.wallet_address,
@@ -388,7 +471,6 @@ async def update_wallet(wallet_data: WalletUpdate, current_user: User = Depends(
             ).first()
             if existing_pending:
                 raise HTTPException(status_code=400, detail="Wallet address is already pending registration")
-
         db_user.wallet_address = wallet_data.wallet_address
         db.commit()
         db.refresh(db_user)
@@ -403,7 +485,7 @@ async def update_wallet(wallet_data: WalletUpdate, current_user: User = Depends(
 @app.get("/users", response_model=List[UserSchema])
 async def get_all_users_endpoint(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
     try:
-        users = get_all_users(db)
+        users = db.query(User).filter(User.role == "user").all()
         return users
     except Exception as e:
         logger.error(f"Error in get_all_users_endpoint: {str(e)}")
@@ -412,7 +494,7 @@ async def get_all_users_endpoint(current_user: User = Depends(get_isp), db: Sess
 @app.get("/isp/users", response_model=List[UserSchema])
 async def get_all_isp_users_endpoint(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
     try:
-        users = get_all_users(db)
+        users = db.query(User).filter(User.role == "user").all()
         return users
     except Exception as e:
         logger.error(f"Error in get_all_isp_users_endpoint: {str(e)}")
@@ -451,6 +533,25 @@ async def isp_log_data_usage(
         target_user = db.query(User).filter(User.username == username, User.role == "user").first()
         if not target_user:
             raise HTTPException(status_code=404, detail="User not found")
+        
+        # Check if user has an active plan
+        active_purchase = db.query(UserPlanPurchase).filter(UserPlanPurchase.user_id == target_user.id).order_by(UserPlanPurchase.purchase_date.desc()).first()
+        if not active_purchase:
+            raise HTTPException(status_code=400, detail="User has no active plan")
+        
+        plan = db.query(WifiPlanModel).filter(WifiPlanModel.id == active_purchase.plan_id).first()
+        if not plan:
+            raise HTTPException(status_code=404, detail="Plan not found")
+        
+        # Check if data is depleted
+        total_used_mb = db.query(DataUsage).filter(
+            DataUsage.user_id == target_user.id,
+            DataUsage.timestamp >= active_purchase.purchase_date.strftime("%Y-%m-%d %H:%M:%S")
+        ).with_entities(db.func.sum(DataUsage.usage_mb)).scalar() or 0
+        
+        if total_used_mb + usage_mb > plan.data_mb:
+            raise HTTPException(status_code=400, detail="Data limit exceeded for the active plan")
+        
         timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
         data_usage = DataUsage(user_id=target_user.id, usage_mb=usage_mb, timestamp=timestamp)
         db.add(data_usage)
@@ -550,7 +651,7 @@ async def get_wifi_plans(db: Session = Depends(get_db), current_user: User = Dep
             {
                 "id": plan.id,
                 "name": plan.name,
-                "duration": plan.duration.value,  # Convert Enum to string
+                "duration": plan.duration.value,
                 "price_kes": plan.price_kes,
                 "data_mb": plan.data_mb
             } for plan in plans
@@ -563,12 +664,9 @@ async def get_wifi_plans(db: Session = Depends(get_db), current_user: User = Dep
 async def purchase_plan(purchase: PlanPurchase, db: Session = Depends(get_db), current_user: User = Depends(get_user)):
     try:
         logger.info(f"Recording plan purchase for user {current_user.username}, plan_id {purchase.plan_id}")
-        # Verify the plan exists
         db_plan = db.query(WifiPlanModel).filter(WifiPlanModel.id == purchase.plan_id).first()
         if not db_plan:
             raise HTTPException(status_code=404, detail="WiFi plan not found")
-        
-        # Record the purchase in UserPlanPurchase table
         purchase_record = UserPlanPurchase(
             user_id=current_user.id,
             plan_id=purchase.plan_id,
@@ -577,22 +675,18 @@ async def purchase_plan(purchase: PlanPurchase, db: Session = Depends(get_db), c
         db.add(purchase_record)
         db.commit()
         db.refresh(purchase_record)
-        
         logger.info(f"Plan ID {purchase.plan_id} purchased by user {current_user.username}")
         return {"message": f"Plan {db_plan.name} purchased successfully"}
     except Exception as e:
         logger.error(f"Error in purchase_plan: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to record plan purchase: {str(e)}")
 
-# Optional: Endpoint to add test WiFi plans for debugging
 @app.post("/wifi-plans/test")
 async def add_test_wifi_plan(db: Session = Depends(get_db)):
     try:
-        # Ensure an ISP exists
         isp = db.query(User).filter(User.role == "wifi_provider").first()
         if not isp:
             raise HTTPException(status_code=400, detail="No ISP user found. Please register an ISP first.")
-        
         existing_plan = db.query(WifiPlanModel).filter(WifiPlanModel.id == 1).first()
         if not existing_plan:
             plan = WifiPlanModel(

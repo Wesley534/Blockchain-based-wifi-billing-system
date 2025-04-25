@@ -1,17 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
-import wiFiBillingArtifact from "../utils/WiFiBilling.json";
+import { WalletContext } from "../context/WalletContext";
 import { getEthToKesRate } from "../utils/exchangeRate";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
-const wiFiBillingABI = wiFiBillingArtifact.abi;
-const CONTRACT_ADDRESS = "0x609E600Ff6d549685b8E5B71d20616390A5B5e0D"; // Update to new contract address
-const GANACHE_RPC_URL = "http://127.0.0.1:7545";
-const EXPECTED_CHAIN_ID = "0x539"; // Ganache chain ID (1337 in hex)
-const GANACHE_NETWORK_NAME = "Ganache";
-
 const ISPDashboard = () => {
+  const {
+    isWalletConnected,
+    userAddress,
+    contract,
+    signer,
+    error: walletError,
+    setError: setWalletError,
+    isConnecting,
+    isISP,
+    connectWallet,
+    disconnectWallet,
+    updateWalletAddress,
+  } = useContext(WalletContext);
+
   const [users, setUsers] = useState([]);
   const [pendingRegistrations, setPendingRegistrations] = useState([]);
   const [totalUsageData, setTotalUsageData] = useState([]);
@@ -21,17 +29,12 @@ const ISPDashboard = () => {
   const [newPlan, setNewPlan] = useState({ name: "", duration: "hourly", price_kes: "", data_mb: "" });
   const [editingPlan, setEditingPlan] = useState(null);
   const [error, setError] = useState("");
-  const [contract, setContract] = useState(null);
-  const [signer, setSigner] = useState(null);
-  const [ispAddress, setIspAddress] = useState("");
-  const [isWalletConnected, setIsWalletConnected] = useState(false);
-  const [isConnecting, setIsConnecting] = useState(false);
   const [isLoggingData, setIsLoggingData] = useState(false);
   const [isConfirmingRegistration, setIsConfirmingRegistration] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [ethToKesRate, setEthToKesRate] = useState(247789.20); // Fallback rate
   const navigate = useNavigate();
 
-  // Fetch обменный курс на момент загрузки
   useEffect(() => {
     const fetchExchangeRate = async () => {
       try {
@@ -39,246 +42,29 @@ const ISPDashboard = () => {
         setEthToKesRate(rate);
       } catch (err) {
         console.error("Failed to fetch ETH/KES rate:", err);
+        setError("Failed to fetch exchange rate. Using fallback rate.");
       }
     };
     fetchExchangeRate();
   }, []);
 
-  // Добавить или переключиться на сеть Ganache
-  const addOrSwitchNetwork = async () => {
-    try {
-      await window.ethereum.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: EXPECTED_CHAIN_ID }],
-      });
-      console.log("Switched to Ganache network");
-    } catch (switchError) {
-      if (switchError.code === 4902) {
-        try {
-          await window.ethereum.request({
-            method: "wallet_addEthereumChain",
-            params: [
-              {
-                chainId: EXPECTED_CHAIN_ID,
-                chainName: GANACHE_NETWORK_NAME,
-                rpcUrls: [GANACHE_RPC_URL],
-                nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
-                blockExplorerUrls: null,
-              },
-            ],
-          });
-          console.log("Added Ganache network");
-        } catch (addError) {
-          throw new Error(`Failed to add Ganache network: ${addError.message}`);
-        }
-      } else {
-        throw new Error(`Failed to switch to Ganache network: ${switchError.message}`);
-      }
-    }
-  };
-
-  // Инициализация ethers.js и проверка подключения MetaMask
   useEffect(() => {
-    const checkWalletConnection = async () => {
-      if (!window.ethereum) {
-        setError("MetaMask is not installed. Please install MetaMask and connect to Ganache.");
-        return;
-      }
-
-      try {
-        const chainId = await window.ethereum.request({ method: "eth_chainId" });
-        if (chainId !== EXPECTED_CHAIN_ID) await addOrSwitchNetwork();
-
-        const staticProvider = new ethers.JsonRpcProvider(GANACHE_RPC_URL);
-        const code = await staticProvider.getCode(CONTRACT_ADDRESS);
-        if (code === "0x") {
-          setError("No contract found at the specified address. Please check CONTRACT_ADDRESS or redeploy.");
-          return;
-        }
-
-        const provider = new ethers.BrowserProvider(window.ethereum);
-        const accounts = await window.ethereum.request({ method: "eth_accounts" });
-        if (accounts.length > 0) {
-          const signer = await provider.getSigner();
-          const address = await signer.getAddress();
-          const contract = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
-
-          setSigner(signer);
-          setIspAddress(ethers.getAddress(address));
-          setContract(contract);
-          setIsWalletConnected(true);
-          setError("");
-          console.log("Restored wallet connection:", address);
-
-          await updateWalletAddress(address);
-          await fetchAllData();
-        } else {
-          setError("Please connect your MetaMask wallet to access ISP dashboard.");
-        }
-      } catch (err) {
-        setError("Failed to initialize blockchain connection: " + err.message);
-        console.error("Initialize error:", err);
-      }
-
-      window.ethereum.on("accountsChanged", async (accounts) => {
-        if (accounts.length > 0) {
-          try {
-            const chainId = await window.ethereum.request({ method: "eth_chainId" });
-            if (chainId !== EXPECTED_CHAIN_ID) await addOrSwitchNetwork();
-
-            const staticProvider = new ethers.JsonRpcProvider(GANACHE_RPC_URL);
-            const code = await staticProvider.getCode(CONTRACT_ADDRESS);
-            if (code === "0x") {
-              setError("No contract found at the specified address. Please check CONTRACT_ADDRESS or redeploy.");
-              return;
-            }
-
-            const provider = new ethers.BrowserProvider(window.ethereum);
-            const signer = await provider.getSigner();
-            const address = await signer.getAddress();
-            const contract = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
-
-            setSigner(signer);
-            setIspAddress(ethers.getAddress(address));
-            setContract(contract);
-            setIsWalletConnected(true);
-            setError("");
-            console.log("Reconnected wallet:", address);
-
-            await updateWalletAddress(address);
-            await fetchAllData();
-          } catch (err) {
-            setError("Failed to reconnect wallet: " + err.message);
-            console.error("Accounts changed error:", err);
-          }
-        } else {
-          setIsWalletConnected(false);
-          setIspAddress("");
-          setContract(null);
-          setSigner(null);
-          setError("Wallet disconnected. Please reconnect your MetaMask wallet.");
-          console.log("Wallet disconnected");
-        }
-      });
-
-      window.ethereum.on("chainChanged", async (chainId) => {
-        if (chainId !== EXPECTED_CHAIN_ID) {
-          setError("Network changed. Please reconnect to Ganache (chain ID 1337).");
-          setIsWalletConnected(false);
-          setIspAddress("");
-          setContract(null);
-          setSigner(null);
-          try {
-            await addOrSwitchNetwork();
-            const provider = new ethers.BrowserProvider(window.ethereum);
-            const signer = await provider.getSigner();
-            const address = await signer.getAddress();
-            const contract = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
-
-            setSigner(signer);
-            setIspAddress(ethers.getAddress(address));
-            setContract(contract);
-            setIsWalletConnected(true);
-            setError("");
-            console.log("Reconnected after chain change:", address);
-
-            await updateWalletAddress(address);
-            await fetchAllData();
-          } catch (err) {
-            setError("Failed to reconnect to Ganache after network change: " + err.message);
-            console.error("Chain changed error:", err);
-          }
-        }
-      });
-
-      return () => {
-        if (window.ethereum) {
-          window.ethereum.removeListener("accountsChanged", () => {});
-          window.ethereum.removeListener("chainChanged", () => {});
-        }
-      };
-    };
-    checkWalletConnection();
-  }, []);
-
-  // Подключение кошелька
-  const connectWallet = async () => {
-    if (!window.ethereum) {
-      setError("MetaMask is not installed. Please install MetaMask and connect to Ganache.");
-      return;
+    if (walletError) {
+      setError(walletError);
     }
+  }, [walletError]);
 
-    setIsConnecting(true);
-    setError("");
-    try {
-      await addOrSwitchNetwork();
-      await window.ethereum.request({ method: "wallet_requestPermissions", params: [{ eth_accounts: {} }] });
-      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-      if (!accounts || accounts.length === 0) throw new Error("No accounts returned from MetaMask");
-
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const staticProvider = new ethers.JsonRpcProvider(GANACHE_RPC_URL);
-      const chainId = await window.ethereum.request({ method: "eth_chainId" });
-      if (chainId !== EXPECTED_CHAIN_ID) throw new Error("Failed to connect to Ganache (chain ID 1337). Please try again.");
-
-      const code = await staticProvider.getCode(CONTRACT_ADDRESS);
-      if (code === "0x") throw new Error("No contract found at the specified address. Please check CONTRACT_ADDRESS or redeploy.");
-
-      const signer = await provider.getSigner();
-      const address = await signer.getAddress();
-      const contract = new ethers.Contract(CONTRACT_ADDRESS, wiFiBillingABI, signer);
-
-      setSigner(signer);
-      setIspAddress(ethers.getAddress(address));
-      setContract(contract);
-      setIsWalletConnected(true);
-      console.log("Wallet connected:", address);
-
-      await updateWalletAddress(address);
-      await fetchAllData();
-    } catch (err) {
-      let errorMessage = "Failed to connect wallet. Please try again.";
-      if (err.code === 4001) errorMessage = "Wallet connection rejected. Please connect your MetaMask wallet.";
-      else if (err.code === -32603) errorMessage = `Internal JSON-RPC error: ${err.message}. Check Ganache or contract state.`;
-      else errorMessage += ` Error: ${err.message}`;
-      setError(errorMessage);
-      setIsWalletConnected(false);
-      setIspAddress("");
-      setContract(null);
-      setSigner(null);
-      console.error("Connect wallet error:", err);
-    } finally {
-      setIsConnecting(false);
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      setError("No authentication token found. Redirecting to login...");
+      setTimeout(() => navigate("/login"), 2000);
     }
-  };
+  }, [navigate]);
 
-  // Обновление адреса кошелька в бэкенде
-  const updateWalletAddress = async (walletAddress) => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("No authentication token found. Please log in again.");
-
-      const response = await fetch("http://127.0.0.1:8000/update-wallet", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ wallet_address: walletAddress }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || "Failed to update wallet address in backend");
-      }
-      console.log("Wallet address updated in backend:", walletAddress);
-    } catch (err) {
-      setError("Failed to update wallet address: " + err.message);
-      console.error("Update wallet address error:", err);
-    }
-  };
-
-  // Получение ожидающих регистраций
   const fetchPendingRegistrations = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No authentication token found. Please log in again.");
 
       const response = await fetch("http://127.0.0.1:8000/isp/pending-registrations", {
@@ -299,7 +85,6 @@ const ISPDashboard = () => {
     }
   };
 
-  // Подтверждение регистрации
   const handleConfirmRegistration = async (pendingId, walletAddress) => {
     if (!contract || !ethers.isAddress(walletAddress)) {
       setError("Cannot confirm registration: Invalid address or contract not set");
@@ -308,14 +93,12 @@ const ISPDashboard = () => {
     setIsConfirmingRegistration(true);
     setError("");
     try {
-      // Регистрация в блокчейне
       console.log(`Registering user ${walletAddress} on blockchain`);
       const tx = await contract.registerUser(walletAddress);
       await tx.wait();
       console.log(`User ${walletAddress} registered on blockchain`);
 
-      // Подтверждение в бэкенде
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No authentication token found. Please log in again.");
 
       const response = await fetch("http://127.0.0.1:8000/isp/confirm-registration", {
@@ -344,10 +127,9 @@ const ISPDashboard = () => {
     }
   };
 
-  // Получение данных всех пользователей
   const fetchAllUsersData = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No authentication token found. Please log in again.");
 
       const response = await fetch("http://127.0.0.1:8000/isp/users", {
@@ -415,6 +197,7 @@ const ISPDashboard = () => {
         setUsers(enrichedUsers);
       } else {
         setUsers(usersData.map((user) => ({ ...user, totalUsage: 0, totalCostEth: 0, totalCostKes: 0, registrationStatus: "No contract" })));
+        setError("Contract not initialized. Please connect your wallet.");
       }
     } catch (err) {
       setError("Failed to fetch users' data: " + err.message);
@@ -423,10 +206,9 @@ const ISPDashboard = () => {
     }
   };
 
-  // Получение общего использования данных из базы данных
   const fetchTotalDataUsageFromDB = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No authentication token found. Please log in again.");
 
       const response = await fetch("http://127.0.0.1:8000/isp/data-usage", {
@@ -455,11 +237,11 @@ const ISPDashboard = () => {
     }
   };
 
-  // Получение всех транзакций
   const fetchAllTransactions = async () => {
     if (!contract) {
       console.warn("Cannot fetch transactions: Contract not set");
       setAllTransactions([]);
+      setError("Contract not initialized. Please connect your wallet.");
       return;
     }
 
@@ -504,10 +286,9 @@ const ISPDashboard = () => {
     }
   };
 
-  // Получение WiFi-планов из бэкенда
   const fetchWifiPlans = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No authentication token found. Please log in again.");
 
       const response = await fetch("http://127.0.0.1:8000/isp/wifi-plans", {
@@ -531,11 +312,10 @@ const ISPDashboard = () => {
     }
   };
 
-  // Создание WiFi-плана
   const handleCreatePlan = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No authentication token found. Please log in again.");
 
       const data_mb = parseInt(newPlan.data_mb);
@@ -563,11 +343,10 @@ const ISPDashboard = () => {
     }
   };
 
-  // Редактирование WiFi-плана
   const handleEditPlan = async (e, planId) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No authentication token found. Please log in again.");
 
       const data_mb = parseInt(newPlan.data_mb);
@@ -596,10 +375,9 @@ const ISPDashboard = () => {
     }
   };
 
-  // Удаление WiFi-плана
   const handleDeletePlan = async (planId) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No authentication token found. Please log in again.");
 
       const response = await fetch(`http://127.0.0.1:8000/isp/wifi-plans/${planId}`, {
@@ -620,7 +398,6 @@ const ISPDashboard = () => {
     }
   };
 
-  // Логирование использования данных
   const handleLogDataUsage = async (username, userAddress, usage_mb) => {
     if (!contract || !ethers.isAddress(userAddress)) {
       setError("Cannot log data usage: Invalid address or contract not set");
@@ -635,7 +412,7 @@ const ISPDashboard = () => {
       const tx = await contract.logDataUsageByISP(userAddress, usage_mb_int);
       await tx.wait();
 
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No authentication token found. Please log in again.");
 
       const response = await fetch("http://127.0.0.1:8000/isp/log-data-usage", {
@@ -664,47 +441,59 @@ const ISPDashboard = () => {
     }
   };
 
-  // Обработка выхода
   const handleLogout = async () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("access_token");
     localStorage.removeItem("username");
-    setIsWalletConnected(false);
-    setIspAddress("");
-    setContract(null);
-    setSigner(null);
-    setError("Logged out. Please log in again.");
-    console.log("Logged out, wallet disconnected");
-
-    if (window.ethereum) {
-      try {
-        await window.ethereum.request({ method: "wallet_revokePermissions", params: [{ eth_accounts: {} }] });
-        console.log("MetaMask permissions revoked");
-      } catch (err) {
-        console.error("Failed to revoke MetaMask permissions:", err);
-      }
-    }
+    await disconnectWallet();
     navigate("/");
   };
 
-  // Получение всех данных
   const fetchAllData = async () => {
-    await fetchAllUsersData();
-    await fetchAllTransactions();
-    await fetchTotalDataUsageFromDB();
-    await fetchWifiPlans();
-    await fetchPendingRegistrations();
+    setIsLoading(true);
+    try {
+      await Promise.all([
+        fetchAllUsersData(),
+        fetchAllTransactions(),
+        fetchTotalDataUsageFromDB(),
+        fetchWifiPlans(),
+        fetchPendingRegistrations(),
+      ]);
+    } catch (err) {
+      setError("Failed to fetch dashboard data: " + err.message);
+      console.error("Fetch all data error:", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // Получение данных при подключении кошелька
   useEffect(() => {
-    if (isWalletConnected && contract) {
-      fetchAllData();
-      const interval = setInterval(fetchAllData, 10000); // Обновление каждые 10 секунд
-      return () => clearInterval(interval);
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      setError("No authentication token found. Redirecting to login...");
+      setTimeout(() => navigate("/login"), 2000);
+      return;
     }
-  }, [isWalletConnected, contract]);
 
-  // Данные для графика
+    // Don't fetch data until wallet is connected and confirmed as ISP
+    if (isWalletConnected && contract && isISP) {
+      fetchAllData();
+      const interval = setInterval(() => {
+        if (localStorage.getItem("access_token")) {
+          fetchAllData();
+        } else {
+          setError("Authentication token lost. Redirecting to login...");
+          clearInterval(interval);
+          setTimeout(() => navigate("/login"), 2000);
+        }
+      }, 10000);
+      return () => clearInterval(interval);
+    } else if (!isISP && isWalletConnected) {
+      setError("Connected wallet is not the ISP. Please connect the ISP wallet.");
+    } else if (!isWalletConnected) {
+      setError("Please connect your MetaMask wallet to access the ISP Dashboard.");
+    }
+  }, [isWalletConnected, contract, isISP, navigate]);
+
   const chartData = cumulativeUsage.map((entry) => ({
     timestamp: new Date(entry.timestamp).toISOString().substring(0, 10),
     total_usage_mb: entry.total_usage_mb,
@@ -721,14 +510,21 @@ const ISPDashboard = () => {
 
   return (
     <div className="min-h-screen p-8 bg-[linear-gradient(135deg,_#1a1a2e,_#9fc817)]">
-      {/* Заголовок */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold text-white">ISP Dashboard</h1>
         <div className="flex space-x-4">
-          {isWalletConnected && ispAddress ? (
-            <span className="text-white py-2 px-4">
-              Connected: {ispAddress.slice(0, 6)}...{ispAddress.slice(-4)}
-            </span>
+          {isWalletConnected && userAddress ? (
+            <>
+              <span className="text-white py-2 px-4">
+                Connected: {userAddress.slice(0, 6)}...{userAddress.slice(-4)}
+              </span>
+              <button
+                onClick={disconnectWallet}
+                className="bg-yellow-500 text-white py-2 px-4 rounded-full hover:bg-yellow-600 transition duration-300"
+              >
+                Disconnect Wallet
+              </button>
+            </>
           ) : (
             <button
               onClick={connectWallet}
@@ -749,12 +545,14 @@ const ISPDashboard = () => {
         </div>
       </div>
 
-      {/* Сообщение об ошибке */}
       {error && (
         <div className="mb-8 p-4 bg-red-500 text-white rounded-lg shadow-lg">
           <p>{error}</p>
           <button
-            onClick={() => setError("")}
+            onClick={() => {
+              setError("");
+              setWalletError("");
+            }}
             className="mt-2 bg-gray-500 text-white py-1 px-2 rounded-full hover:bg-gray-600"
           >
             Clear
@@ -762,7 +560,12 @@ const ISPDashboard = () => {
         </div>
       )}
 
-      {/* Ожидающие регистрации */}
+      {isLoading && (
+        <div className="mb-8 p-4 bg-blue-500 text-white rounded-lg shadow-lg">
+          <p>Loading dashboard data...</p>
+        </div>
+      )}
+
       <div className="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
         <h2 className="text-2xl font-semibold text-white mb-4">Pending Registrations</h2>
         {pendingRegistrations.length > 0 ? (
@@ -803,7 +606,6 @@ const ISPDashboard = () => {
         )}
       </div>
 
-      {/* Обзор пользователей */}
       <div className="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
         <h2 className="text-2xl font-semibold text-white mb-4">Users Overview</h2>
         {users.length > 0 ? (
@@ -871,7 +673,6 @@ const ISPDashboard = () => {
         )}
       </div>
 
-      {/* История использования данных */}
       <div className="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
         <h2 className="text-2xl font-semibold text-white mb-4">Total Data Usage History</h2>
         {chartData.length > 0 ? (
@@ -891,7 +692,6 @@ const ISPDashboard = () => {
         )}
       </div>
 
-      {/* Управление WiFi-планами */}
       <div className="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
         <h2 className="text-2xl font-semibold text-white mb-4">Manage WiFi Plans</h2>
         <form
@@ -1011,7 +811,6 @@ const ISPDashboard = () => {
         )}
       </div>
 
-      {/* История транзакций */}
       <div className="bg-gray-800 rounded-lg shadow-lg p-6">
         <h2 className="text-2xl font-semibold text-white mb-4">Transaction History</h2>
         {allTransactions.length > 0 ? (

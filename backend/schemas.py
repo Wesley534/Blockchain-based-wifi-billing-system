@@ -1,10 +1,9 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import Optional
 from models import PlanDuration
 from datetime import datetime
 
 
-# Base class for User to define shared fields
 class UserBase(BaseModel):
     username: str
     role: str
@@ -12,21 +11,23 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
+    email: EmailStr
 
 
 class UserLogin(BaseModel):
     username: str
     password: str
+    email: EmailStr
 
 
 class Token(BaseModel):
     access_token: str
     token_type: str
-    role: str  # Matches the /login endpoint response
+    role: str
 
 
 class DataUsageRequest(BaseModel):
-    usage_mb: float  # Changed to float to match simulation
+    usage_mb: float
 
 
 class WalletUpdate(BaseModel):
@@ -37,9 +38,10 @@ class UserSchema(UserBase):
     id: int
     is_active: bool
     wallet_address: Optional[str] = None
+    email: str
 
     class Config:
-        from_attributes = True  # Enables compatibility with SQLAlchemy models
+        from_attributes = True
 
 
 class WifiPlanBase(BaseModel):
@@ -71,7 +73,7 @@ class WifiPlan(WifiPlanBase):
 class WiFiPlan(BaseModel):
     id: int
     name: str
-    duration: str  # Matches frontend expectation (e.g., "DAILY")
+    duration: str
     price_kes: float
     data_mb: int
 
@@ -96,3 +98,6 @@ class PendingRegistrationResponse(BaseModel):
 
 class ConfirmRegistrationRequest(BaseModel):
     pending_id: int
+
+class OTPVerificationRequest(BaseModel):
+    otp: str

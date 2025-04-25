@@ -1,31 +1,50 @@
+from passlib.context import CryptContext
+from jose import JWTError, jwt
+from datetime import datetime, timedelta
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from jose import JWTError, jwt
 from sqlalchemy.orm import Session
-from database import get_db
 from models import User
+from database import get_db
 
-# JWT configuration
-SECRET_KEY = "your-secret-key"  # Replace with your secret key
+# Secret key for JWT (replace with a secure, environment-stored key in production)
+SECRET_KEY = "your-secret-key"  # Same as in main.py
 ALGORITHM = "HS256"
+
+# Password hashing
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# OAuth2 scheme
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 def get_password_hash(password: str) -> str:
-    # Placeholder for password hashing (use a proper hashing library like bcrypt in production)
-    return password  # Replace with actual hashing
+    """Hash a password using bcrypt."""
+    return pwd_context.hash(password)
 
-def authenticate_user(db: Session, username: str, password: str):
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verify a plain password against a hashed password."""
+    return pwd_context.verify(plain_password, hashed_password)
+
+def authenticate_user(db: Session, username: str, password: str) -> User | bool:
+    """Authenticate a user by username and password."""
     user = db.query(User).filter(User.username == username).first()
-    if not user or user.hashed_password != get_password_hash(password):
+    if not user or not verify_password(password, user.hashed_password):
         return False
     return user
 
-def create_access_token(data: dict):
+def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
+    """Create a JWT access token with optional expiration."""
     to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=15)  # Default expiration
+    to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
+    """Retrieve the current user from a JWT token."""
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -41,13 +60,4 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     user = db.query(User).filter(User.username == username).first()
     if user is None:
         raise credentials_exception
-    return user
-
-def get_current_user_with_role(role: str, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    user = get_current_user(token, db)
-    if user.role != role:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail=f"User does not have the required role: {role}",
-        )
     return user

@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
 
-import { WalletContext } from "../context/WalletContext"; // Import WalletContext
+import { WalletContext } from "../context/WalletContext";
 import { getEthToKesRate } from "../utils/exchangeRate";
 
 const WiFiPlans = () => {
@@ -36,7 +36,7 @@ const WiFiPlans = () => {
   // Fetch WiFi plans from backend
   const fetchWifiPlans = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No authentication token found. Please log in again.");
 
       const response = await fetch("http://127.0.0.1:8000/wifi-plans", {
@@ -45,7 +45,7 @@ const WiFiPlans = () => {
       });
 
       if (response.status === 401) {
-        localStorage.removeItem("token");
+        localStorage.removeItem("access_token");
         localStorage.removeItem("username");
         navigate("/");
         throw new Error("Session expired. Please log in again.");
@@ -92,7 +92,7 @@ const WiFiPlans = () => {
       }
 
       const planIds = await contract.getPurchasedPlans(userAddress);
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No authentication token found. Please log in again.");
 
       const response = await fetch("http://127.0.0.1:8000/wifi-plans", {
@@ -195,7 +195,7 @@ const WiFiPlans = () => {
   // Initialize and fetch plans
   useEffect(() => {
     const initialize = async () => {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
       if (!token) {
         setError("Please log in to access WiFi plans.");
         navigate("/");
