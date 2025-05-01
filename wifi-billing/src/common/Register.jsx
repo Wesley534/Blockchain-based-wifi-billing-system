@@ -188,7 +188,7 @@ const Register = () => {
               className="w-full bg-gray-600 text-white py-2 rounded-full hover:bg-gray-700 transition duration-300"
               disabled={isLoading || isRequestingRegistration}
             >
-              {isLoading ? "Connecting..." : "Connect MetaMask"}
+              {isLoading ? "Connecting..." : "Choose wallet address"}
             </button>
             {walletAddress && (
               <p className="text-green-400 text-center mt-2">

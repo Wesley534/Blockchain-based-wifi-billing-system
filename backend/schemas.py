@@ -80,6 +80,12 @@ class WiFiPlan(BaseModel):
 
 class PlanPurchase(BaseModel):
     plan_id: int
+    user_address: str
+    price_kes: float
+    price_eth: float
+
+    class Config:
+        from_attributes = True
 
 
 class PendingRegistrationRequest(BaseModel):
@@ -98,6 +104,7 @@ class PendingRegistrationResponse(BaseModel):
 
 class ConfirmRegistrationRequest(BaseModel):
     pending_id: int
+
 
 class OTPVerificationRequest(BaseModel):
     otp: str

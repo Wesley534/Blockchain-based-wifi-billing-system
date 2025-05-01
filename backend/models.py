@@ -56,12 +56,13 @@ class WifiPlan(Base):
 
 class UserPlanPurchase(Base):
     __tablename__ = "user_plan_purchases"
-
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), index=True)
     plan_id = Column(Integer, ForeignKey("wifi_plans.id", ondelete="CASCADE"), index=True)
+    user_address = Column(String, nullable=False)
+    price_kes = Column(Float, nullable=False)
+    price_eth = Column(Float, nullable=False)
     purchase_date = Column(DateTime, nullable=False)
-
     user = relationship("User", back_populates="purchased_plans")
     plan = relationship("WifiPlan", back_populates="purchases")
 

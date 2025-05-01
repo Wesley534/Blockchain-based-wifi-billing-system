@@ -1,10 +1,10 @@
-from fastapi import FastAPI, Depends, HTTPException, status, BackgroundTasks
+from fastapi import FastAPI, Depends, HTTPException, status, BackgroundTasks, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import Request  # Add this import
+from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
-
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import OperationalError
+from sqlalchemy import func
 from typing import List, Dict
 from database import Base, engine, get_db, SessionLocal
 from models import User, DataUsage, WifiPlan as WifiPlanModel, PlanDuration, PendingRegistration, UserPlanPurchase
@@ -18,14 +18,14 @@ from emailutils import generate_otp, send_otp_email
 import time
 import logging
 import threading
+import random
 from datetime import datetime, timedelta
-from fastapi.security import OAuth2PasswordBearer
 
 # Configure logging
 logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.StreamHandler()]
+    handlers=[logging.FileHandler("app.log"), logging.StreamHandler()]
 )
 logger = logging.getLogger(__name__)
 
@@ -59,69 +59,111 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 SECRET_KEY = "your-secret-key"  # Replace with a secure key
 ALGORITHM = "HS256"
 
-# Simulate data usage for users with active plans
+# Set to track users with active simulations
+active_simulations: set = set()
+simulation_lock = threading.Lock()
+
 def simulate_data_usage():
     """Simulate data usage for users with active plans until data is depleted."""
-    logger.info("Started data usage simulation in the background.")
+    logger.info("Started data usage simulation thread")
     while True:
         try:
             db = SessionLocal()
             try:
-                # Get users with active plan purchases
-                active_purchases = db.query(UserPlanPurchase).join(WifiPlanModel).all()
-                if not active_purchases:
-                    logger.info("No active plan purchases for simulation.")
+                # Get a copy of active simulations to avoid holding the lock during DB operations
+                with simulation_lock:
+                    users_to_simulate = active_simulations.copy()
+                
+                if not users_to_simulate:
+                    logger.debug("No users with active simulations")
                 else:
-                    for purchase in active_purchases:
-                        user = db.query(User).filter(User.id == purchase.user_id).first()
-                        plan = db.query(WifiPlanModel).filter(WifiPlanModel.id == purchase.plan_id).first()
-                        if not user or not plan:
+                    for user_id in users_to_simulate:
+                        # Fetch the latest active plan purchase for the user
+                        active_purchase = (
+                            db.query(UserPlanPurchase)
+                            .filter(UserPlanPurchase.user_id == user_id)
+                            .order_by(UserPlanPurchase.purchase_date.desc())
+                            .first()
+                        )
+                        
+                        if not active_purchase:
+                            logger.info(f"No active plan for user_id {user_id}. Stopping simulation.")
+                            with simulation_lock:
+                                active_simulations.discard(user_id)
                             continue
 
-                        # Calculate total data used for this plan
-                        total_used_mb = db.query(DataUsage).filter(
-                            DataUsage.user_id == user.id,
-                            DataUsage.timestamp >= purchase.purchase_date.strftime("%Y-%m-%d %H:%M:%S")
-                        ).with_entities(db.func.sum(DataUsage.usage_mb)).scalar() or 0
+                        # Fetch user and plan details
+                        user = db.query(User).filter(User.id == user_id).first()
+                        plan = db.query(WifiPlanModel).filter(WifiPlanModel.id == active_purchase.plan_id).first()
+                        if not user or not plan:
+                            logger.warning(f"User {user_id} or plan {active_purchase.plan_id} not found")
+                            with simulation_lock:
+                                active_simulations.discard(user_id)
+                            continue
+
+                        # Calculate total data used since the purchase date
+                        total_used_mb = (
+                            db.query(func.sum(DataUsage.usage_mb))
+                            .filter(
+                                DataUsage.user_id == user_id,
+                                DataUsage.timestamp >= active_purchase.purchase_date
+                            )
+                            .scalar() or 0
+                        )
 
                         # Check if data is depleted
                         if total_used_mb >= plan.data_mb:
-                            logger.info(f"User {user.username} has depleted {plan.name} plan ({total_used_mb}/{plan.data_mb} MB).")
+                            logger.info(
+                                f"User {user.username} has depleted plan {plan.name} "
+                                f"({total_used_mb:.2f}/{plan.data_mb} MB). Stopping simulation."
+                            )
+                            with simulation_lock:
+                                active_simulations.discard(user_id)
                             continue
 
                         # Simulate data usage
-                        usage_mb = random.uniform(0.1, 5.0)  # Smaller usage for simulation
-                        if total_used_mb + usage_mb > plan.data_mb:
-                            usage_mb = plan.data_mb - total_used_mb  # Cap at remaining data
-                        
-                        if usage_mb > 0:
-                            timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
-                            data_usage = DataUsage(user_id=user.id, usage_mb=usage_mb, timestamp=timestamp)
-                            db.add(data_usage)
-                            logger.info(f"Simulated {usage_mb:.2f} MB usage for {user.username} on plan {plan.name}")
+                        usage_mb = random.uniform(0.1, min(5.0, plan.data_mb - total_used_mb))
+                        if usage_mb <= 0:
+                            logger.debug(f"No more data to simulate for user {user.username}")
+                            continue
+
+                        # Record the simulated data usage
+                        data_usage = DataUsage(
+                            user_id=user_id,
+                            usage_mb=usage_mb,
+                            timestamp=datetime.utcnow()
+                        )
+                        db.add(data_usage)
+                        logger.info(
+                            f"Simulated {usage_mb:.2f} MB usage for {user.username} "
+                            f"on plan {plan.name} (Remaining: {plan.data_mb - total_used_mb - usage_mb:.2f} MB)"
+                        )
                     
                     db.commit()
             except OperationalError as db_err:
                 logger.error(f"Database error in simulation: {str(db_err)}")
                 db.rollback()
+            except Exception as e:
+                logger.error(f"Unexpected error in simulation for user_id {user_id}: {str(e)}")
+                db.rollback()
             finally:
                 db.close()
         except Exception as e:
             logger.error(f"Error in simulation thread: {str(e)}")
+        
+        # Sleep to avoid excessive CPU usage
         time.sleep(30)
 
 @app.on_event("startup")
 async def startup_event():
     simulation_thread = threading.Thread(target=simulate_data_usage, daemon=True)
     simulation_thread.start()
-    logger.info("Data usage simulation started in the background.")
+    logger.info("Data usage simulation thread started")
 
 @app.post("/register", response_model=Token)
 async def register(user: UserCreate, db: Session = Depends(get_db)):
-    """Register a new user or WiFi provider."""
     try:
         logger.info(f"Register attempt for username: {user.username}")
-        start_time = time.time()
         db_user = db.query(User).filter(User.username == user.username).first()
         if db_user:
             raise HTTPException(status_code=400, detail="Username already registered")
@@ -142,7 +184,7 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
         db.refresh(db_user)
         access_token = create_access_token(data={"sub": user.username, "role": user.role})
         active_users[user.username] = access_token
-        logger.info(f"Registered user: {user.username} in {time.time() - start_time:.2f} seconds")
+        logger.info(f"Registered user: {user.username}")
         return {
             "access_token": access_token,
             "token_type": "bearer",
@@ -154,9 +196,7 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
 
 @app.post("/login")
 async def login(user: UserLogin, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
-    """Log in a user, send OTP to email, and return a temporary token."""
     try:
-        start_time = time.time()
         logger.info(f"Login attempt for username: {user.username}")
         db_user = authenticate_user(db, user.username, user.password)
         if not db_user:
@@ -179,7 +219,7 @@ async def login(user: UserLogin, background_tasks: BackgroundTasks, db: Session 
         expiry = datetime.utcnow() + timedelta(minutes=5)
         otp_store[db_user.id] = {"otp": otp, "expiry": expiry}
         background_tasks.add_task(send_otp_email, db_user.email, otp)
-        logger.info(f"OTP sent for user {user.username} in {time.time() - start_time:.2f} seconds")
+        logger.info(f"OTP sent for user {user.username}")
         return {
             "temp_token": temp_token,
             "message": "OTP sent to your email. Please verify to complete login."
@@ -190,16 +230,11 @@ async def login(user: UserLogin, background_tasks: BackgroundTasks, db: Session 
         logger.error(f"Error in login: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
-
 @app.post("/verify-otp")
 async def verify_otp(otp_data: OTPVerificationRequest, temp_token: str = Depends(oauth2_scheme), db: Session = Depends(get_db), request: Request = None):
-    """Verify OTP and complete login."""
     try:
-        # Log raw request headers and body for debugging
         logger.info(f"Received /verify-otp request: headers={request.headers}, body={await request.json()}")
         logger.info(f"Parsed OTP: {otp_data.otp}, temp_token={temp_token[:10]}...")
-
-        logger.info("Verifying OTP")
         payload = jwt.decode(temp_token, SECRET_KEY, algorithms=[ALGORITHM])
         if not payload.get("temp"):
             logger.warning("Token is not a temporary token")
@@ -244,10 +279,9 @@ async def verify_otp(otp_data: OTPVerificationRequest, temp_token: str = Depends
     except Exception as e:
         logger.error(f"Error in verify_otp: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
-    
+
 @app.post("/verify-token")
 async def verify_token(current_user: User = Depends(get_current_user)):
-    """Verify the JWT token and return user details if valid."""
     try:
         logger.info(f"Verifying token for user: {current_user.username}")
         return {
@@ -261,7 +295,6 @@ async def verify_token(current_user: User = Depends(get_current_user)):
 
 @app.post("/logout")
 async def logout(current_user: User = Depends(get_current_user)):
-    """Log out the current user and remove them from active sessions."""
     try:
         active_users.pop(current_user.username, None)
         logger.info(f"User {current_user.username} logged out")
@@ -292,7 +325,6 @@ async def request_registration(
     current_user: User = Depends(get_user),
     db: Session = Depends(get_db)
 ):
-    """Request registration with a wallet address, adding to pending_registrations."""
     try:
         logger.info(f"Registration request for user: {current_user.username}, wallet: {request.wallet_address}")
         if not request.wallet_address or not request.wallet_address.startswith("0x") or len(request.wallet_address) != 42:
@@ -326,7 +358,6 @@ async def request_registration(
 
 @app.get("/isp/pending-registrations", response_model=List[PendingRegistrationResponse])
 async def get_pending_registrations(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
-    """Fetch all pending registrations for the ISP."""
     try:
         logger.info(f"Fetching pending registrations for ISP {current_user.username}")
         pending = db.query(PendingRegistration).all()
@@ -348,7 +379,6 @@ async def confirm_registration(
     current_user: User = Depends(get_isp),
     db: Session = Depends(get_db)
 ):
-    """Confirm a pending registration, update the user's wallet address, and remove from pending."""
     try:
         logger.info(f"Confirming registration for pending_id: {request.pending_id} by ISP {current_user.username}")
         pending = db.query(PendingRegistration).filter(PendingRegistration.id == request.pending_id).first()
@@ -375,12 +405,10 @@ async def confirm_registration(
 
 @app.get("/user/dashboard", response_model=dict)
 async def user_dashboard(current_user: User = Depends(get_user), db: Session = Depends(get_db)):
-    """User dashboard with registration status and data usage."""
     try:
         pending = db.query(PendingRegistration).filter(PendingRegistration.user_id == current_user.id).first()
         status = "registered" if current_user.wallet_address else ("pending" if pending else "not_registered")
         
-        # Get active plan and remaining data
         active_purchase = db.query(UserPlanPurchase).filter(UserPlanPurchase.user_id == current_user.id).order_by(UserPlanPurchase.purchase_date.desc()).first()
         remaining_mb = 0
         plan_name = None
@@ -389,8 +417,8 @@ async def user_dashboard(current_user: User = Depends(get_user), db: Session = D
             if plan:
                 total_used_mb = db.query(DataUsage).filter(
                     DataUsage.user_id == current_user.id,
-                    DataUsage.timestamp >= active_purchase.purchase_date.strftime("%Y-%m-%d %H:%M:%S")
-                ).with_entities(db.func.sum(DataUsage.usage_mb)).scalar() or 0
+                    DataUsage.timestamp >= active_purchase.purchase_date
+                ).withEntities(func.sum(DataUsage.usage_mb)).scalar() or 0
                 remaining_mb = max(0, plan.data_mb - total_used_mb)
                 plan_name = plan.name
 
@@ -415,7 +443,6 @@ async def log_data_usage(data: DataUsageRequest, current_user: User = Depends(ge
         if data.usage_mb <= 0:
             raise HTTPException(status_code=400, detail="Usage must be positive")
         
-        # Check if user has an active plan
         active_purchase = db.query(UserPlanPurchase).filter(UserPlanPurchase.user_id == current_user.id).order_by(UserPlanPurchase.purchase_date.desc()).first()
         if not active_purchase:
             raise HTTPException(status_code=400, detail="No active plan found. Purchase a plan to log data usage.")
@@ -424,17 +451,15 @@ async def log_data_usage(data: DataUsageRequest, current_user: User = Depends(ge
         if not plan:
             raise HTTPException(status_code=404, detail="Plan not found")
         
-        # Check if data is depleted
         total_used_mb = db.query(DataUsage).filter(
             DataUsage.user_id == current_user.id,
-            DataUsage.timestamp >= active_purchase.purchase_date.strftime("%Y-%m-%d %H:%M:%S")
-        ).with_entities(db.func.sum(DataUsage.usage_mb)).scalar() or 0
+            DataUsage.timestamp >= active_purchase.purchase_date
+        ).withEntities(func.sum(DataUsage.usage_mb)).scalar() or 0
         
         if total_used_mb + data.usage_mb > plan.data_mb:
             raise HTTPException(status_code=400, detail="Data limit exceeded for the active plan")
         
-        timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
-        data_usage = DataUsage(user_id=current_user.id, usage_mb=data.usage_mb, timestamp=timestamp)
+        data_usage = DataUsage(user_id=current_user.id, usage_mb=data.usage_mb, timestamp=datetime.utcnow())
         db.add(data_usage)
         db.commit()
         logger.info(f"Logged {data.usage_mb} MB usage for user {current_user.username}")
@@ -506,7 +531,7 @@ async def get_total_data_usage(current_user: User = Depends(get_isp), db: Sessio
         all_usage = db.query(DataUsage).all()
         usage_by_time = {}
         for entry in all_usage:
-            timestamp = entry.timestamp[:19]
+            timestamp = entry.timestamp.strftime("%Y-%m-%d %H:%M:%S")
             if timestamp not in usage_by_time:
                 usage_by_time[timestamp] = 0
             usage_by_time[timestamp] += entry.usage_mb
@@ -534,7 +559,6 @@ async def isp_log_data_usage(
         if not target_user:
             raise HTTPException(status_code=404, detail="User not found")
         
-        # Check if user has an active plan
         active_purchase = db.query(UserPlanPurchase).filter(UserPlanPurchase.user_id == target_user.id).order_by(UserPlanPurchase.purchase_date.desc()).first()
         if not active_purchase:
             raise HTTPException(status_code=400, detail="User has no active plan")
@@ -543,17 +567,15 @@ async def isp_log_data_usage(
         if not plan:
             raise HTTPException(status_code=404, detail="Plan not found")
         
-        # Check if data is depleted
         total_used_mb = db.query(DataUsage).filter(
             DataUsage.user_id == target_user.id,
-            DataUsage.timestamp >= active_purchase.purchase_date.strftime("%Y-%m-%d %H:%M:%S")
-        ).with_entities(db.func.sum(DataUsage.usage_mb)).scalar() or 0
+            DataUsage.timestamp >= active_purchase.purchase_date
+        ).withEntities(func.sum(DataUsage.usage_mb)).scalar() or 0
         
         if total_used_mb + usage_mb > plan.data_mb:
             raise HTTPException(status_code=400, detail="Data limit exceeded for the active plan")
         
-        timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
-        data_usage = DataUsage(user_id=target_user.id, usage_mb=usage_mb, timestamp=timestamp)
+        data_usage = DataUsage(user_id=target_user.id, usage_mb=usage_mb, timestamp=datetime.utcnow())
         db.add(data_usage)
         db.commit()
         logger.info(f"Logged {usage_mb} MB usage for {username} by ISP")
@@ -667,16 +689,29 @@ async def purchase_plan(purchase: PlanPurchase, db: Session = Depends(get_db), c
         db_plan = db.query(WifiPlanModel).filter(WifiPlanModel.id == purchase.plan_id).first()
         if not db_plan:
             raise HTTPException(status_code=404, detail="WiFi plan not found")
+        if not purchase.user_address or not purchase.user_address.startswith("0x") or len(purchase.user_address) != 42:
+            raise HTTPException(status_code=400, detail="Invalid wallet address format")
+        if purchase.price_kes <= 0 or purchase.price_eth <= 0:
+            raise HTTPException(status_code=400, detail="Invalid price values")
+        
         purchase_record = UserPlanPurchase(
             user_id=current_user.id,
             plan_id=purchase.plan_id,
+            user_address=purchase.user_address,
+            price_kes=purchase.price_kes,
+            price_eth=purchase.price_eth,
             purchase_date=datetime.utcnow()
         )
         db.add(purchase_record)
         db.commit()
         db.refresh(purchase_record)
-        logger.info(f"Plan ID {purchase.plan_id} purchased by user {current_user.username}")
-        return {"message": f"Plan {db_plan.name} purchased successfully"}
+        
+        # Start simulation for this user
+        with simulation_lock:
+            active_simulations.add(current_user.id)
+        logger.info(f"Started data usage simulation for user {current_user.username} after purchasing plan {db_plan.name}")
+        
+        return {"message": f"Plan {db_plan.name} purchased successfully", "purchase_id": purchase_record.id}
     except Exception as e:
         logger.error(f"Error in purchase_plan: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to record plan purchase: {str(e)}")

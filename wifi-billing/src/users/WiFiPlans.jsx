@@ -9,10 +9,9 @@ const WiFiPlans = () => {
   const [wifiPlans, setWifiPlans] = useState([]);
   const [purchasedPlans, setPurchasedPlans] = useState([]);
   const [isPurchasing, setIsPurchasing] = useState(false);
-  const [ethToKesRate, setEthToKesRate] = useState(247789.20); // Fallback rate
+  const [ethToKesRate, setEthToKesRate] = useState(247789.20);
   const navigate = useNavigate();
 
-  // Access wallet context
   const {
     isWalletConnected,
     isConnecting,
@@ -24,7 +23,6 @@ const WiFiPlans = () => {
     handleLogout,
   } = useContext(WalletContext);
 
-  // Fetch exchange rate on mount
   useEffect(() => {
     const fetchExchangeRate = async () => {
       const rate = await getEthToKesRate();
@@ -33,7 +31,6 @@ const WiFiPlans = () => {
     fetchExchangeRate();
   }, []);
 
-  // Fetch WiFi plans from backend
   const fetchWifiPlans = async () => {
     try {
       const token = localStorage.getItem("access_token");
@@ -68,7 +65,6 @@ const WiFiPlans = () => {
     }
   };
 
-  // Fetch purchased plans
   const fetchPurchasedPlans = async () => {
     if (!contract || !userAddress || !isWalletConnected) {
       console.warn("Cannot fetch purchased plans: Missing contract or user address");
@@ -116,7 +112,7 @@ const WiFiPlans = () => {
           priceKes: plan.price_kes,
           priceEth: (plan.price_kes / ethToKesRate).toFixed(6),
           dataMb: plan.data_mb,
-          purchaseDate: new Date().toISOString().replace("T", " ").substring(0, 19), // Placeholder
+          purchaseDate: new Date().toISOString().replace("T", " ").substring(0, 19),
         }));
 
       setPurchasedPlans(purchasedPlansData);
@@ -131,7 +127,6 @@ const WiFiPlans = () => {
     }
   };
 
-  // Purchase plan with ETH
   const handlePurchasePlan = async (planId, priceKes) => {
     if (!contract || !userAddress || !isWalletConnected) {
       setError("Cannot purchase plan: Please connect your wallet");
@@ -175,6 +170,32 @@ const WiFiPlans = () => {
       });
       await tx.wait();
 
+      // Log purchase to backend
+      const token = localStorage.getItem("access_token");
+      if (!token) throw new Error("No authentication token found. Please log in again.");
+
+      const response = await fetch("http://127.0.0.1:8000/purchase-plan", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          plan_id: planId,
+          user_address: userAddress,
+          price_kes: priceKes,
+          price_eth: priceEth,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "Failed to log plan purchase to database");
+      }
+
+      const responseData = await response.json();
+      console.log("Logged plan purchase to database:", responseData);
+
       await fetchPurchasedPlans();
       alert(`Successfully purchased plan ID ${planId} for ${priceEth.toFixed(6)} ETH (${priceKes} KES)!`);
     } catch (err) {
@@ -192,7 +213,6 @@ const WiFiPlans = () => {
     }
   };
 
-  // Initialize and fetch plans
   useEffect(() => {
     const initialize = async () => {
       const token = localStorage.getItem("access_token");
@@ -213,7 +233,6 @@ const WiFiPlans = () => {
 
   return (
     <div className="min-h-screen p-8 bg-[linear-gradient(135deg,_#1a1a2e,_#9fc817)]">
-      {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold text-white">WiFi Plans</h1>
         <div className="flex space-x-4 items-center">
@@ -258,7 +277,6 @@ const WiFiPlans = () => {
         </div>
       </div>
 
-      {/* Error Message */}
       {error && (
         <div className="mb-8 p-4 bg-red-500 text-white rounded-lg shadow-lg">
           <p>{error}</p>
@@ -271,7 +289,6 @@ const WiFiPlans = () => {
         </div>
       )}
 
-      {/* Available Plans */}
       <div className="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
         <h2 className="text-2xl font-semibold text-white mb-4">Available WiFi Plans</h2>
         {wifiPlans.length > 0 ? (
@@ -316,7 +333,6 @@ const WiFiPlans = () => {
         )}
       </div>
 
-      {/* Purchased Plans */}
       <div className="bg-gray-800 rounded-lg shadow-lg p-6">
         <h2 className="text-2xl font-semibold text-white mb-4">Your Purchased Plans</h2>
         {purchasedPlans.length > 0 ? (

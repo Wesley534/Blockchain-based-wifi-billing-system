@@ -1,0 +1,429 @@
+2025-04-25 12:37:51,045 - main - INFO - Database tables created successfully
+2025-04-25 12:37:51,075 - main - INFO - Started data usage simulation thread
+2025-04-25 12:37:51,075 - main - INFO - Data usage simulation thread started
+2025-04-25 12:37:51,076 - main - DEBUG - No users with active simulations
+2025-04-25 12:38:16,234 - main - INFO - Login attempt for username: darion
+2025-04-25 12:38:16,262 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\user\Desktop\fourth_year_project\backend\env\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-04-25 12:38:16,266 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2025-04-25 12:38:16,267 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2025-04-25 12:38:16,684 - main - INFO - OTP sent for user darion
+2025-04-25 12:38:20,062 - emailutils - INFO - OTP sent to darionlifford@gmail.com
+2025-04-25 12:38:21,077 - main - DEBUG - No users with active simulations
+2025-04-25 12:38:34,680 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Windows"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkYXJpb24iLCJyb2xlIjoidXNlciIsInRlbXAiOnRydWUsImV4cCI6MTc0NTU3NDQ5Nn0._n_7nqnPTrq1I_KSb81eFOPXJ89aHuERcmWeCxQJY-k', 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Google Chrome";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd', 'accept-language': 'en-US,en;q=0.9'}), body={'otp': '597540'}
+2025-04-25 12:38:34,680 - main - INFO - Parsed OTP: 597540, temp_token=eyJhbGciOi...
+2025-04-25 12:38:34,683 - main - WARNING - Invalid OTP for user: darion
+2025-04-25 12:38:51,078 - main - DEBUG - No users with active simulations
+2025-04-25 12:38:57,024 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Windows"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkYXJpb24iLCJyb2xlIjoidXNlciIsInRlbXAiOnRydWUsImV4cCI6MTc0NTU3NDQ5Nn0._n_7nqnPTrq1I_KSb81eFOPXJ89aHuERcmWeCxQJY-k', 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Google Chrome";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd', 'accept-language': 'en-US,en;q=0.9'}), body={'otp': '675591'}
+2025-04-25 12:38:57,024 - main - INFO - Parsed OTP: 675591, temp_token=eyJhbGciOi...
+2025-04-25 12:38:57,027 - main - INFO - OTP verified for user darion
+2025-04-25 12:38:57,090 - main - INFO - Verifying token for user: darion
+2025-04-25 12:38:57,112 - main - INFO - Verifying token for user: darion
+2025-04-25 12:39:01,053 - main - INFO - Verifying token for user: darion
+2025-04-25 12:39:18,252 - main - INFO - Verifying token for user: darion
+2025-04-25 12:39:18,292 - main - INFO - Updated wallet address for user darion to 0x2818123FD8a01f143c9e3e0C174a856AdFb87D61
+2025-04-25 12:39:18,322 - main - INFO - Verifying token for user: darion
+2025-04-25 12:39:21,079 - main - DEBUG - No users with active simulations
+2025-04-25 12:39:27,274 - main - INFO - Fetching WiFi plans for user darion
+2025-04-25 12:39:27,302 - main - INFO - Fetching WiFi plans for user darion
+2025-04-25 12:39:27,357 - main - INFO - Fetching WiFi plans for user darion
+2025-04-25 12:39:27,370 - main - INFO - Fetching WiFi plans for user darion
+2025-04-25 12:39:35,460 - main - INFO - Recording plan purchase for user darion, plan_id 1
+2025-04-25 12:39:35,464 - main - ERROR - Error in purchase_plan: 'PlanPurchase' object has no attribute 'user_address'
+2025-04-25 12:39:51,079 - main - DEBUG - No users with active simulations
+2025-04-25 12:40:21,080 - main - DEBUG - No users with active simulations
+2025-04-25 12:40:33,104 - main - INFO - Recording plan purchase for user darion, plan_id 1
+2025-04-25 12:40:33,106 - main - ERROR - Error in purchase_plan: 'PlanPurchase' object has no attribute 'user_address'
+2025-04-25 12:40:51,081 - main - DEBUG - No users with active simulations
+2025-04-25 12:41:21,082 - main - DEBUG - No users with active simulations
+2025-04-25 12:41:51,088 - main - DEBUG - No users with active simulations
+2025-04-25 12:42:21,119 - main - DEBUG - No users with active simulations
+2025-04-25 12:42:51,119 - main - DEBUG - No users with active simulations
+2025-04-25 12:43:21,121 - main - DEBUG - No users with active simulations
+2025-04-25 12:43:51,122 - main - DEBUG - No users with active simulations
+2025-04-25 12:44:21,124 - main - DEBUG - No users with active simulations
+2025-04-25 12:44:51,125 - main - DEBUG - No users with active simulations
+2025-04-25 12:45:21,126 - main - DEBUG - No users with active simulations
+2025-04-25 12:45:23,077 - main - INFO - Database tables created successfully
+2025-04-25 12:45:23,094 - main - INFO - Started data usage simulation thread
+2025-04-25 12:45:23,095 - main - INFO - Data usage simulation thread started
+2025-04-25 12:45:23,095 - main - DEBUG - No users with active simulations
+2025-04-25 12:45:43,990 - main - INFO - Recording plan purchase for user darion, plan_id 1
+2025-04-25 12:45:43,994 - main - ERROR - Error in purchase_plan: 'user_address' is an invalid keyword argument for UserPlanPurchase
+2025-04-25 12:45:53,101 - main - DEBUG - No users with active simulations
+2025-04-25 12:46:23,101 - main - DEBUG - No users with active simulations
+2025-04-25 12:46:53,102 - main - DEBUG - No users with active simulations
+2025-04-25 12:47:23,104 - main - DEBUG - No users with active simulations
+2025-04-25 12:47:53,105 - main - DEBUG - No users with active simulations
+2025-04-25 12:47:55,863 - main - INFO - Database tables created successfully
+2025-04-25 12:47:55,896 - main - INFO - Started data usage simulation thread
+2025-04-25 12:47:55,896 - main - INFO - Data usage simulation thread started
+2025-04-25 12:47:55,896 - main - DEBUG - No users with active simulations
+2025-04-25 12:47:58,403 - main - INFO - Recording plan purchase for user darion, plan_id 1
+2025-04-25 12:47:58,412 - main - ERROR - Error in purchase_plan: (sqlite3.OperationalError) table user_plan_purchases has no column named user_address
+[SQL: INSERT INTO user_plan_purchases (user_id, plan_id, user_address, price_kes, price_eth, purchase_date) VALUES (?, ?, ?, ?, ?, ?)]
+[parameters: (2, 1, '0x2818123FD8a01f143c9e3e0C174a856AdFb87D61', 20.0, 8.70387162790735e-05, '2025-04-25 09:47:58.407844')]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-04-25 12:48:22,495 - main - INFO - Database tables created successfully
+2025-04-25 12:48:22,518 - main - INFO - Started data usage simulation thread
+2025-04-25 12:48:22,518 - main - INFO - Data usage simulation thread started
+2025-04-25 12:48:22,519 - main - DEBUG - No users with active simulations
+2025-04-25 12:48:39,940 - main - INFO - Recording plan purchase for user darion, plan_id 1
+2025-04-25 12:48:39,954 - main - ERROR - Error in purchase_plan: (sqlite3.OperationalError) table user_plan_purchases has no column named user_address
+[SQL: INSERT INTO user_plan_purchases (user_id, plan_id, user_address, price_kes, price_eth, purchase_date) VALUES (?, ?, ?, ?, ?, ?)]
+[parameters: (2, 1, '0x2818123FD8a01f143c9e3e0C174a856AdFb87D61', 20.0, 8.70387162790735e-05, '2025-04-25 09:48:39.948762')]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-04-25 12:48:52,520 - main - DEBUG - No users with active simulations
+2025-04-25 12:49:22,521 - main - DEBUG - No users with active simulations
+2025-04-25 12:49:52,521 - main - DEBUG - No users with active simulations
+2025-04-25 12:50:22,522 - main - DEBUG - No users with active simulations
+2025-04-25 12:50:52,523 - main - DEBUG - No users with active simulations
+2025-04-25 12:50:58,168 - main - INFO - Recording plan purchase for user darion, plan_id 1
+2025-04-25 12:50:58,174 - main - ERROR - Error in purchase_plan: (sqlite3.OperationalError) table user_plan_purchases has no column named price_kes
+[SQL: INSERT INTO user_plan_purchases (user_id, plan_id, user_address, price_kes, price_eth, purchase_date) VALUES (?, ?, ?, ?, ?, ?)]
+[parameters: (2, 1, '0x2818123FD8a01f143c9e3e0C174a856AdFb87D61', 20.0, 8.70387162790735e-05, '2025-04-25 09:50:58.172630')]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-04-25 12:51:22,524 - main - DEBUG - No users with active simulations
+2025-04-25 12:51:31,650 - main - INFO - Recording plan purchase for user darion, plan_id 1
+2025-04-25 12:51:31,654 - main - ERROR - Error in purchase_plan: (sqlite3.OperationalError) table user_plan_purchases has no column named price_eth
+[SQL: INSERT INTO user_plan_purchases (user_id, plan_id, user_address, price_kes, price_eth, purchase_date) VALUES (?, ?, ?, ?, ?, ?)]
+[parameters: (2, 1, '0x2818123FD8a01f143c9e3e0C174a856AdFb87D61', 20.0, 8.70387162790735e-05, '2025-04-25 09:51:31.652667')]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-04-25 12:51:52,525 - main - DEBUG - No users with active simulations
+2025-04-25 12:52:02,588 - main - INFO - Recording plan purchase for user darion, plan_id 1
+2025-04-25 12:52:02,615 - main - INFO - Started data usage simulation for user darion after purchasing plan test
+2025-04-25 12:52:02,761 - main - INFO - Fetching WiFi plans for user darion
+2025-04-25 12:52:12,115 - main - INFO - Verifying token for user: darion
+2025-04-25 12:52:12,131 - main - INFO - Verifying token for user: darion
+2025-04-25 12:52:22,539 - main - INFO - Simulated 2.34 MB usage for darion on plan test (Remaining: 1021.66 MB)
+2025-04-25 12:52:44,380 - main - ERROR - Error in log_data_usage: 'Query' object has no attribute 'withEntities'
+2025-04-25 12:52:44,415 - main - INFO - Verifying token for user: darion
+2025-04-25 12:52:52,551 - main - INFO - Simulated 0.63 MB usage for darion on plan test (Remaining: 1021.03 MB)
+2025-04-25 12:53:03,246 - main - INFO - Verifying token for user: darion
+2025-04-25 12:53:03,252 - main - INFO - Verifying token for user: darion
+2025-04-25 12:53:05,475 - main - INFO - Verifying token for user: darion
+2025-04-25 12:53:17,789 - main - INFO - Updated wallet address for user darion to 0x2818123FD8a01f143c9e3e0C174a856AdFb87D61
+2025-04-25 12:53:17,819 - main - INFO - Verifying token for user: darion
+2025-04-25 12:53:17,840 - main - INFO - Verifying token for user: darion
+2025-04-25 12:53:22,565 - main - INFO - Simulated 3.92 MB usage for darion on plan test (Remaining: 1017.11 MB)
+2025-04-25 12:53:43,202 - main - INFO - Fetching WiFi plans for user darion
+2025-04-25 12:53:43,224 - main - INFO - Fetching WiFi plans for user darion
+2025-04-25 12:53:43,304 - main - INFO - Fetching WiFi plans for user darion
+2025-04-25 12:53:43,312 - main - INFO - Fetching WiFi plans for user darion
+2025-04-25 12:53:52,578 - main - INFO - Simulated 2.00 MB usage for darion on plan test (Remaining: 1015.10 MB)
+2025-04-25 12:53:57,146 - main - INFO - Updated wallet address for user darion to 0x2818123FD8a01f143c9e3e0C174a856AdFb87D61
+2025-04-25 12:53:57,205 - main - INFO - Fetching WiFi plans for user darion
+2025-04-25 12:53:57,340 - main - INFO - Fetching WiFi plans for user darion
+2025-04-25 12:54:22,597 - main - INFO - Simulated 1.90 MB usage for darion on plan test (Remaining: 1013.20 MB)
+2025-04-25 12:54:47,771 - main - INFO - Login attempt for username: darion
+2025-04-25 12:54:47,773 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\user\Desktop\fourth_year_project\backend\env\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-04-25 12:54:47,777 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2025-04-25 12:54:47,778 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2025-04-25 12:54:48,087 - main - INFO - OTP sent for user darion
+2025-04-25 12:54:52,615 - main - INFO - Simulated 1.91 MB usage for darion on plan test (Remaining: 1011.29 MB)
+2025-04-25 12:54:52,625 - emailutils - INFO - OTP sent to darionlifford@gmail.com
+2025-04-25 12:55:10,620 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Windows"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkYXJpb24iLCJyb2xlIjoidXNlciIsInRlbXAiOnRydWUsImV4cCI6MTc0NTU3NTQ4OH0.q903Y3A3zAPmpWYL-itIlO2yR9WeDiyv6knlnNCIL_4', 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Google Chrome";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd', 'accept-language': 'en-US,en;q=0.9'}), body={'otp': '673253'}
+2025-04-25 12:55:10,620 - main - INFO - Parsed OTP: 673253, temp_token=eyJhbGciOi...
+2025-04-25 12:55:10,623 - main - INFO - OTP verified for user darion
+2025-04-25 12:55:10,707 - main - INFO - Verifying token for user: darion
+2025-04-25 12:55:10,711 - main - INFO - Verifying token for user: darion
+2025-04-25 12:55:13,025 - main - INFO - Verifying token for user: darion
+2025-04-25 12:55:22,631 - main - INFO - Simulated 3.00 MB usage for darion on plan test (Remaining: 1008.30 MB)
+2025-04-25 12:55:23,549 - main - INFO - Updated wallet address for user darion to 0x2818123FD8a01f143c9e3e0C174a856AdFb87D61
+2025-04-25 12:55:23,574 - main - INFO - Verifying token for user: darion
+2025-04-25 12:55:23,632 - main - INFO - Verifying token for user: darion
+2025-04-25 12:55:52,646 - main - INFO - Simulated 0.65 MB usage for darion on plan test (Remaining: 1007.65 MB)
+2025-04-25 12:56:22,660 - main - INFO - Simulated 2.70 MB usage for darion on plan test (Remaining: 1004.94 MB)
+2025-04-25 12:56:52,683 - main - INFO - Simulated 4.82 MB usage for darion on plan test (Remaining: 1000.13 MB)
+2025-04-25 12:57:22,697 - main - INFO - Simulated 4.24 MB usage for darion on plan test (Remaining: 995.89 MB)
+2025-04-25 12:57:52,709 - main - INFO - Simulated 2.98 MB usage for darion on plan test (Remaining: 992.92 MB)
+2025-04-25 12:58:22,725 - main - INFO - Simulated 2.20 MB usage for darion on plan test (Remaining: 990.71 MB)
+2025-04-25 12:58:52,745 - main - INFO - Simulated 3.65 MB usage for darion on plan test (Remaining: 987.06 MB)
+2025-04-25 12:59:22,759 - main - INFO - Simulated 2.94 MB usage for darion on plan test (Remaining: 984.12 MB)
+2025-04-25 12:59:52,778 - main - INFO - Simulated 0.67 MB usage for darion on plan test (Remaining: 983.46 MB)
+2025-04-25 13:00:22,794 - main - INFO - Simulated 3.90 MB usage for darion on plan test (Remaining: 979.56 MB)
+2025-04-25 13:00:52,812 - main - INFO - Simulated 1.30 MB usage for darion on plan test (Remaining: 978.26 MB)
+2025-04-25 13:01:22,824 - main - INFO - Simulated 4.30 MB usage for darion on plan test (Remaining: 973.96 MB)
+2025-04-25 13:01:37,781 - main - INFO - Verifying token for user: darion
+2025-04-25 13:01:52,837 - main - INFO - Simulated 4.38 MB usage for darion on plan test (Remaining: 969.58 MB)
+2025-04-25 13:02:22,864 - main - INFO - Simulated 3.38 MB usage for darion on plan test (Remaining: 966.20 MB)
+2025-04-25 13:02:29,361 - main - INFO - Verifying token for user: darion
+2025-04-25 13:02:29,393 - main - ERROR - Error in user_dashboard: 'Query' object has no attribute 'withEntities'
+2025-04-25 13:02:52,895 - main - INFO - Simulated 4.70 MB usage for darion on plan test (Remaining: 961.50 MB)
+2025-04-25 13:03:22,909 - main - INFO - Simulated 1.01 MB usage for darion on plan test (Remaining: 960.50 MB)
+2025-04-25 13:03:24,456 - main - INFO - Verifying token for user: darion
+2025-04-25 13:03:51,598 - main - INFO - Login attempt for username: darion
+2025-04-25 13:03:51,862 - main - INFO - OTP sent for user darion
+2025-04-25 13:03:52,921 - main - INFO - Simulated 1.93 MB usage for darion on plan test (Remaining: 958.57 MB)
+2025-04-25 13:03:55,800 - emailutils - INFO - OTP sent to darionlifford@gmail.com
+2025-04-25 13:04:12,037 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Windows"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkYXJpb24iLCJyb2xlIjoidXNlciIsInRlbXAiOnRydWUsImV4cCI6MTc0NTU3NjAzMX0.5x6fjOwwaQ8RbZTLElRf35XyhJ3fCIgGMSWvUgWnVhc', 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Google Chrome";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd', 'accept-language': 'en-US,en;q=0.9'}), body={'otp': '858193'}
+2025-04-25 13:04:12,037 - main - INFO - Parsed OTP: 858193, temp_token=eyJhbGciOi...
+2025-04-25 13:04:12,039 - main - INFO - OTP verified for user darion
+2025-04-25 13:04:22,932 - main - INFO - Simulated 4.95 MB usage for darion on plan test (Remaining: 953.62 MB)
+2025-04-25 13:04:52,950 - main - INFO - Simulated 4.80 MB usage for darion on plan test (Remaining: 948.82 MB)
+2025-04-25 13:08:08,989 - main - INFO - Database tables created successfully
+2025-04-25 13:08:09,061 - main - INFO - Started data usage simulation thread
+2025-04-25 13:08:09,062 - main - INFO - Data usage simulation thread started
+2025-04-25 13:08:09,063 - main - DEBUG - No users with active simulations
+2025-04-25 13:08:39,067 - main - DEBUG - No users with active simulations
+2025-04-25 13:08:46,059 - main - INFO - Login attempt for username: darion
+2025-04-25 13:08:46,139 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\user\Desktop\fourth_year_project\backend\env\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-04-25 13:08:46,148 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2025-04-25 13:08:46,151 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2025-04-25 13:08:46,992 - main - INFO - OTP sent for user darion
+2025-04-25 13:08:50,773 - emailutils - INFO - OTP sent to darionlifford@gmail.com
+2025-04-25 13:09:09,070 - main - DEBUG - No users with active simulations
+2025-04-25 13:09:15,767 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Windows"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkYXJpb24iLCJyb2xlIjoidXNlciIsInRlbXAiOnRydWUsImV4cCI6MTc0NTU3NjMyNn0.928USrB06RxZyAp3hlkxxnOsZSbWaiwop6_fKSX7y5E', 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Google Chrome";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd', 'accept-language': 'en-US,en;q=0.9'}), body={'otp': '671667'}
+2025-04-25 13:09:15,769 - main - INFO - Parsed OTP: 671667, temp_token=eyJhbGciOi...
+2025-04-25 13:09:15,789 - main - INFO - OTP verified for user darion
+2025-04-25 13:09:34,234 - main - WARNING - Wallet address 0x61cCeDAea88028dA5760b5CD8DB8A286C5E057B8 already associated with another user
+2025-04-25 13:09:39,072 - main - DEBUG - No users with active simulations
+2025-04-25 13:10:09,073 - main - DEBUG - No users with active simulations
+2025-04-25 13:10:19,351 - main - INFO - Updated wallet address for user darion to 0x2818123FD8a01f143c9e3e0C174a856AdFb87D61
+2025-04-25 13:10:39,074 - main - DEBUG - No users with active simulations
+2025-04-25 13:11:09,076 - main - DEBUG - No users with active simulations
+2025-04-25 13:11:39,080 - main - DEBUG - No users with active simulations
+2025-04-25 13:12:09,088 - main - DEBUG - No users with active simulations
+2025-04-25 13:12:39,092 - main - DEBUG - No users with active simulations
+2025-04-25 13:12:49,488 - main - INFO - Verifying token for user: darion
+2025-04-25 13:12:58,724 - main - INFO - Fetching WiFi plans for user darion
+2025-04-25 13:12:58,751 - main - INFO - Fetching WiFi plans for user darion
+2025-04-25 13:12:58,857 - main - INFO - Fetching WiFi plans for user darion
+2025-04-25 13:12:58,878 - main - INFO - Fetching WiFi plans for user darion
+2025-04-25 13:13:09,094 - main - DEBUG - No users with active simulations
+2025-04-25 13:13:15,246 - main - INFO - Verifying token for user: darion
+2025-04-25 13:13:15,270 - main - INFO - Verifying token for user: darion
+2025-04-25 16:00:37,007 - main - INFO - Database tables created successfully
+2025-04-25 16:00:37,027 - main - INFO - Started data usage simulation thread
+2025-04-25 16:00:37,027 - main - INFO - Data usage simulation thread started
+2025-04-25 16:00:37,027 - main - DEBUG - No users with active simulations
+2025-04-25 16:01:07,029 - main - DEBUG - No users with active simulations
+2025-04-25 16:01:37,030 - main - DEBUG - No users with active simulations
+2025-04-25 16:02:07,032 - main - DEBUG - No users with active simulations
+2025-04-25 16:02:37,033 - main - DEBUG - No users with active simulations
+2025-04-25 16:03:07,034 - main - DEBUG - No users with active simulations
+2025-04-25 16:03:37,035 - main - DEBUG - No users with active simulations
+2025-04-25 16:04:07,036 - main - DEBUG - No users with active simulations
+2025-04-25 16:04:37,037 - main - DEBUG - No users with active simulations
+2025-04-25 16:05:07,038 - main - DEBUG - No users with active simulations
+2025-04-25 16:05:37,039 - main - DEBUG - No users with active simulations
+2025-04-25 16:05:44,100 - main - INFO - Register attempt for username: Dorothy 
+2025-04-25 16:05:44,192 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\user\Desktop\fourth_year_project\backend\env\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-04-25 16:05:44,250 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2025-04-25 16:05:44,252 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2025-04-25 16:05:44,608 - main - INFO - Registered user: Dorothy 
+2025-04-25 16:05:44,628 - main - INFO - Registration request for user: Dorothy , wallet: 0x2818123fd8a01f143c9e3e0c174a856adfb87d61
+2025-04-25 16:05:44,643 - main - INFO - Pending registration created for Dorothy  with wallet 0x2818123fd8a01f143c9e3e0c174a856adfb87d61
+2025-04-25 16:06:07,040 - main - DEBUG - No users with active simulations
+2025-04-25 16:06:34,739 - main - INFO - Login attempt for username: dorothy
+2025-04-25 16:06:34,743 - main - WARNING - Authentication failed for username: dorothy
+2025-04-25 16:06:37,041 - main - DEBUG - No users with active simulations
+2025-04-25 16:06:53,674 - main - INFO - Login attempt for username: dorothy
+2025-04-25 16:06:53,676 - main - WARNING - Authentication failed for username: dorothy
+2025-04-25 16:06:55,310 - main - INFO - Login attempt for username: dorothy
+2025-04-25 16:06:55,312 - main - WARNING - Authentication failed for username: dorothy
+2025-04-25 16:07:04,532 - main - INFO - Login attempt for username: Dorothy 
+2025-04-25 16:07:04,790 - main - INFO - OTP sent for user Dorothy 
+2025-04-25 16:07:07,042 - main - DEBUG - No users with active simulations
+2025-04-25 16:07:09,318 - emailutils - INFO - OTP sent to nixonbryson55@gmail.com
+2025-04-25 16:07:37,043 - main - DEBUG - No users with active simulations
+2025-04-25 16:07:46,674 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Windows"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJEb3JvdGh5ICIsInJvbGUiOiJ1c2VyIiwidGVtcCI6dHJ1ZSwiZXhwIjoxNzQ1NTg3MDI0fQ.s_6Q21phpISrB_zhZsKEYkLWEU5Yu9UdjVxXNmjnBwE', 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Google Chrome";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd', 'accept-language': 'en-US,en;q=0.9'}), body={'otp': '772356'}
+2025-04-25 16:07:46,674 - main - INFO - Parsed OTP: 772356, temp_token=eyJhbGciOi...
+2025-04-25 16:07:46,682 - main - INFO - OTP verified for user Dorothy 
+2025-04-25 16:07:46,745 - main - INFO - Verifying token for user: Dorothy 
+2025-04-25 16:07:46,758 - main - INFO - Verifying token for user: Dorothy 
+2025-04-25 16:08:07,044 - main - DEBUG - No users with active simulations
+2025-04-25 16:08:37,045 - main - DEBUG - No users with active simulations
+2025-04-25 16:08:54,979 - main - INFO - Verifying token for user: Dorothy 
+2025-04-25 16:09:07,046 - main - DEBUG - No users with active simulations
+2025-04-25 16:09:10,086 - main - INFO - Verifying token for user: Dorothy 
+2025-04-25 16:09:37,047 - main - DEBUG - No users with active simulations
+2025-04-25 16:10:07,049 - main - DEBUG - No users with active simulations
+2025-04-25 16:10:37,050 - main - DEBUG - No users with active simulations
+2025-04-25 16:10:46,267 - main - INFO - Login attempt for username: isp
+2025-04-25 16:10:46,530 - main - INFO - OTP sent for user isp
+2025-04-25 16:10:49,864 - emailutils - INFO - OTP sent to peterwesley484@gmail.com
+2025-04-25 16:11:04,422 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Windows"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJpc3AiLCJyb2xlIjoid2lmaV9wcm92aWRlciIsInRlbXAiOnRydWUsImV4cCI6MTc0NTU4NzI0Nn0.qrQqcypSTyYQQ0QoxI_pEuHrgwHt-lZJSsz7Lu_6tXQ', 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Google Chrome";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd', 'accept-language': 'en-US,en;q=0.9,sw-TZ;q=0.8,sw;q=0.7,my-ZG;q=0.6,my;q=0.5'}), body={'otp': '715569'}
+2025-04-25 16:11:04,422 - main - INFO - Parsed OTP: 715569, temp_token=eyJhbGciOi...
+2025-04-25 16:11:04,424 - main - INFO - OTP verified for user isp
+2025-04-25 16:11:07,051 - main - DEBUG - No users with active simulations
+2025-04-25 16:11:20,563 - main - INFO - Updated wallet address for user isp to 0x61cCeDAea88028dA5760b5CD8DB8A286C5E057B8
+2025-04-25 16:11:20,671 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:11:20,720 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:11:30,578 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:11:30,579 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:11:37,053 - main - DEBUG - No users with active simulations
+2025-04-25 16:11:40,544 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:11:40,545 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:11:50,572 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:11:50,574 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:11:54,998 - main - INFO - Confirming registration for pending_id: 1 by ISP isp
+2025-04-25 16:11:55,039 - main - INFO - Confirmed registration for Dorothy , wallet: 0x2818123fd8a01f143c9e3e0c174a856adfb87d61
+2025-04-25 16:11:55,053 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:12:00,556 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:12:00,557 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:12:07,054 - main - DEBUG - No users with active simulations
+2025-04-25 16:12:10,559 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:12:10,560 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:12:20,554 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:12:20,555 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:12:30,545 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:12:30,552 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:12:37,054 - main - DEBUG - No users with active simulations
+2025-04-25 16:12:40,540 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:12:40,544 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:12:50,548 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:12:50,552 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:13:00,570 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:13:00,573 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:13:07,056 - main - DEBUG - No users with active simulations
+2025-04-25 16:13:10,547 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:13:10,553 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:13:20,547 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:13:20,548 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:13:30,559 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:13:30,560 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:13:37,056 - main - DEBUG - No users with active simulations
+2025-04-25 16:13:40,554 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:13:40,555 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:13:50,545 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:13:50,548 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:14:00,559 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:14:00,565 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:14:07,057 - main - DEBUG - No users with active simulations
+2025-04-25 16:14:11,434 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:14:11,435 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:14:20,562 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:14:20,563 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:14:31,427 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:14:31,428 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:14:36,865 - main - INFO - Verifying token for user: Dorothy 
+2025-04-25 16:14:37,058 - main - DEBUG - No users with active simulations
+2025-04-25 16:14:41,506 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:14:41,509 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:14:51,479 - main - WARNING - Wallet address 0x2818123FD8a01f143c9e3e0C174a856AdFb87D61 already associated with another user
+2025-04-25 16:14:51,572 - main - INFO - Verifying token for user: Dorothy 
+2025-04-25 16:14:51,604 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:14:51,673 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:14:51,690 - main - INFO - Verifying token for user: Dorothy 
+2025-04-25 16:15:01,430 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:15:01,431 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:15:07,059 - main - DEBUG - No users with active simulations
+2025-04-25 16:15:11,425 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:15:11,426 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:15:18,387 - main - INFO - Verifying token for user: Dorothy 
+2025-04-25 16:15:21,426 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:15:21,428 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:15:29,331 - main - INFO - Verifying token for user: Dorothy 
+2025-04-25 16:15:36,203 - main - INFO - Verifying token for user: Dorothy 
+2025-04-25 16:15:37,060 - main - DEBUG - No users with active simulations
+2025-04-25 16:15:47,425 - main - WARNING - Wallet address 0x2818123FD8a01f143c9e3e0C174a856AdFb87D61 already associated with another user
+2025-04-25 16:15:47,431 - main - INFO - Verifying token for user: Dorothy 
+2025-04-25 16:15:47,463 - main - INFO - Verifying token for user: Dorothy 
+2025-04-25 16:15:50,584 - main - INFO - Fetching WiFi plans for user Dorothy 
+2025-04-25 16:15:50,599 - main - INFO - Fetching WiFi plans for user Dorothy 
+2025-04-25 16:15:50,708 - main - INFO - Fetching WiFi plans for user Dorothy 
+2025-04-25 16:15:50,715 - main - INFO - Fetching WiFi plans for user Dorothy 
+2025-04-25 16:16:01,377 - main - INFO - Verifying token for user: Dorothy 
+2025-04-25 16:16:01,380 - main - INFO - Verifying token for user: Dorothy 
+2025-04-25 16:16:04,680 - main - INFO - Fetching WiFi plans for user Dorothy 
+2025-04-25 16:16:04,695 - main - INFO - Fetching WiFi plans for user Dorothy 
+2025-04-25 16:16:04,748 - main - INFO - Fetching WiFi plans for user Dorothy 
+2025-04-25 16:16:04,766 - main - INFO - Fetching WiFi plans for user Dorothy 
+2025-04-25 16:16:07,061 - main - DEBUG - No users with active simulations
+2025-04-25 16:16:14,872 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:16:14,879 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:16:20,569 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:16:20,570 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:16:30,565 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:16:30,568 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:16:37,062 - main - DEBUG - No users with active simulations
+2025-04-25 16:16:40,556 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:16:40,562 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:16:50,553 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:16:50,556 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:16:56,747 - main - INFO - Created WiFi plan: test 3 by ISP isp
+2025-04-25 16:17:00,554 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:17:00,559 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:17:07,063 - main - DEBUG - No users with active simulations
+2025-04-25 16:17:10,552 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:17:10,559 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:17:20,689 - main - INFO - Fetching WiFi plans for user Dorothy 
+2025-04-25 16:17:20,697 - main - INFO - Fetching WiFi plans for user Dorothy 
+2025-04-25 16:17:21,434 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:17:21,438 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:17:31,435 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:17:31,442 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:17:37,064 - main - DEBUG - No users with active simulations
+2025-04-25 16:17:41,434 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:17:41,436 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:17:44,487 - main - WARNING - Wallet address 0x2818123FD8a01f143c9e3e0C174a856AdFb87D61 already associated with another user
+2025-04-25 16:17:44,496 - main - INFO - Fetching WiFi plans for user Dorothy 
+2025-04-25 16:17:44,520 - main - INFO - Fetching WiFi plans for user Dorothy 
+2025-04-25 16:17:51,451 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:17:51,465 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:17:56,359 - main - INFO - Recording plan purchase for user Dorothy , plan_id 2
+2025-04-25 16:17:56,385 - main - INFO - Started data usage simulation for user Dorothy  after purchasing plan test 3
+2025-04-25 16:17:56,483 - main - INFO - Fetching WiFi plans for user Dorothy 
+2025-04-25 16:18:01,494 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:18:01,496 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:18:07,092 - main - INFO - Simulated 2.90 MB usage for Dorothy  on plan test 3 (Remaining: 79997.10 MB)
+2025-04-25 16:18:11,431 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:18:11,432 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:18:12,696 - main - INFO - Verifying token for user: Dorothy 
+2025-04-25 16:18:12,704 - main - INFO - Verifying token for user: Dorothy 
+2025-04-25 16:18:37,106 - main - INFO - Simulated 1.22 MB usage for Dorothy  on plan test 3 (Remaining: 79995.88 MB)
+2025-04-25 16:19:07,125 - main - INFO - Simulated 0.90 MB usage for Dorothy  on plan test 3 (Remaining: 79994.98 MB)
+2025-04-25 16:19:16,446 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:19:16,463 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:19:37,136 - main - INFO - Simulated 1.30 MB usage for Dorothy  on plan test 3 (Remaining: 79993.68 MB)
+2025-04-25 16:20:07,147 - main - INFO - Simulated 1.60 MB usage for Dorothy  on plan test 3 (Remaining: 79992.08 MB)
+2025-04-25 16:20:16,454 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:20:16,455 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:20:37,165 - main - INFO - Simulated 1.13 MB usage for Dorothy  on plan test 3 (Remaining: 79990.95 MB)
+2025-04-25 16:21:07,176 - main - INFO - Simulated 1.35 MB usage for Dorothy  on plan test 3 (Remaining: 79989.60 MB)
+2025-04-25 16:21:16,443 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:21:16,452 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:21:37,187 - main - INFO - Simulated 1.42 MB usage for Dorothy  on plan test 3 (Remaining: 79988.18 MB)
+2025-04-25 16:22:07,197 - main - INFO - Simulated 1.67 MB usage for Dorothy  on plan test 3 (Remaining: 79986.51 MB)
+2025-04-25 16:22:16,450 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:22:16,492 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:22:37,209 - main - INFO - Simulated 2.07 MB usage for Dorothy  on plan test 3 (Remaining: 79984.44 MB)
+2025-04-25 16:23:07,233 - main - INFO - Simulated 0.22 MB usage for Dorothy  on plan test 3 (Remaining: 79984.22 MB)
+2025-04-25 16:23:16,445 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:23:16,468 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:23:37,254 - main - INFO - Simulated 3.54 MB usage for Dorothy  on plan test 3 (Remaining: 79980.68 MB)
+2025-04-25 16:24:07,276 - main - INFO - Simulated 0.17 MB usage for Dorothy  on plan test 3 (Remaining: 79980.51 MB)
+2025-04-25 16:24:16,452 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-04-25 16:24:16,472 - main - INFO - Fetching pending registrations for ISP isp
+2025-04-25 16:24:37,299 - main - INFO - Simulated 0.86 MB usage for Dorothy  on plan test 3 (Remaining: 79979.65 MB)
+2025-04-25 17:55:25,315 - main - INFO - Simulated 4.77 MB usage for Dorothy  on plan test 3 (Remaining: 79974.89 MB)
+2025-04-25 17:55:55,439 - main - INFO - Simulated 2.33 MB usage for Dorothy  on plan test 3 (Remaining: 79972.55 MB)
+2025-04-25 17:56:25,465 - main - INFO - Simulated 0.32 MB usage for Dorothy  on plan test 3 (Remaining: 79972.24 MB)
+2025-04-25 17:56:55,720 - main - INFO - Simulated 1.42 MB usage for Dorothy  on plan test 3 (Remaining: 79970.81 MB)
+2025-04-25 17:57:25,852 - main - INFO - Simulated 4.50 MB usage for Dorothy  on plan test 3 (Remaining: 79966.31 MB)
+2025-04-25 17:57:55,871 - main - INFO - Simulated 0.18 MB usage for Dorothy  on plan test 3 (Remaining: 79966.13 MB)
+2025-04-25 17:58:25,887 - main - INFO - Simulated 4.17 MB usage for Dorothy  on plan test 3 (Remaining: 79961.95 MB)
+2025-04-25 17:58:55,903 - main - INFO - Simulated 1.81 MB usage for Dorothy  on plan test 3 (Remaining: 79960.14 MB)
+2025-04-25 17:59:25,919 - main - INFO - Simulated 2.64 MB usage for Dorothy  on plan test 3 (Remaining: 79957.50 MB)
+2025-04-25 17:59:55,937 - main - INFO - Simulated 1.72 MB usage for Dorothy  on plan test 3 (Remaining: 79955.78 MB)
+2025-04-25 18:00:25,952 - main - INFO - Simulated 3.78 MB usage for Dorothy  on plan test 3 (Remaining: 79952.00 MB)
