@@ -427,3 +427,833 @@ AttributeError: module 'bcrypt' has no attribute '__about__'
 2025-04-25 17:59:25,919 - main - INFO - Simulated 2.64 MB usage for Dorothy  on plan test 3 (Remaining: 79957.50 MB)
 2025-04-25 17:59:55,937 - main - INFO - Simulated 1.72 MB usage for Dorothy  on plan test 3 (Remaining: 79955.78 MB)
 2025-04-25 18:00:25,952 - main - INFO - Simulated 3.78 MB usage for Dorothy  on plan test 3 (Remaining: 79952.00 MB)
+2025-05-01 15:51:44,692 - main - INFO - Database tables created successfully
+2025-05-01 15:51:44,722 - main - INFO - Started data usage simulation thread
+2025-05-01 15:51:44,722 - main - INFO - Data usage simulation thread started
+2025-05-01 15:51:44,722 - main - DEBUG - No users with active simulations
+2025-05-01 15:52:09,304 - main - INFO - Login attempt for username: isp
+2025-05-01 15:52:09,334 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/home/wes/Desktop/wifi/backend/venv/lib/python3.11/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-05-01 15:52:09,382 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2025-05-01 15:52:09,382 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2025-05-01 15:52:09,761 - main - INFO - OTP sent for user isp
+2025-05-01 15:52:14,091 - emailutils - INFO - OTP sent to peterwesley484@gmail.com
+2025-05-01 15:52:14,724 - main - DEBUG - No users with active simulations
+2025-05-01 15:52:44,724 - main - DEBUG - No users with active simulations
+2025-05-01 15:52:52,226 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Linux"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJpc3AiLCJyb2xlIjoid2lmaV9wcm92aWRlciIsInRlbXAiOnRydWUsImV4cCI6MTc0NjEwNDUyOX0.5E8ZHCXEYekmFS3yK7LEAjunTlx4QIcHU0T0G49ypCQ', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'sec-gpc': '1', 'accept-language': 'en-US,en;q=0.5', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd'}), body={'otp': '298893'}
+2025-05-01 15:52:52,226 - main - INFO - Parsed OTP: 298893, temp_token=eyJhbGciOi...
+2025-05-01 15:52:52,257 - main - INFO - OTP verified for user isp
+2025-05-01 15:53:14,725 - main - DEBUG - No users with active simulations
+2025-05-01 15:53:44,725 - main - DEBUG - No users with active simulations
+2025-05-01 15:54:14,726 - main - DEBUG - No users with active simulations
+2025-05-01 15:54:44,726 - main - DEBUG - No users with active simulations
+2025-05-01 15:55:01,037 - main - INFO - Login attempt for username: user1
+2025-05-01 15:55:01,390 - main - WARNING - Authentication failed for username: user1
+2025-05-01 15:55:14,727 - main - DEBUG - No users with active simulations
+2025-05-01 15:55:29,126 - main - INFO - Login attempt for username: user1
+2025-05-01 15:55:29,473 - main - WARNING - Authentication failed for username: user1
+2025-05-01 15:55:38,487 - main - INFO - Login attempt for username: user1
+2025-05-01 15:55:38,821 - main - WARNING - Authentication failed for username: user1
+2025-05-01 15:55:44,727 - main - DEBUG - No users with active simulations
+2025-05-01 15:56:14,727 - main - DEBUG - No users with active simulations
+2025-05-01 15:56:44,728 - main - DEBUG - No users with active simulations
+2025-05-01 15:57:14,728 - main - DEBUG - No users with active simulations
+2025-05-01 15:57:44,729 - main - DEBUG - No users with active simulations
+2025-05-01 15:58:14,729 - main - DEBUG - No users with active simulations
+2025-05-01 15:58:44,729 - main - DEBUG - No users with active simulations
+2025-05-01 15:59:14,730 - main - DEBUG - No users with active simulations
+2025-05-01 15:59:44,730 - main - DEBUG - No users with active simulations
+2025-05-01 16:00:14,730 - main - DEBUG - No users with active simulations
+2025-05-01 16:00:44,731 - main - DEBUG - No users with active simulations
+2025-05-01 16:01:14,731 - main - DEBUG - No users with active simulations
+2025-05-01 16:01:44,732 - main - DEBUG - No users with active simulations
+2025-05-01 16:02:14,732 - main - DEBUG - No users with active simulations
+2025-05-01 16:02:44,733 - main - DEBUG - No users with active simulations
+2025-05-01 16:03:14,733 - main - DEBUG - No users with active simulations
+2025-05-01 16:03:44,733 - main - DEBUG - No users with active simulations
+2025-05-01 16:04:14,738 - main - DEBUG - No users with active simulations
+2025-05-01 16:04:44,738 - main - DEBUG - No users with active simulations
+2025-05-01 16:05:14,738 - main - DEBUG - No users with active simulations
+2025-05-01 16:05:44,739 - main - DEBUG - No users with active simulations
+2025-05-01 16:06:14,740 - main - DEBUG - No users with active simulations
+2025-05-01 16:06:44,740 - main - DEBUG - No users with active simulations
+2025-05-01 16:07:14,741 - main - DEBUG - No users with active simulations
+2025-05-01 16:07:44,741 - main - DEBUG - No users with active simulations
+2025-05-01 16:08:14,742 - main - DEBUG - No users with active simulations
+2025-05-01 16:08:44,745 - main - DEBUG - No users with active simulations
+2025-05-01 16:09:14,746 - main - DEBUG - No users with active simulations
+2025-05-01 16:09:44,746 - main - DEBUG - No users with active simulations
+2025-05-01 16:10:14,746 - main - DEBUG - No users with active simulations
+2025-05-01 16:10:44,747 - main - DEBUG - No users with active simulations
+2025-05-01 16:11:14,747 - main - DEBUG - No users with active simulations
+2025-05-01 16:11:44,748 - main - DEBUG - No users with active simulations
+2025-05-01 16:12:14,749 - main - DEBUG - No users with active simulations
+2025-05-01 16:12:44,749 - main - DEBUG - No users with active simulations
+2025-05-01 16:13:14,750 - main - DEBUG - No users with active simulations
+2025-05-01 16:13:44,750 - main - DEBUG - No users with active simulations
+2025-05-01 16:14:14,751 - main - DEBUG - No users with active simulations
+2025-05-01 16:14:44,751 - main - DEBUG - No users with active simulations
+2025-05-01 16:15:14,751 - main - DEBUG - No users with active simulations
+2025-05-01 16:15:44,753 - main - DEBUG - No users with active simulations
+2025-05-01 16:16:14,763 - main - DEBUG - No users with active simulations
+2025-05-01 16:16:44,763 - main - DEBUG - No users with active simulations
+2025-05-01 16:17:14,763 - main - DEBUG - No users with active simulations
+2025-05-01 16:17:44,764 - main - DEBUG - No users with active simulations
+2025-05-01 16:18:14,765 - main - DEBUG - No users with active simulations
+2025-05-01 16:18:44,765 - main - DEBUG - No users with active simulations
+2025-05-01 16:19:14,765 - main - DEBUG - No users with active simulations
+2025-05-01 16:19:44,766 - main - DEBUG - No users with active simulations
+2025-05-01 16:20:14,766 - main - DEBUG - No users with active simulations
+2025-05-01 16:20:44,767 - main - DEBUG - No users with active simulations
+2025-05-01 16:26:04,612 - main - INFO - Database tables created successfully
+2025-05-01 16:26:04,644 - main - INFO - Started data usage simulation thread
+2025-05-01 16:26:04,644 - main - INFO - Data usage simulation thread started
+2025-05-01 16:26:04,644 - main - DEBUG - No users with active simulations
+2025-05-01 16:26:34,645 - main - DEBUG - No users with active simulations
+2025-05-01 16:27:04,645 - main - DEBUG - No users with active simulations
+2025-05-01 16:27:34,646 - main - DEBUG - No users with active simulations
+2025-05-01 16:28:04,646 - main - DEBUG - No users with active simulations
+2025-05-01 16:28:34,647 - main - DEBUG - No users with active simulations
+2025-05-01 16:29:04,647 - main - DEBUG - No users with active simulations
+2025-05-01 16:29:34,647 - main - DEBUG - No users with active simulations
+2025-05-01 16:30:04,648 - main - DEBUG - No users with active simulations
+2025-05-01 16:30:34,648 - main - DEBUG - No users with active simulations
+2025-05-01 16:31:04,649 - main - DEBUG - No users with active simulations
+2025-05-01 16:31:34,649 - main - DEBUG - No users with active simulations
+2025-05-01 16:32:04,650 - main - DEBUG - No users with active simulations
+2025-05-01 16:32:34,650 - main - DEBUG - No users with active simulations
+2025-05-01 16:33:04,650 - main - DEBUG - No users with active simulations
+2025-05-01 16:33:34,651 - main - DEBUG - No users with active simulations
+2025-05-01 16:34:04,651 - main - DEBUG - No users with active simulations
+2025-05-01 16:34:34,652 - main - DEBUG - No users with active simulations
+2025-05-01 16:35:04,652 - main - DEBUG - No users with active simulations
+2025-05-01 16:35:34,652 - main - DEBUG - No users with active simulations
+2025-05-01 16:36:04,653 - main - DEBUG - No users with active simulations
+2025-05-01 16:36:34,653 - main - DEBUG - No users with active simulations
+2025-05-01 16:37:04,654 - main - DEBUG - No users with active simulations
+2025-05-01 16:37:34,654 - main - DEBUG - No users with active simulations
+2025-05-01 16:38:04,654 - main - DEBUG - No users with active simulations
+2025-05-01 16:38:34,655 - main - DEBUG - No users with active simulations
+2025-05-01 16:39:04,655 - main - DEBUG - No users with active simulations
+2025-05-01 16:39:34,655 - main - DEBUG - No users with active simulations
+2025-05-01 16:40:04,656 - main - DEBUG - No users with active simulations
+2025-05-01 16:40:34,656 - main - DEBUG - No users with active simulations
+2025-05-01 16:41:04,656 - main - DEBUG - No users with active simulations
+2025-05-01 16:41:34,657 - main - DEBUG - No users with active simulations
+2025-05-01 16:42:04,657 - main - DEBUG - No users with active simulations
+2025-05-01 16:42:34,657 - main - DEBUG - No users with active simulations
+2025-05-01 16:43:04,658 - main - DEBUG - No users with active simulations
+2025-05-01 16:43:34,658 - main - DEBUG - No users with active simulations
+2025-05-01 16:44:04,658 - main - DEBUG - No users with active simulations
+2025-05-01 16:44:34,659 - main - DEBUG - No users with active simulations
+2025-05-01 16:45:04,659 - main - DEBUG - No users with active simulations
+2025-05-01 16:45:34,660 - main - DEBUG - No users with active simulations
+2025-05-01 16:46:04,660 - main - DEBUG - No users with active simulations
+2025-05-01 16:46:34,661 - main - DEBUG - No users with active simulations
+2025-05-01 16:47:04,661 - main - DEBUG - No users with active simulations
+2025-05-01 16:47:34,662 - main - DEBUG - No users with active simulations
+2025-05-01 16:48:04,662 - main - DEBUG - No users with active simulations
+2025-05-01 16:48:34,662 - main - DEBUG - No users with active simulations
+2025-05-01 16:49:04,663 - main - DEBUG - No users with active simulations
+2025-05-01 16:49:34,663 - main - DEBUG - No users with active simulations
+2025-05-01 16:50:04,664 - main - DEBUG - No users with active simulations
+2025-05-01 16:50:34,664 - main - DEBUG - No users with active simulations
+2025-05-01 16:51:04,666 - main - DEBUG - No users with active simulations
+2025-05-01 16:51:34,666 - main - DEBUG - No users with active simulations
+2025-05-01 16:52:04,666 - main - DEBUG - No users with active simulations
+2025-05-01 16:52:34,667 - main - DEBUG - No users with active simulations
+2025-05-01 16:53:04,668 - main - DEBUG - No users with active simulations
+2025-05-01 16:53:34,668 - main - DEBUG - No users with active simulations
+2025-05-01 16:54:04,669 - main - DEBUG - No users with active simulations
+2025-05-01 16:54:34,669 - main - DEBUG - No users with active simulations
+2025-05-01 16:55:04,670 - main - DEBUG - No users with active simulations
+2025-05-01 16:55:34,670 - main - DEBUG - No users with active simulations
+2025-05-01 16:56:04,673 - main - DEBUG - No users with active simulations
+2025-05-01 16:56:34,673 - main - DEBUG - No users with active simulations
+2025-05-01 16:57:04,674 - main - DEBUG - No users with active simulations
+2025-05-01 16:57:34,674 - main - DEBUG - No users with active simulations
+2025-05-01 16:58:04,674 - main - DEBUG - No users with active simulations
+2025-05-01 16:58:34,675 - main - DEBUG - No users with active simulations
+2025-05-01 16:59:04,675 - main - DEBUG - No users with active simulations
+2025-05-01 16:59:34,677 - main - DEBUG - No users with active simulations
+2025-05-01 17:00:04,678 - main - DEBUG - No users with active simulations
+2025-05-01 17:00:34,678 - main - DEBUG - No users with active simulations
+2025-05-01 17:01:04,678 - main - DEBUG - No users with active simulations
+2025-05-01 17:01:34,679 - main - DEBUG - No users with active simulations
+2025-05-01 17:02:04,679 - main - DEBUG - No users with active simulations
+2025-05-01 17:02:34,680 - main - DEBUG - No users with active simulations
+2025-05-01 17:03:04,680 - main - DEBUG - No users with active simulations
+2025-05-01 17:03:34,681 - main - DEBUG - No users with active simulations
+2025-05-01 17:04:04,681 - main - DEBUG - No users with active simulations
+2025-05-01 17:04:34,682 - main - DEBUG - No users with active simulations
+2025-05-01 17:05:04,682 - main - DEBUG - No users with active simulations
+2025-05-01 17:05:34,682 - main - DEBUG - No users with active simulations
+2025-05-01 17:06:04,683 - main - DEBUG - No users with active simulations
+2025-05-01 17:06:34,683 - main - DEBUG - No users with active simulations
+2025-05-01 17:07:04,684 - main - DEBUG - No users with active simulations
+2025-05-01 17:07:34,684 - main - DEBUG - No users with active simulations
+2025-05-01 17:08:04,684 - main - DEBUG - No users with active simulations
+2025-05-01 17:08:34,685 - main - DEBUG - No users with active simulations
+2025-05-01 17:09:04,686 - main - DEBUG - No users with active simulations
+2025-05-01 17:09:34,687 - main - DEBUG - No users with active simulations
+2025-05-01 17:10:04,687 - main - DEBUG - No users with active simulations
+2025-05-01 17:10:34,687 - main - DEBUG - No users with active simulations
+2025-05-01 17:11:04,688 - main - DEBUG - No users with active simulations
+2025-05-01 17:11:34,688 - main - DEBUG - No users with active simulations
+2025-05-01 17:12:04,688 - main - DEBUG - No users with active simulations
+2025-05-01 17:12:34,689 - main - DEBUG - No users with active simulations
+2025-05-01 17:13:04,689 - main - DEBUG - No users with active simulations
+2025-05-01 17:13:34,689 - main - DEBUG - No users with active simulations
+2025-05-01 17:14:04,690 - main - DEBUG - No users with active simulations
+2025-05-01 17:14:34,690 - main - DEBUG - No users with active simulations
+2025-05-01 17:15:04,691 - main - DEBUG - No users with active simulations
+2025-05-01 17:15:34,691 - main - DEBUG - No users with active simulations
+2025-05-01 17:16:04,691 - main - DEBUG - No users with active simulations
+2025-05-01 17:16:34,692 - main - DEBUG - No users with active simulations
+2025-05-01 17:17:04,692 - main - DEBUG - No users with active simulations
+2025-05-01 17:17:34,693 - main - DEBUG - No users with active simulations
+2025-05-01 17:18:04,694 - main - DEBUG - No users with active simulations
+2025-05-01 17:18:34,694 - main - DEBUG - No users with active simulations
+2025-05-01 17:19:04,695 - main - DEBUG - No users with active simulations
+2025-05-01 17:19:34,696 - main - DEBUG - No users with active simulations
+2025-05-01 17:20:04,696 - main - DEBUG - No users with active simulations
+2025-05-01 17:20:34,696 - main - DEBUG - No users with active simulations
+2025-05-01 17:21:04,697 - main - DEBUG - No users with active simulations
+2025-05-01 17:21:34,697 - main - DEBUG - No users with active simulations
+2025-05-01 17:22:04,697 - main - DEBUG - No users with active simulations
+2025-05-01 17:22:34,698 - main - DEBUG - No users with active simulations
+2025-05-01 17:23:04,698 - main - DEBUG - No users with active simulations
+2025-05-01 17:23:34,699 - main - DEBUG - No users with active simulations
+2025-05-01 17:24:04,699 - main - DEBUG - No users with active simulations
+2025-05-01 17:24:34,699 - main - DEBUG - No users with active simulations
+2025-05-01 17:25:04,700 - main - DEBUG - No users with active simulations
+2025-05-01 17:25:34,701 - main - DEBUG - No users with active simulations
+2025-05-01 17:26:04,701 - main - DEBUG - No users with active simulations
+2025-05-01 17:26:34,701 - main - DEBUG - No users with active simulations
+2025-05-01 17:27:04,702 - main - DEBUG - No users with active simulations
+2025-05-01 17:27:34,703 - main - DEBUG - No users with active simulations
+2025-05-01 17:28:04,704 - main - DEBUG - No users with active simulations
+2025-05-01 17:28:34,704 - main - DEBUG - No users with active simulations
+2025-05-01 17:29:04,704 - main - DEBUG - No users with active simulations
+2025-05-01 17:29:34,705 - main - DEBUG - No users with active simulations
+2025-05-01 17:30:04,705 - main - DEBUG - No users with active simulations
+2025-05-01 17:30:34,706 - main - DEBUG - No users with active simulations
+2025-05-01 17:31:04,706 - main - DEBUG - No users with active simulations
+2025-05-01 17:31:34,707 - main - DEBUG - No users with active simulations
+2025-05-01 17:32:04,707 - main - DEBUG - No users with active simulations
+2025-05-01 17:32:34,708 - main - DEBUG - No users with active simulations
+2025-05-01 17:33:04,708 - main - DEBUG - No users with active simulations
+2025-05-01 17:33:34,708 - main - DEBUG - No users with active simulations
+2025-05-01 17:34:04,709 - main - DEBUG - No users with active simulations
+2025-05-01 17:34:34,709 - main - DEBUG - No users with active simulations
+2025-05-01 17:35:04,709 - main - DEBUG - No users with active simulations
+2025-05-01 17:35:34,710 - main - DEBUG - No users with active simulations
+2025-05-01 17:36:04,711 - main - DEBUG - No users with active simulations
+2025-05-01 17:36:34,711 - main - DEBUG - No users with active simulations
+2025-05-01 17:37:04,713 - main - DEBUG - No users with active simulations
+2025-05-01 17:37:34,714 - main - DEBUG - No users with active simulations
+2025-05-01 17:38:04,714 - main - DEBUG - No users with active simulations
+2025-05-01 17:38:34,715 - main - DEBUG - No users with active simulations
+2025-05-01 17:39:04,715 - main - DEBUG - No users with active simulations
+2025-05-01 17:39:34,716 - main - DEBUG - No users with active simulations
+2025-05-01 17:40:04,716 - main - DEBUG - No users with active simulations
+2025-05-01 17:40:34,716 - main - DEBUG - No users with active simulations
+2025-05-01 17:41:04,717 - main - DEBUG - No users with active simulations
+2025-05-01 17:41:34,717 - main - DEBUG - No users with active simulations
+2025-05-01 17:42:04,718 - main - DEBUG - No users with active simulations
+2025-05-01 17:42:34,719 - main - DEBUG - No users with active simulations
+2025-05-01 17:43:04,719 - main - DEBUG - No users with active simulations
+2025-05-01 17:43:34,720 - main - DEBUG - No users with active simulations
+2025-05-01 17:44:04,721 - main - DEBUG - No users with active simulations
+2025-05-01 17:44:34,722 - main - DEBUG - No users with active simulations
+2025-05-01 17:45:04,723 - main - DEBUG - No users with active simulations
+2025-05-01 17:45:34,723 - main - DEBUG - No users with active simulations
+2025-05-01 17:46:04,724 - main - DEBUG - No users with active simulations
+2025-05-01 17:46:34,724 - main - DEBUG - No users with active simulations
+2025-05-01 17:47:04,725 - main - DEBUG - No users with active simulations
+2025-05-01 17:47:34,725 - main - DEBUG - No users with active simulations
+2025-05-01 17:48:04,725 - main - DEBUG - No users with active simulations
+2025-05-01 17:48:34,726 - main - DEBUG - No users with active simulations
+2025-05-01 17:49:04,726 - main - DEBUG - No users with active simulations
+2025-05-01 17:49:34,727 - main - DEBUG - No users with active simulations
+2025-05-01 17:50:04,727 - main - DEBUG - No users with active simulations
+2025-05-01 17:50:34,727 - main - DEBUG - No users with active simulations
+2025-05-01 17:51:04,728 - main - DEBUG - No users with active simulations
+2025-05-01 17:51:34,729 - main - DEBUG - No users with active simulations
+2025-05-01 17:52:04,729 - main - DEBUG - No users with active simulations
+2025-05-01 17:52:34,730 - main - DEBUG - No users with active simulations
+2025-05-01 17:53:04,730 - main - DEBUG - No users with active simulations
+2025-05-01 17:53:34,730 - main - DEBUG - No users with active simulations
+2025-05-01 17:54:04,731 - main - DEBUG - No users with active simulations
+2025-05-01 17:54:34,731 - main - DEBUG - No users with active simulations
+2025-05-01 17:55:04,732 - main - DEBUG - No users with active simulations
+2025-05-01 17:55:34,733 - main - DEBUG - No users with active simulations
+2025-05-01 17:56:04,733 - main - DEBUG - No users with active simulations
+2025-05-01 17:56:34,734 - main - DEBUG - No users with active simulations
+2025-05-01 17:57:04,734 - main - DEBUG - No users with active simulations
+2025-05-01 17:57:34,735 - main - DEBUG - No users with active simulations
+2025-05-01 17:58:04,736 - main - DEBUG - No users with active simulations
+2025-05-01 17:58:34,736 - main - DEBUG - No users with active simulations
+2025-05-01 17:59:04,737 - main - DEBUG - No users with active simulations
+2025-05-01 17:59:34,737 - main - DEBUG - No users with active simulations
+2025-05-01 18:00:04,738 - main - DEBUG - No users with active simulations
+2025-05-01 18:00:34,739 - main - DEBUG - No users with active simulations
+2025-05-01 18:01:04,739 - main - DEBUG - No users with active simulations
+2025-05-01 18:01:34,739 - main - DEBUG - No users with active simulations
+2025-05-01 18:02:04,740 - main - DEBUG - No users with active simulations
+2025-05-01 18:02:34,740 - main - DEBUG - No users with active simulations
+2025-05-01 18:03:04,741 - main - DEBUG - No users with active simulations
+2025-05-01 18:03:34,741 - main - DEBUG - No users with active simulations
+2025-05-01 18:04:04,742 - main - DEBUG - No users with active simulations
+2025-05-01 18:04:34,743 - main - DEBUG - No users with active simulations
+2025-05-01 18:05:04,743 - main - DEBUG - No users with active simulations
+2025-05-01 18:05:34,744 - main - DEBUG - No users with active simulations
+2025-05-01 18:06:04,745 - main - DEBUG - No users with active simulations
+2025-05-01 18:06:34,745 - main - DEBUG - No users with active simulations
+2025-05-01 18:07:04,746 - main - DEBUG - No users with active simulations
+2025-05-01 18:07:34,746 - main - DEBUG - No users with active simulations
+2025-05-01 18:08:04,747 - main - DEBUG - No users with active simulations
+2025-05-01 18:08:34,747 - main - DEBUG - No users with active simulations
+2025-05-01 18:09:04,748 - main - DEBUG - No users with active simulations
+2025-05-01 18:09:34,748 - main - DEBUG - No users with active simulations
+2025-05-01 18:10:04,749 - main - DEBUG - No users with active simulations
+2025-05-01 18:10:34,750 - main - DEBUG - No users with active simulations
+2025-05-01 18:11:04,750 - main - DEBUG - No users with active simulations
+2025-05-01 18:11:34,751 - main - DEBUG - No users with active simulations
+2025-05-01 18:12:04,752 - main - DEBUG - No users with active simulations
+2025-05-01 18:12:34,752 - main - DEBUG - No users with active simulations
+2025-05-01 18:13:04,752 - main - DEBUG - No users with active simulations
+2025-05-01 18:13:34,753 - main - DEBUG - No users with active simulations
+2025-05-01 18:14:04,753 - main - DEBUG - No users with active simulations
+2025-05-01 18:14:34,753 - main - DEBUG - No users with active simulations
+2025-05-01 18:15:04,754 - main - DEBUG - No users with active simulations
+2025-05-01 18:15:34,754 - main - DEBUG - No users with active simulations
+2025-05-01 18:16:04,754 - main - DEBUG - No users with active simulations
+2025-05-01 18:16:34,755 - main - DEBUG - No users with active simulations
+2025-05-01 18:17:04,756 - main - DEBUG - No users with active simulations
+2025-05-01 18:17:34,757 - main - DEBUG - No users with active simulations
+2025-05-01 18:18:04,757 - main - DEBUG - No users with active simulations
+2025-05-01 18:18:34,757 - main - DEBUG - No users with active simulations
+2025-05-01 18:19:04,758 - main - DEBUG - No users with active simulations
+2025-05-01 18:19:34,758 - main - DEBUG - No users with active simulations
+2025-05-01 18:20:04,759 - main - DEBUG - No users with active simulations
+2025-05-01 18:20:34,759 - main - DEBUG - No users with active simulations
+2025-05-01 18:21:04,759 - main - DEBUG - No users with active simulations
+2025-05-01 18:21:34,760 - main - DEBUG - No users with active simulations
+2025-05-01 18:22:04,760 - main - DEBUG - No users with active simulations
+2025-05-01 18:22:34,761 - main - DEBUG - No users with active simulations
+2025-05-01 18:23:04,761 - main - DEBUG - No users with active simulations
+2025-05-01 18:23:34,761 - main - DEBUG - No users with active simulations
+2025-05-01 18:24:04,762 - main - DEBUG - No users with active simulations
+2025-05-01 18:24:34,763 - main - DEBUG - No users with active simulations
+2025-05-01 18:25:04,764 - main - DEBUG - No users with active simulations
+2025-05-01 18:25:34,765 - main - DEBUG - No users with active simulations
+2025-05-01 18:26:04,765 - main - DEBUG - No users with active simulations
+2025-05-01 18:26:34,766 - main - DEBUG - No users with active simulations
+2025-05-01 18:27:04,766 - main - DEBUG - No users with active simulations
+2025-05-01 18:27:34,766 - main - DEBUG - No users with active simulations
+2025-05-01 18:28:04,767 - main - DEBUG - No users with active simulations
+2025-05-01 18:28:34,767 - main - DEBUG - No users with active simulations
+2025-05-01 18:29:04,767 - main - DEBUG - No users with active simulations
+2025-05-01 18:29:34,768 - main - DEBUG - No users with active simulations
+2025-05-01 18:30:04,769 - main - DEBUG - No users with active simulations
+2025-05-01 18:30:34,769 - main - DEBUG - No users with active simulations
+2025-05-01 18:31:04,770 - main - DEBUG - No users with active simulations
+2025-05-01 18:31:34,771 - main - DEBUG - No users with active simulations
+2025-05-01 18:32:04,771 - main - DEBUG - No users with active simulations
+2025-05-01 18:32:34,771 - main - DEBUG - No users with active simulations
+2025-05-01 18:33:04,772 - main - DEBUG - No users with active simulations
+2025-05-01 18:33:34,772 - main - DEBUG - No users with active simulations
+2025-05-01 18:34:04,773 - main - DEBUG - No users with active simulations
+2025-05-01 18:34:34,773 - main - DEBUG - No users with active simulations
+2025-05-01 18:35:04,774 - main - DEBUG - No users with active simulations
+2025-05-01 18:35:34,774 - main - DEBUG - No users with active simulations
+2025-05-01 18:36:04,774 - main - DEBUG - No users with active simulations
+2025-05-01 18:36:34,775 - main - DEBUG - No users with active simulations
+2025-05-01 18:37:04,775 - main - DEBUG - No users with active simulations
+2025-05-01 18:37:34,775 - main - DEBUG - No users with active simulations
+2025-05-01 18:38:04,776 - main - DEBUG - No users with active simulations
+2025-05-01 18:38:34,777 - main - DEBUG - No users with active simulations
+2025-05-01 18:39:04,777 - main - DEBUG - No users with active simulations
+2025-05-01 18:39:34,778 - main - DEBUG - No users with active simulations
+2025-05-01 18:40:04,779 - main - DEBUG - No users with active simulations
+2025-05-01 18:40:34,779 - main - DEBUG - No users with active simulations
+2025-05-01 18:41:04,780 - main - DEBUG - No users with active simulations
+2025-05-01 18:41:34,780 - main - DEBUG - No users with active simulations
+2025-05-01 18:42:04,780 - main - DEBUG - No users with active simulations
+2025-05-01 18:42:34,781 - main - DEBUG - No users with active simulations
+2025-05-01 18:43:04,781 - main - DEBUG - No users with active simulations
+2025-05-01 18:43:34,781 - main - DEBUG - No users with active simulations
+2025-05-01 18:44:04,782 - main - DEBUG - No users with active simulations
+2025-05-01 18:44:34,782 - main - DEBUG - No users with active simulations
+2025-05-01 18:45:04,783 - main - DEBUG - No users with active simulations
+2025-05-01 18:45:34,783 - main - DEBUG - No users with active simulations
+2025-05-01 18:46:04,784 - main - DEBUG - No users with active simulations
+2025-05-01 18:46:34,785 - main - DEBUG - No users with active simulations
+2025-05-01 18:47:04,785 - main - DEBUG - No users with active simulations
+2025-05-01 18:47:34,786 - main - DEBUG - No users with active simulations
+2025-05-01 18:48:04,786 - main - DEBUG - No users with active simulations
+2025-05-01 18:48:34,787 - main - DEBUG - No users with active simulations
+2025-05-01 18:49:04,787 - main - DEBUG - No users with active simulations
+2025-05-01 18:49:34,788 - main - DEBUG - No users with active simulations
+2025-05-01 18:50:04,788 - main - DEBUG - No users with active simulations
+2025-05-01 18:50:34,788 - main - DEBUG - No users with active simulations
+2025-05-01 18:51:04,789 - main - DEBUG - No users with active simulations
+2025-05-01 18:51:20,296 - main - INFO - Database tables created successfully
+2025-05-01 18:51:20,325 - main - INFO - Started data usage simulation thread
+2025-05-01 18:51:20,325 - main - INFO - Data usage simulation thread started
+2025-05-01 18:51:20,325 - main - DEBUG - No users with active simulations
+2025-05-01 18:51:41,330 - main - INFO - Database tables created successfully
+2025-05-01 18:51:41,357 - main - INFO - Started data usage simulation thread
+2025-05-01 18:51:41,357 - main - INFO - Data usage simulation thread started
+2025-05-01 18:51:41,358 - main - DEBUG - No users with active simulations
+2025-05-01 18:52:11,359 - main - DEBUG - No users with active simulations
+2025-05-01 18:52:22,005 - main - INFO - Database tables created successfully
+2025-05-01 18:52:22,031 - main - INFO - Started data usage simulation thread
+2025-05-01 18:52:22,031 - main - INFO - Data usage simulation thread started
+2025-05-01 18:52:22,031 - main - DEBUG - No users with active simulations
+2025-05-01 18:52:52,032 - main - DEBUG - No users with active simulations
+2025-05-01 18:53:22,033 - main - DEBUG - No users with active simulations
+2025-05-01 18:53:52,033 - main - DEBUG - No users with active simulations
+2025-05-01 18:54:22,034 - main - DEBUG - No users with active simulations
+2025-05-01 18:54:52,034 - main - DEBUG - No users with active simulations
+2025-05-01 18:55:22,034 - main - DEBUG - No users with active simulations
+2025-05-01 18:55:52,040 - main - DEBUG - No users with active simulations
+2025-05-01 18:56:22,040 - main - DEBUG - No users with active simulations
+2025-05-01 18:56:52,041 - main - DEBUG - No users with active simulations
+2025-05-01 18:57:22,042 - main - DEBUG - No users with active simulations
+2025-05-01 18:57:52,042 - main - DEBUG - No users with active simulations
+2025-05-01 18:58:22,042 - main - DEBUG - No users with active simulations
+2025-05-01 18:58:52,043 - main - DEBUG - No users with active simulations
+2025-05-01 18:59:22,043 - main - DEBUG - No users with active simulations
+2025-05-01 18:59:52,044 - main - DEBUG - No users with active simulations
+2025-05-01 19:00:22,044 - main - DEBUG - No users with active simulations
+2025-05-01 19:00:52,044 - main - DEBUG - No users with active simulations
+2025-05-01 19:01:22,045 - main - DEBUG - No users with active simulations
+2025-05-01 19:01:52,045 - main - DEBUG - No users with active simulations
+2025-05-01 19:02:22,045 - main - DEBUG - No users with active simulations
+2025-05-01 19:02:52,046 - main - DEBUG - No users with active simulations
+2025-05-01 19:03:22,046 - main - DEBUG - No users with active simulations
+2025-05-01 19:03:52,047 - main - DEBUG - No users with active simulations
+2025-05-01 19:04:22,047 - main - DEBUG - No users with active simulations
+2025-05-01 19:04:52,047 - main - DEBUG - No users with active simulations
+2025-05-01 19:05:22,048 - main - DEBUG - No users with active simulations
+2025-05-01 19:05:52,048 - main - DEBUG - No users with active simulations
+2025-05-01 19:06:05,583 - main - INFO - Database tables created successfully
+2025-05-01 19:06:05,617 - main - INFO - Started data usage simulation thread
+2025-05-01 19:06:05,618 - main - INFO - Data usage simulation thread started
+2025-05-01 19:06:05,618 - main - DEBUG - No users with active simulations
+2025-05-01 19:06:07,073 - main - INFO - Database tables created successfully
+2025-05-01 19:06:07,105 - main - INFO - Started data usage simulation thread
+2025-05-01 19:06:07,106 - main - INFO - Data usage simulation thread started
+2025-05-01 19:06:07,106 - main - DEBUG - No users with active simulations
+2025-05-01 19:06:33,998 - main - INFO - Database tables created successfully
+2025-05-01 19:06:34,023 - main - INFO - Started data usage simulation thread
+2025-05-01 19:06:34,024 - main - DEBUG - No users with active simulations
+2025-05-01 19:06:34,024 - main - INFO - Data usage simulation thread started
+2025-05-01 19:06:35,855 - main - INFO - Database tables created successfully
+2025-05-01 19:06:35,912 - main - INFO - Started data usage simulation thread
+2025-05-01 19:06:35,912 - main - INFO - Data usage simulation thread started
+2025-05-01 19:06:35,913 - main - DEBUG - No users with active simulations
+2025-05-01 19:06:38,132 - main - INFO - Database tables created successfully
+2025-05-01 19:06:38,164 - main - INFO - Started data usage simulation thread
+2025-05-01 19:06:38,165 - main - INFO - Data usage simulation thread started
+2025-05-01 19:06:38,165 - main - DEBUG - No users with active simulations
+2025-05-01 19:06:39,519 - main - INFO - Database tables created successfully
+2025-05-01 19:06:39,547 - main - INFO - Started data usage simulation thread
+2025-05-01 19:06:39,547 - main - INFO - Data usage simulation thread started
+2025-05-01 19:06:39,547 - main - DEBUG - No users with active simulations
+2025-05-01 19:07:01,934 - main - INFO - Database tables created successfully
+2025-05-01 19:07:01,980 - main - INFO - Started data usage simulation thread
+2025-05-01 19:07:01,981 - main - INFO - Data usage simulation thread started
+2025-05-01 19:07:01,981 - main - DEBUG - No users with active simulations
+2025-05-01 19:07:04,457 - main - INFO - Database tables created successfully
+2025-05-01 19:07:04,481 - main - INFO - Started data usage simulation thread
+2025-05-01 19:07:04,482 - main - INFO - Data usage simulation thread started
+2025-05-01 19:07:06,151 - main - INFO - Database tables created successfully
+2025-05-01 19:07:30,355 - main - INFO - Database tables created successfully
+2025-05-01 19:07:44,807 - main - INFO - Database tables created successfully
+2025-05-01 19:07:47,552 - main - INFO - Database tables created successfully
+2025-05-01 19:07:57,129 - main - INFO - Database tables created successfully
+2025-05-01 19:07:59,112 - main - INFO - Database tables created successfully
+2025-05-01 19:08:16,331 - main - INFO - Database tables created successfully
+2025-05-01 19:08:29,727 - main - INFO - Database tables created successfully
+2025-05-01 19:08:32,301 - main - INFO - Database tables created successfully
+2025-05-01 19:08:35,524 - main - INFO - Database tables created successfully
+2025-05-01 19:08:35,574 - main - INFO - Started data usage simulation thread
+2025-05-01 19:08:35,574 - main - INFO - Data usage simulation thread started
+2025-05-01 19:08:35,574 - main - DEBUG - No users with active simulations
+2025-05-01 19:09:05,575 - main - DEBUG - No users with active simulations
+2025-05-01 19:09:35,576 - main - DEBUG - No users with active simulations
+2025-05-01 19:10:05,576 - main - DEBUG - No users with active simulations
+2025-05-01 19:10:35,577 - main - DEBUG - No users with active simulations
+2025-05-01 19:11:05,580 - main - DEBUG - No users with active simulations
+2025-05-01 19:11:35,580 - main - DEBUG - No users with active simulations
+2025-05-01 19:12:05,580 - main - DEBUG - No users with active simulations
+2025-05-01 19:12:35,581 - main - DEBUG - No users with active simulations
+2025-05-01 19:13:05,584 - main - DEBUG - No users with active simulations
+2025-05-01 19:13:35,585 - main - DEBUG - No users with active simulations
+2025-05-01 19:14:05,586 - main - DEBUG - No users with active simulations
+2025-05-01 19:14:35,587 - main - DEBUG - No users with active simulations
+2025-05-01 19:15:05,588 - main - DEBUG - No users with active simulations
+2025-05-01 19:21:48,358 - main - INFO - Database tables created successfully
+2025-05-01 19:21:48,415 - main - INFO - Started data usage simulation thread
+2025-05-01 19:21:48,415 - main - INFO - Data usage simulation thread started
+2025-05-01 19:21:48,415 - main - DEBUG - No users with active simulations
+2025-05-01 19:22:18,416 - main - DEBUG - No users with active simulations
+2025-05-01 19:22:48,417 - main - DEBUG - No users with active simulations
+2025-05-01 19:23:18,417 - main - DEBUG - No users with active simulations
+2025-05-01 19:23:48,417 - main - DEBUG - No users with active simulations
+2025-05-01 19:24:18,418 - main - DEBUG - No users with active simulations
+2025-05-01 19:24:48,418 - main - DEBUG - No users with active simulations
+2025-05-01 19:24:50,010 - main - INFO - Register attempt for username: Admin
+2025-05-01 19:24:50,057 - main - ERROR - Error in register: 400: Invalid wallet address format
+2025-05-01 19:25:18,419 - main - DEBUG - No users with active simulations
+2025-05-01 19:25:48,419 - main - DEBUG - No users with active simulations
+2025-05-01 19:26:18,421 - main - DEBUG - No users with active simulations
+2025-05-01 19:26:48,422 - main - DEBUG - No users with active simulations
+2025-05-01 19:27:18,437 - main - DEBUG - No users with active simulations
+2025-05-01 19:27:48,438 - main - DEBUG - No users with active simulations
+2025-05-01 19:28:05,458 - main - INFO - Register attempt for username: Admin
+2025-05-01 19:28:05,555 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/home/wes/Desktop/wifi/backend/venv/lib/python3.11/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-05-01 19:28:05,658 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2025-05-01 19:28:05,658 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2025-05-01 19:28:06,251 - main - INFO - Pending registration created for: Admin
+2025-05-01 19:28:18,439 - main - DEBUG - No users with active simulations
+2025-05-01 19:28:48,439 - main - DEBUG - No users with active simulations
+2025-05-01 19:29:18,440 - main - DEBUG - No users with active simulations
+2025-05-01 19:29:48,441 - main - DEBUG - No users with active simulations
+2025-05-01 19:30:18,441 - main - DEBUG - No users with active simulations
+2025-05-01 19:30:48,442 - main - DEBUG - No users with active simulations
+2025-05-01 19:31:18,442 - main - DEBUG - No users with active simulations
+2025-05-01 19:31:48,443 - main - DEBUG - No users with active simulations
+2025-05-01 19:32:18,443 - main - DEBUG - No users with active simulations
+2025-05-01 19:32:48,444 - main - DEBUG - No users with active simulations
+2025-05-01 19:33:18,444 - main - DEBUG - No users with active simulations
+2025-05-01 19:33:48,444 - main - DEBUG - No users with active simulations
+2025-05-01 19:34:18,445 - main - DEBUG - No users with active simulations
+2025-05-01 19:34:48,445 - main - DEBUG - No users with active simulations
+2025-05-01 19:35:18,446 - main - DEBUG - No users with active simulations
+2025-05-01 19:35:48,446 - main - DEBUG - No users with active simulations
+2025-05-01 19:36:18,446 - main - DEBUG - No users with active simulations
+2025-05-01 19:36:48,447 - main - DEBUG - No users with active simulations
+2025-05-01 19:37:18,474 - main - DEBUG - No users with active simulations
+2025-05-01 19:38:19,872 - main - INFO - Database tables created successfully
+2025-05-01 19:38:19,912 - main - INFO - Started data usage simulation thread
+2025-05-01 19:38:19,913 - main - INFO - Data usage simulation thread started
+2025-05-01 19:38:19,914 - main - DEBUG - No users with active simulations
+2025-05-01 19:38:49,914 - main - DEBUG - No users with active simulations
+2025-05-01 19:39:19,915 - main - DEBUG - No users with active simulations
+2025-05-01 19:39:49,915 - main - DEBUG - No users with active simulations
+2025-05-01 19:40:19,916 - main - DEBUG - No users with active simulations
+2025-05-01 19:40:49,917 - main - DEBUG - No users with active simulations
+2025-05-01 19:40:58,208 - main - INFO - Admin register attempt for username: Admin
+2025-05-01 19:40:58,357 - main - ERROR - Error in register_admin: 400: Username is pending registration
+2025-05-01 19:41:19,917 - main - DEBUG - No users with active simulations
+2025-05-01 19:41:36,132 - main - INFO - Admin register attempt for username: Admin
+2025-05-01 19:41:36,152 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/home/wes/Desktop/wifi/backend/venv/lib/python3.11/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-05-01 19:41:36,259 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2025-05-01 19:41:36,260 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2025-05-01 19:41:36,917 - main - INFO - Admin registered: Admin
+2025-05-01 19:41:49,918 - main - DEBUG - No users with active simulations
+2025-05-01 19:42:19,919 - main - DEBUG - No users with active simulations
+2025-05-01 19:42:32,345 - main - INFO - Login attempt for username: Admin
+2025-05-01 19:42:49,919 - main - DEBUG - No users with active simulations
+2025-05-01 19:43:13,697 - main - INFO - Login attempt for username: Admin
+2025-05-01 19:43:14,265 - main - INFO - OTP sent for user Admin
+2025-05-01 19:43:19,148 - emailutils - INFO - OTP sent to peterwesley484@gmail.com
+2025-05-01 19:43:19,920 - main - DEBUG - No users with active simulations
+2025-05-01 19:43:49,920 - main - DEBUG - No users with active simulations
+2025-05-01 19:43:54,347 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Linux"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBZG1pbiIsInJvbGUiOiJ3aWZpX3Byb3ZpZGVyIiwidGVtcCI6dHJ1ZSwiZXhwIjoxNzQ2MTE4Mzk0fQ.Ze-pi5a9Lg2ofTum81eB3n7nKYS5HtbjNYLoEnyvruI', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'sec-gpc': '1', 'accept-language': 'en-US,en;q=0.5', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd'}), body={'otp': '901835'}
+2025-05-01 19:43:54,347 - main - INFO - Parsed OTP: 901835, temp_token=eyJhbGciOi...
+2025-05-01 19:43:54,616 - main - INFO - OTP verified for user Admin
+2025-05-01 19:44:19,920 - main - DEBUG - No users with active simulations
+2025-05-01 19:44:49,921 - main - DEBUG - No users with active simulations
+2025-05-01 19:45:19,921 - main - DEBUG - No users with active simulations
+2025-05-01 19:45:49,921 - main - DEBUG - No users with active simulations
+2025-05-01 19:46:19,922 - main - DEBUG - No users with active simulations
+2025-05-01 19:46:49,922 - main - DEBUG - No users with active simulations
+2025-05-01 19:47:19,923 - main - DEBUG - No users with active simulations
+2025-05-01 19:47:49,923 - main - DEBUG - No users with active simulations
+2025-05-01 19:48:19,924 - main - DEBUG - No users with active simulations
+2025-05-01 19:48:49,924 - main - DEBUG - No users with active simulations
+2025-05-01 19:49:19,925 - main - DEBUG - No users with active simulations
+2025-05-01 19:49:49,926 - main - DEBUG - No users with active simulations
+2025-05-01 19:50:19,926 - main - DEBUG - No users with active simulations
+2025-05-01 19:50:49,927 - main - DEBUG - No users with active simulations
+2025-05-01 19:51:19,927 - main - DEBUG - No users with active simulations
+2025-05-01 19:51:49,927 - main - DEBUG - No users with active simulations
+2025-05-01 19:52:19,928 - main - DEBUG - No users with active simulations
+2025-05-01 19:52:49,929 - main - DEBUG - No users with active simulations
+2025-05-01 19:53:19,981 - main - DEBUG - No users with active simulations
+2025-05-01 19:53:49,982 - main - DEBUG - No users with active simulations
+2025-05-01 19:54:19,983 - main - DEBUG - No users with active simulations
+2025-05-01 19:54:49,983 - main - DEBUG - No users with active simulations
+2025-05-01 19:55:19,984 - main - DEBUG - No users with active simulations
+2025-05-01 19:55:49,984 - main - DEBUG - No users with active simulations
+2025-05-01 19:56:19,985 - main - DEBUG - No users with active simulations
+2025-05-01 19:56:49,993 - main - DEBUG - No users with active simulations
+2025-05-01 19:57:19,994 - main - DEBUG - No users with active simulations
+2025-05-01 19:57:49,996 - main - DEBUG - No users with active simulations
+2025-05-01 19:58:20,143 - main - DEBUG - No users with active simulations
+2025-05-01 19:58:50,143 - main - DEBUG - No users with active simulations
+2025-05-01 19:59:20,144 - main - DEBUG - No users with active simulations
+2025-05-01 19:59:50,144 - main - DEBUG - No users with active simulations
+2025-05-01 20:00:20,144 - main - DEBUG - No users with active simulations
+2025-05-01 20:00:50,145 - main - DEBUG - No users with active simulations
+2025-05-01 20:01:20,145 - main - DEBUG - No users with active simulations
+2025-05-01 20:01:50,146 - main - DEBUG - No users with active simulations
+2025-05-01 20:02:20,146 - main - DEBUG - No users with active simulations
+2025-05-01 20:02:50,146 - main - DEBUG - No users with active simulations
+2025-05-01 20:03:20,147 - main - DEBUG - No users with active simulations
+2025-05-01 20:03:50,147 - main - DEBUG - No users with active simulations
+2025-05-01 20:04:20,148 - main - DEBUG - No users with active simulations
+2025-05-01 20:04:50,148 - main - DEBUG - No users with active simulations
+2025-05-02 05:01:14,068 - main - INFO - Database tables created successfully
+2025-05-02 05:01:14,116 - main - INFO - Started data usage simulation thread
+2025-05-02 05:01:14,116 - main - DEBUG - No users with active simulations
+2025-05-02 05:01:14,117 - main - INFO - Data usage simulation thread started
+2025-05-02 05:01:44,117 - main - DEBUG - No users with active simulations
+2025-05-02 05:02:14,117 - main - DEBUG - No users with active simulations
+2025-05-02 05:02:44,118 - main - DEBUG - No users with active simulations
+2025-05-02 05:03:14,283 - main - DEBUG - No users with active simulations
+2025-05-02 05:03:44,284 - main - DEBUG - No users with active simulations
+2025-05-02 05:04:14,285 - main - DEBUG - No users with active simulations
+2025-05-02 05:04:44,285 - main - DEBUG - No users with active simulations
+2025-05-02 05:05:14,286 - main - DEBUG - No users with active simulations
+2025-05-02 05:05:44,286 - main - DEBUG - No users with active simulations
+2025-05-02 05:06:14,286 - main - DEBUG - No users with active simulations
+2025-05-02 05:06:44,287 - main - DEBUG - No users with active simulations
+2025-05-02 05:07:14,287 - main - DEBUG - No users with active simulations
+2025-05-02 05:07:44,288 - main - DEBUG - No users with active simulations
+2025-05-02 05:08:14,288 - main - DEBUG - No users with active simulations
+2025-05-02 05:08:44,288 - main - DEBUG - No users with active simulations
+2025-05-02 05:09:14,289 - main - DEBUG - No users with active simulations
+2025-05-02 05:09:44,290 - main - DEBUG - No users with active simulations
+2025-05-02 05:10:14,290 - main - DEBUG - No users with active simulations
+2025-05-02 05:10:42,416 - main - INFO - Login attempt for username: Admin
+2025-05-02 05:10:42,603 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/home/wes/Desktop/wifi/backend/venv/lib/python3.11/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-05-02 05:10:42,604 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2025-05-02 05:10:42,604 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2025-05-02 05:10:42,971 - main - INFO - OTP sent for user Admin
+2025-05-02 05:10:44,291 - main - DEBUG - No users with active simulations
+2025-05-02 05:10:48,264 - emailutils - INFO - OTP sent to peterwesley484@gmail.com
+2025-05-02 05:11:14,291 - main - DEBUG - No users with active simulations
+2025-05-02 05:11:16,925 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Linux"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBZG1pbiIsInJvbGUiOiJ3aWZpX3Byb3ZpZGVyIiwidGVtcCI6dHJ1ZSwiZXhwIjoxNzQ2MTUyNDQyfQ.LZlnjUcwA2ryAoO6R8TjDsF6S5jxYAg2HxR0QQ0_I2k', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'sec-gpc': '1', 'accept-language': 'en-US,en;q=0.5', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd'}), body={'otp': '916761'}
+2025-05-02 05:11:16,926 - main - INFO - Parsed OTP: 916761, temp_token=eyJhbGciOi...
+2025-05-02 05:11:16,959 - main - INFO - OTP verified for user Admin
+2025-05-02 05:11:44,292 - main - DEBUG - No users with active simulations
+2025-05-02 05:11:44,775 - main - INFO - Updated wallet address for user Admin to 0xC4Deb43c6B729cA2EA7508E5f4C39f0129A93E5d
+2025-05-02 05:11:46,809 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 05:12:14,292 - main - DEBUG - No users with active simulations
+2025-05-02 05:12:30,581 - main - INFO - Created WiFi plan: test1 by ISP Admin
+2025-05-02 05:12:44,293 - main - DEBUG - No users with active simulations
+2025-05-02 05:12:57,066 - main - INFO - Created WiFi plan: test2 by ISP Admin
+2025-05-02 05:13:14,294 - main - DEBUG - No users with active simulations
+2025-05-02 05:13:22,247 - main - INFO - Created WiFi plan: test 3 by ISP Admin
+2025-05-02 05:13:44,294 - main - DEBUG - No users with active simulations
+2025-05-02 05:13:44,347 - main - INFO - Created WiFi plan: test 4 by ISP Admin
+2025-05-02 05:14:14,294 - main - DEBUG - No users with active simulations
+2025-05-02 05:14:44,295 - main - DEBUG - No users with active simulations
+2025-05-02 05:14:47,532 - main - INFO - Register attempt for username: user1
+2025-05-02 05:14:49,220 - main - INFO - Pending registration created for: user1
+2025-05-02 05:15:13,989 - main - INFO - Login attempt for username: Admin
+2025-05-02 05:15:14,296 - main - DEBUG - No users with active simulations
+2025-05-02 05:15:14,336 - main - INFO - OTP sent for user Admin
+2025-05-02 05:15:17,601 - emailutils - INFO - OTP sent to peterwesley484@gmail.com
+2025-05-02 05:15:36,323 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Linux"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBZG1pbiIsInJvbGUiOiJ3aWZpX3Byb3ZpZGVyIiwidGVtcCI6dHJ1ZSwiZXhwIjoxNzQ2MTUyNzE0fQ.OpFYIhMziTWBacBhTsboq5jNCgYttUZTOQioNdzY510', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'sec-gpc': '1', 'accept-language': 'en-US,en;q=0.5', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd'}), body={'otp': '054276'}
+2025-05-02 05:15:36,323 - main - INFO - Parsed OTP: 054276, temp_token=eyJhbGciOi...
+2025-05-02 05:15:36,326 - main - INFO - OTP verified for user Admin
+2025-05-02 05:15:44,297 - main - DEBUG - No users with active simulations
+2025-05-02 05:15:45,582 - main - INFO - Updated wallet address for user Admin to 0xC4Deb43c6B729cA2EA7508E5f4C39f0129A93E5d
+2025-05-02 05:15:45,659 - main - INFO - Updated wallet address for user Admin to 0xC4Deb43c6B729cA2EA7508E5f4C39f0129A93E5d
+2025-05-02 05:15:45,662 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 05:15:45,748 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 05:15:55,747 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 05:16:00,099 - main - INFO - Confirming registration for pending_id: 1 by ISP Admin
+2025-05-02 05:16:01,886 - main - INFO - Confirmed registration for user1, wallet: 0x8d4d45c7b26169e51ca8cab6afb1058a8b10889e
+2025-05-02 05:16:01,963 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 05:16:05,638 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 05:16:14,297 - main - DEBUG - No users with active simulations
+2025-05-02 05:16:15,647 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 05:16:25,656 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 05:16:35,642 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 05:16:44,298 - main - DEBUG - No users with active simulations
+2025-05-02 05:16:45,646 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 05:17:11,994 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 05:17:12,042 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 05:17:14,298 - main - DEBUG - No users with active simulations
+2025-05-02 05:17:44,299 - main - DEBUG - No users with active simulations
+2025-05-02 05:18:14,299 - main - DEBUG - No users with active simulations
+2025-05-02 05:18:44,299 - main - DEBUG - No users with active simulations
+2025-05-02 05:19:09,170 - main - INFO - Database tables created successfully
+2025-05-02 05:19:09,208 - main - INFO - Started data usage simulation thread
+2025-05-02 05:19:09,208 - main - INFO - Data usage simulation thread started
+2025-05-02 05:19:09,208 - main - DEBUG - No users with active simulations
+2025-05-02 05:19:39,209 - main - DEBUG - No users with active simulations
+2025-05-02 05:20:09,212 - main - DEBUG - No users with active simulations
+2025-05-02 05:20:39,213 - main - DEBUG - No users with active simulations
+2025-05-02 05:21:09,213 - main - DEBUG - No users with active simulations
+2025-05-02 05:21:39,214 - main - DEBUG - No users with active simulations
+2025-05-02 05:22:09,214 - main - DEBUG - No users with active simulations
+2025-05-02 05:22:39,214 - main - DEBUG - No users with active simulations
+2025-05-02 05:23:09,215 - main - DEBUG - No users with active simulations
+2025-05-02 05:23:39,217 - main - DEBUG - No users with active simulations
+2025-05-02 05:24:09,218 - main - DEBUG - No users with active simulations
+2025-05-02 05:24:39,219 - main - DEBUG - No users with active simulations
+2025-05-02 05:25:09,219 - main - DEBUG - No users with active simulations
+2025-05-02 05:25:39,220 - main - DEBUG - No users with active simulations
+2025-05-02 05:26:09,220 - main - DEBUG - No users with active simulations
+2025-05-02 05:26:39,221 - main - DEBUG - No users with active simulations
+2025-05-02 05:27:09,221 - main - DEBUG - No users with active simulations
+2025-05-02 05:27:39,221 - main - DEBUG - No users with active simulations
+2025-05-02 05:28:09,222 - main - DEBUG - No users with active simulations
+2025-05-02 05:28:39,222 - main - DEBUG - No users with active simulations
+2025-05-02 05:28:59,312 - main - INFO - Database tables created successfully
+2025-05-02 05:28:59,347 - main - INFO - Started data usage simulation thread
+2025-05-02 05:28:59,347 - main - INFO - Data usage simulation thread started
+2025-05-02 05:28:59,347 - main - DEBUG - No users with active simulations
+2025-05-02 05:29:00,695 - main - INFO - Database tables created successfully
+2025-05-02 05:29:00,723 - main - INFO - Started data usage simulation thread
+2025-05-02 05:29:00,723 - main - INFO - Data usage simulation thread started
+2025-05-02 05:29:00,723 - main - DEBUG - No users with active simulations
+2025-05-02 05:29:30,724 - main - DEBUG - No users with active simulations
+2025-05-02 05:30:00,725 - main - DEBUG - No users with active simulations
+2025-05-02 05:30:30,725 - main - DEBUG - No users with active simulations
+2025-05-02 05:31:00,726 - main - DEBUG - No users with active simulations
+2025-05-02 05:31:30,726 - main - DEBUG - No users with active simulations
+2025-05-02 05:32:00,726 - main - DEBUG - No users with active simulations
+2025-05-02 05:32:30,727 - main - DEBUG - No users with active simulations
+2025-05-02 05:33:00,727 - main - DEBUG - No users with active simulations
+2025-05-02 05:33:30,727 - main - DEBUG - No users with active simulations
+2025-05-02 05:34:00,728 - main - DEBUG - No users with active simulations
+2025-05-02 05:34:30,729 - main - DEBUG - No users with active simulations
+2025-05-02 05:35:00,729 - main - DEBUG - No users with active simulations
+2025-05-02 05:35:30,730 - main - DEBUG - No users with active simulations
+2025-05-02 05:36:00,730 - main - DEBUG - No users with active simulations
+2025-05-02 05:36:30,730 - main - DEBUG - No users with active simulations
+2025-05-02 05:37:00,731 - main - DEBUG - No users with active simulations
+2025-05-02 05:37:30,731 - main - DEBUG - No users with active simulations
+2025-05-02 05:38:00,732 - main - DEBUG - No users with active simulations
+2025-05-02 05:38:31,211 - main - DEBUG - No users with active simulations
+2025-05-02 05:39:01,314 - main - DEBUG - No users with active simulations
+2025-05-02 05:39:31,315 - main - DEBUG - No users with active simulations
+2025-05-02 05:40:01,567 - main - DEBUG - No users with active simulations
+2025-05-02 05:40:32,697 - main - DEBUG - No users with active simulations
+2025-05-02 05:41:02,697 - main - DEBUG - No users with active simulations
+2025-05-02 05:41:12,599 - main - INFO - Login attempt for username: user1
+2025-05-02 05:41:12,978 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/home/wes/Desktop/wifi/backend/venv/lib/python3.11/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-05-02 05:41:13,053 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2025-05-02 05:41:13,080 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2025-05-02 05:41:13,458 - main - INFO - OTP sent for user user1
+2025-05-02 05:41:18,246 - emailutils - INFO - OTP sent to melissabarbara671@gmail.com
+2025-05-02 05:41:32,697 - main - DEBUG - No users with active simulations
+2025-05-02 05:41:55,517 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Linux"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMSIsInJvbGUiOiJ1c2VyIiwidGVtcCI6dHJ1ZSwiZXhwIjoxNzQ2MTU0MjczfQ.kie_PUqAfbUF3_JZ3e7PnCxZkDEiYb3ycP8cqfsS16M', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'sec-gpc': '1', 'accept-language': 'en-US,en;q=0.5', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd'}), body={'otp': '192907'}
+2025-05-02 05:41:55,521 - main - INFO - Parsed OTP: 192907, temp_token=eyJhbGciOi...
+2025-05-02 05:41:55,524 - main - INFO - OTP verified for user user1
+2025-05-02 05:41:55,673 - main - INFO - Verifying token for user: user1
+2025-05-02 05:41:55,691 - main - INFO - Verifying token for user: user1
+2025-05-02 05:42:00,984 - main - INFO - Verifying token for user: user1
+2025-05-02 05:42:02,698 - main - DEBUG - No users with active simulations
+2025-05-02 05:42:27,146 - main - INFO - Updated wallet address for user user1 to 0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e
+2025-05-02 05:42:27,205 - main - INFO - Verifying token for user: user1
+2025-05-02 05:42:28,492 - main - INFO - Updated wallet address for user user1 to 0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e
+2025-05-02 05:42:28,494 - main - INFO - Verifying token for user: user1
+2025-05-02 05:42:29,613 - main - INFO - Verifying token for user: user1
+2025-05-02 05:42:30,635 - main - DEBUG - Checking role for user user1: user
+2025-05-02 05:42:30,961 - main - DEBUG - Checking role for user user1: user
+2025-05-02 05:42:32,699 - main - DEBUG - No users with active simulations
+2025-05-02 05:43:02,699 - main - DEBUG - No users with active simulations
+2025-05-02 05:43:24,623 - main - INFO - Verifying token for user: user1
+2025-05-02 05:43:26,802 - main - INFO - Verifying token for user: user1
+2025-05-02 05:43:32,699 - main - DEBUG - No users with active simulations
+2025-05-02 05:43:35,569 - main - INFO - Verifying token for user: user1
+2025-05-02 05:44:02,700 - main - DEBUG - No users with active simulations
+2025-05-02 05:44:03,996 - main - INFO - Fetching WiFi plans for user user1
+2025-05-02 05:44:04,556 - main - INFO - Fetching WiFi plans for user user1
+2025-05-02 05:44:07,433 - main - INFO - Fetching WiFi plans for user user1
+2025-05-02 05:44:07,440 - main - INFO - Fetching WiFi plans for user user1
+2025-05-02 05:44:32,700 - main - DEBUG - No users with active simulations
+2025-05-02 05:44:56,760 - main - DEBUG - Checking role for user user1: user
+2025-05-02 05:44:57,234 - main - INFO - Recording plan purchase for user user1, plan_id 4
+2025-05-02 05:44:58,185 - main - INFO - Started data usage simulation for user user1 after purchasing plan test 4
+2025-05-02 05:44:58,704 - main - INFO - Fetching WiFi plans for user user1
+2025-05-02 05:45:03,054 - main - INFO - Simulated 4.06 MB usage for user1 on plan test 4 (Remaining: 49995.94 MB)
+2025-05-02 05:45:36,635 - main - INFO - Simulated 1.33 MB usage for user1 on plan test 4 (Remaining: 49994.60 MB)
+2025-05-02 05:46:09,641 - main - INFO - Simulated 4.97 MB usage for user1 on plan test 4 (Remaining: 49989.63 MB)
+2025-05-02 05:46:39,987 - main - INFO - Simulated 0.84 MB usage for user1 on plan test 4 (Remaining: 49988.79 MB)
+2025-05-02 05:47:10,219 - main - INFO - Simulated 4.68 MB usage for user1 on plan test 4 (Remaining: 49984.11 MB)
+2025-05-02 05:47:40,463 - main - INFO - Simulated 1.38 MB usage for user1 on plan test 4 (Remaining: 49982.73 MB)
+2025-05-02 05:48:10,929 - main - INFO - Simulated 0.76 MB usage for user1 on plan test 4 (Remaining: 49981.97 MB)
+2025-05-02 05:48:41,152 - main - INFO - Simulated 1.22 MB usage for user1 on plan test 4 (Remaining: 49980.75 MB)
+2025-05-02 05:49:11,926 - main - INFO - Simulated 0.47 MB usage for user1 on plan test 4 (Remaining: 49980.28 MB)
+2025-05-02 05:49:47,937 - main - INFO - Simulated 1.35 MB usage for user1 on plan test 4 (Remaining: 49978.92 MB)
+2025-05-02 05:50:23,291 - main - INFO - Simulated 3.19 MB usage for user1 on plan test 4 (Remaining: 49975.73 MB)
+2025-05-02 05:51:12,329 - main - INFO - Simulated 1.23 MB usage for user1 on plan test 4 (Remaining: 49974.50 MB)
+2025-05-02 05:51:44,687 - main - INFO - Simulated 1.41 MB usage for user1 on plan test 4 (Remaining: 49973.10 MB)
+2025-05-02 05:52:15,084 - main - INFO - Simulated 4.40 MB usage for user1 on plan test 4 (Remaining: 49968.70 MB)
+2025-05-02 05:52:45,314 - main - INFO - Simulated 3.44 MB usage for user1 on plan test 4 (Remaining: 49965.26 MB)
+2025-05-02 05:53:15,540 - main - INFO - Simulated 4.13 MB usage for user1 on plan test 4 (Remaining: 49961.13 MB)
+2025-05-02 05:53:45,762 - main - INFO - Simulated 1.84 MB usage for user1 on plan test 4 (Remaining: 49959.29 MB)
+2025-05-02 05:54:16,007 - main - INFO - Simulated 3.99 MB usage for user1 on plan test 4 (Remaining: 49955.30 MB)
+2025-05-02 05:54:46,235 - main - INFO - Simulated 4.73 MB usage for user1 on plan test 4 (Remaining: 49950.57 MB)
+2025-05-02 05:55:16,491 - main - INFO - Simulated 2.28 MB usage for user1 on plan test 4 (Remaining: 49948.30 MB)
+2025-05-02 05:55:46,735 - main - INFO - Simulated 1.18 MB usage for user1 on plan test 4 (Remaining: 49947.12 MB)
+2025-05-02 05:56:16,972 - main - INFO - Simulated 0.81 MB usage for user1 on plan test 4 (Remaining: 49946.31 MB)
+2025-05-02 05:56:49,143 - main - INFO - Simulated 3.13 MB usage for user1 on plan test 4 (Remaining: 49943.18 MB)
+2025-05-02 05:57:20,850 - main - INFO - Simulated 4.68 MB usage for user1 on plan test 4 (Remaining: 49938.50 MB)
+2025-05-02 05:57:51,167 - main - INFO - Simulated 2.60 MB usage for user1 on plan test 4 (Remaining: 49935.90 MB)
+2025-05-02 05:58:21,642 - main - INFO - Simulated 3.95 MB usage for user1 on plan test 4 (Remaining: 49931.95 MB)
+2025-05-02 05:58:56,020 - main - INFO - Simulated 3.82 MB usage for user1 on plan test 4 (Remaining: 49928.13 MB)
+2025-05-02 05:59:27,393 - main - INFO - Simulated 0.25 MB usage for user1 on plan test 4 (Remaining: 49927.89 MB)
+2025-05-02 06:00:02,626 - main - INFO - Simulated 3.62 MB usage for user1 on plan test 4 (Remaining: 49924.27 MB)
+2025-05-02 06:00:33,794 - main - INFO - Simulated 3.23 MB usage for user1 on plan test 4 (Remaining: 49921.04 MB)
+2025-05-02 06:01:09,932 - main - INFO - Simulated 4.23 MB usage for user1 on plan test 4 (Remaining: 49916.80 MB)
+2025-05-02 06:01:40,122 - main - INFO - Simulated 1.65 MB usage for user1 on plan test 4 (Remaining: 49915.15 MB)
+2025-05-02 06:02:03,197 - main - INFO - Login attempt for username: user1
+2025-05-02 06:02:03,913 - main - INFO - OTP sent for user user1
+2025-05-02 06:02:07,958 - emailutils - INFO - OTP sent to melissabarbara671@gmail.com
+2025-05-02 06:02:10,431 - main - INFO - Simulated 2.67 MB usage for user1 on plan test 4 (Remaining: 49912.48 MB)
+2025-05-02 06:02:40,642 - main - INFO - Simulated 2.94 MB usage for user1 on plan test 4 (Remaining: 49909.54 MB)
+2025-05-02 06:02:50,885 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Linux"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMSIsInJvbGUiOiJ1c2VyIiwidGVtcCI6dHJ1ZSwiZXhwIjoxNzQ2MTU1NTIzfQ.Q1WTDvPm9Ui9O0hxAuyhKQ4_9KkKS4W0rhMNFY4MYVc', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'sec-gpc': '1', 'accept-language': 'en-US,en;q=0.5', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd'}), body={'otp': '221935'}
+2025-05-02 06:02:50,885 - main - INFO - Parsed OTP: 221935, temp_token=eyJhbGciOi...
+2025-05-02 06:02:50,889 - main - INFO - OTP verified for user user1
+2025-05-02 06:02:51,002 - main - INFO - Verifying token for user: user1
+2025-05-02 06:02:51,007 - main - INFO - Verifying token for user: user1
+2025-05-02 06:03:10,857 - main - INFO - Simulated 3.72 MB usage for user1 on plan test 4 (Remaining: 49905.82 MB)
+2025-05-02 06:03:41,108 - main - INFO - Simulated 2.86 MB usage for user1 on plan test 4 (Remaining: 49902.95 MB)
+2025-05-02 06:03:47,307 - main - INFO - Verifying token for user: user1
+2025-05-02 06:03:47,309 - main - INFO - Verifying token for user: user1
+2025-05-02 06:03:48,978 - main - INFO - Verifying token for user: user1
+2025-05-02 06:04:10,350 - main - INFO - Updated wallet address for user user1 to 0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e
+2025-05-02 06:04:10,356 - main - INFO - Verifying token for user: user1
+2025-05-02 06:04:10,362 - main - DEBUG - Checking role for user user1: user
+2025-05-02 06:04:10,385 - main - INFO - Verifying token for user: user1
+2025-05-02 06:04:13,026 - main - INFO - Simulated 3.97 MB usage for user1 on plan test 4 (Remaining: 49898.99 MB)
+2025-05-02 06:04:44,065 - main - INFO - Simulated 1.60 MB usage for user1 on plan test 4 (Remaining: 49897.38 MB)
+2025-05-02 06:05:14,350 - main - INFO - Simulated 0.44 MB usage for user1 on plan test 4 (Remaining: 49896.94 MB)
+2025-05-02 06:05:44,935 - main - INFO - Simulated 3.67 MB usage for user1 on plan test 4 (Remaining: 49893.27 MB)

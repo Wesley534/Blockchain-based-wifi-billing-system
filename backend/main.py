@@ -7,11 +7,13 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy import func
 from typing import List, Dict
 from database import Base, engine, get_db, SessionLocal
-from models import User, DataUsage, WifiPlan as WifiPlanModel, PlanDuration, PendingRegistration, UserPlanPurchase
+from models import User, DataUsage, WifiPlan as WifiPlanModel, PlanDuration, PendingRegistration, UserPlanPurchase, HelpRequest, FeedbackRequest
 from schemas import (
     UserCreate, UserLogin, Token, DataUsageRequest, WalletUpdate, UserSchema,
     WifiPlan, WifiPlanCreate, WifiPlanUpdate, WiFiPlan, PlanPurchase,
-    PendingRegistrationRequest, PendingRegistrationResponse, ConfirmRegistrationRequest, OTPVerificationRequest
+    PendingRegistrationCreate, PendingRegistrationRequest, PendingRegistrationResponse,
+    ConfirmRegistrationRequest, OTPVerificationRequest, HelpRequestCreate, HelpRequestResponse,
+    FeedbackRequestCreate, FeedbackRequestResponse
 )
 from auth import get_password_hash, authenticate_user, create_access_token, get_current_user
 from emailutils import generate_otp, send_otp_email
@@ -70,7 +72,6 @@ def simulate_data_usage():
         try:
             db = SessionLocal()
             try:
-                # Get a copy of active simulations to avoid holding the lock during DB operations
                 with simulation_lock:
                     users_to_simulate = active_simulations.copy()
                 
@@ -78,7 +79,6 @@ def simulate_data_usage():
                     logger.debug("No users with active simulations")
                 else:
                     for user_id in users_to_simulate:
-                        # Fetch the latest active plan purchase for the user
                         active_purchase = (
                             db.query(UserPlanPurchase)
                             .filter(UserPlanPurchase.user_id == user_id)
@@ -92,7 +92,6 @@ def simulate_data_usage():
                                 active_simulations.discard(user_id)
                             continue
 
-                        # Fetch user and plan details
                         user = db.query(User).filter(User.id == user_id).first()
                         plan = db.query(WifiPlanModel).filter(WifiPlanModel.id == active_purchase.plan_id).first()
                         if not user or not plan:
@@ -101,7 +100,6 @@ def simulate_data_usage():
                                 active_simulations.discard(user_id)
                             continue
 
-                        # Calculate total data used since the purchase date
                         total_used_mb = (
                             db.query(func.sum(DataUsage.usage_mb))
                             .filter(
@@ -111,7 +109,6 @@ def simulate_data_usage():
                             .scalar() or 0
                         )
 
-                        # Check if data is depleted
                         if total_used_mb >= plan.data_mb:
                             logger.info(
                                 f"User {user.username} has depleted plan {plan.name} "
@@ -121,13 +118,11 @@ def simulate_data_usage():
                                 active_simulations.discard(user_id)
                             continue
 
-                        # Simulate data usage
                         usage_mb = random.uniform(0.1, min(5.0, plan.data_mb - total_used_mb))
                         if usage_mb <= 0:
                             logger.debug(f"No more data to simulate for user {user.username}")
                             continue
 
-                        # Record the simulated data usage
                         data_usage = DataUsage(
                             user_id=user_id,
                             usage_mb=usage_mb,
@@ -151,7 +146,6 @@ def simulate_data_usage():
         except Exception as e:
             logger.error(f"Error in simulation thread: {str(e)}")
         
-        # Sleep to avoid excessive CPU usage
         time.sleep(30)
 
 @app.on_event("startup")
@@ -160,36 +154,68 @@ async def startup_event():
     simulation_thread.start()
     logger.info("Data usage simulation thread started")
 
-@app.post("/register", response_model=Token)
-async def register(user: UserCreate, db: Session = Depends(get_db)):
+async def send_pending_email(email: str, username: str):
+    """Send an email to the user indicating their registration is pending."""
+    subject = "Registration Pending Approval"
+    body = (
+        f"Dear {username},\n\n"
+        "Thank you for registering with our service. Your registration is currently pending approval by the ISP.\n"
+        "You will receive a confirmation email once your registration is approved.\n\n"
+        "Best regards,\nThe Team"
+    )
+    await send_otp_email(email, body, subject=subject)
+
+@app.post("/register")
+async def register(user: PendingRegistrationCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     try:
         logger.info(f"Register attempt for username: {user.username}")
-        db_user = db.query(User).filter(User.username == user.username).first()
-        if db_user:
+        # Password strength check
+        strength = 0
+        if len(user.password) >= 8:
+            strength += 1
+        if any(c.isupper() for c in user.password):
+            strength += 1
+        if any(c.islower() for c in user.password):
+            strength += 1
+        if any(c.isdigit() for c in user.password):
+            strength += 1
+        if any(c in "!@#$%^&*(),.?\":{}|<>" for c in user.password):
+            strength += 1
+        if strength < 4:
+            raise HTTPException(status_code=400, detail="Password must be strong (at least 8 characters, including uppercase, lowercase, numbers, and special characters)")
+
+        # Check for existing user or pending registration
+        if db.query(User).filter(User.username == user.username).first():
             raise HTTPException(status_code=400, detail="Username already registered")
-        db_pending = db.query(PendingRegistration).filter(PendingRegistration.username == user.username).first()
-        if db_pending:
+        if db.query(PendingRegistration).filter(PendingRegistration.username == user.username).first():
             raise HTTPException(status_code=400, detail="Username is pending registration")
         if db.query(User).filter(User.email == user.email).first():
             raise HTTPException(status_code=400, detail="Email already registered")
+        if db.query(PendingRegistration).filter(PendingRegistration.email == user.email).first():
+            raise HTTPException(status_code=400, detail="Email is pending registration")
+        if not user.wallet_address or not user.wallet_address.startswith("0x") or len(user.wallet_address) != 42:
+            raise HTTPException(status_code=400, detail="Invalid wallet address format")
+        if db.query(User).filter(User.wallet_address == user.wallet_address).first():
+            raise HTTPException(status_code=400, detail="Wallet address is already associated with another user")
+        if db.query(PendingRegistration).filter(PendingRegistration.wallet_address == user.wallet_address).first():
+            raise HTTPException(status_code=400, detail="Wallet address is already pending registration")
+
+        # Hash password and create pending registration
         hashed_password = get_password_hash(user.password)
-        db_user = User(
+        db_pending = PendingRegistration(
             username=user.username,
             hashed_password=hashed_password,
-            role=user.role,
-            email=user.email
+            email=user.email,
+            wallet_address=user.wallet_address
         )
-        db.add(db_user)
+        db.add(db_pending)
         db.commit()
-        db.refresh(db_user)
-        access_token = create_access_token(data={"sub": user.username, "role": user.role})
-        active_users[user.username] = access_token
-        logger.info(f"Registered user: {user.username}")
-        return {
-            "access_token": access_token,
-            "token_type": "bearer",
-            "role": db_user.role
-        }
+        db.refresh(db_pending)
+
+        # Send pending email
+        background_tasks.add_task(send_pending_email, user.email, user.username)
+        logger.info(f"Pending registration created for: {user.username}")
+        return {"message": "Registration request submitted successfully. Awaiting ISP approval."}
     except Exception as e:
         logger.error(f"Error in register: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
@@ -198,6 +224,13 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
 async def login(user: UserLogin, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     try:
         logger.info(f"Login attempt for username: {user.username}")
+        # Check if user is in PendingRegistration
+        db_pending = db.query(PendingRegistration).filter(PendingRegistration.username == user.username).first()
+        if db_pending:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Your registration is pending ISP approval. Please wait for confirmation."
+            )
         db_user = authenticate_user(db, user.username, user.password)
         if not db_user:
             logger.warning(f"Authentication failed for username: {user.username}")
@@ -222,7 +255,7 @@ async def login(user: UserLogin, background_tasks: BackgroundTasks, db: Session 
         logger.info(f"OTP sent for user {user.username}")
         return {
             "temp_token": temp_token,
-            "message": "OTP sent to your email. Please verify to complete login."
+            "message": "OTP-starter for user {user.username}"
         }
     except HTTPException as e:
         raise e
@@ -249,6 +282,15 @@ async def verify_otp(otp_data: OTPVerificationRequest, temp_token: str = Depends
         if not db_user:
             logger.warning(f"User not found: {username}")
             raise HTTPException(status_code=404, detail="User not found")
+        
+        # Check if user is in PendingRegistration
+        db_pending = db.query(PendingRegistration).filter(PendingRegistration.username == username).first()
+        if db_pending:
+            logger.WARNING(f"User {username} is pending registration")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Your registration is pending ISP approval. Please wait for confirmation."
+            )
         
         otp_data_store = otp_store.get(db_user.id)
         if not otp_data_store:
@@ -304,7 +346,9 @@ async def logout(current_user: User = Depends(get_current_user)):
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 def get_user(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    logger.debug(f"Checking role for user {current_user.username}: {current_user.role}")
     if current_user.role != "user":
+        logger.warning(f"User {current_user.username} does not have user role")
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="User does not have the required role: user",
@@ -312,7 +356,9 @@ def get_user(db: Session = Depends(get_db), current_user: User = Depends(get_cur
     return current_user
 
 def get_isp(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    logger.debug(f"Checking role for user {current_user.username}: {current_user.role}")
     if current_user.role != "wifi_provider":
+        logger.warning(f"User {current_user.username} does not have wifi_provider role")
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="User does not have the required role: wifi_provider",
@@ -322,36 +368,22 @@ def get_isp(db: Session = Depends(get_db), current_user: User = Depends(get_curr
 @app.post("/request-registration")
 async def request_registration(
     request: PendingRegistrationRequest,
-    current_user: User = Depends(get_user),
     db: Session = Depends(get_db)
 ):
     try:
-        logger.info(f"Registration request for user: {current_user.username}, wallet: {request.wallet_address}")
+        logger.info(f"Update pending registration request with wallet: {request.wallet_address}")
         if not request.wallet_address or not request.wallet_address.startswith("0x") or len(request.wallet_address) != 42:
             raise HTTPException(status_code=400, detail="Invalid wallet address format")
-        existing_user = db.query(User).filter(User.wallet_address == request.wallet_address).first()
-        if existing_user:
-            raise HTTPException(status_code=400, detail="Wallet address is already associated with another user")
+        if db.query(User).filter(User.wallet_address == request.wallet_address).first():
+            raise HTTPException(status_code=400, detail="Wallet address is already associated with a user")
         existing_pending = db.query(PendingRegistration).filter(
             PendingRegistration.wallet_address == request.wallet_address
         ).first()
         if existing_pending:
             raise HTTPException(status_code=400, detail="Wallet address is already pending registration")
-        existing_request = db.query(PendingRegistration).filter(
-            PendingRegistration.username == current_user.username
-        ).first()
-        if existing_request:
-            raise HTTPException(status_code=400, detail="User already has a pending registration")
-        pending = PendingRegistration(
-            username=current_user.username,
-            wallet_address=request.wallet_address,
-            user_id=current_user.id
-        )
-        db.add(pending)
-        db.commit()
-        db.refresh(pending)
-        logger.info(f"Pending registration created for {current_user.username} with wallet {request.wallet_address}")
-        return {"message": "Registration request submitted successfully"}
+        # This endpoint assumes the frontend sends the username in a separate field or token
+        # For simplicity, we'll need to adjust frontend to support this if needed
+        raise HTTPException(status_code=400, detail="This endpoint requires authentication or username context")
     except Exception as e:
         logger.error(f"Error in request_registration: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
@@ -365,6 +397,7 @@ async def get_pending_registrations(current_user: User = Depends(get_isp), db: S
             {
                 "id": p.id,
                 "username": p.username,
+                "email": p.email,
                 "wallet_address": p.wallet_address,
                 "created_at": p.created_at
             } for p in pending
@@ -373,7 +406,7 @@ async def get_pending_registrations(current_user: User = Depends(get_isp), db: S
         logger.error(f"Error in get_pending_registrations: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
-@app.post("/isp/confirm-registration")
+@app.post("/isp/confirm-registration", response_model=Token)
 async def confirm_registration(
     request: ConfirmRegistrationRequest,
     current_user: User = Depends(get_isp),
@@ -384,21 +417,41 @@ async def confirm_registration(
         pending = db.query(PendingRegistration).filter(PendingRegistration.id == request.pending_id).first()
         if not pending:
             raise HTTPException(status_code=404, detail="Pending registration not found")
-        db_user = db.query(User).filter(User.id == pending.user_id).first()
-        if not db_user:
-            raise HTTPException(status_code=404, detail="User not found")
-        existing_user = db.query(User).filter(
-            User.wallet_address == pending.wallet_address,
-            User.id != db_user.id
-        ).first()
-        if existing_user:
+        
+        # Check for conflicts
+        if db.query(User).filter(User.username == pending.username).first():
+            raise HTTPException(status_code=400, detail="Username already registered")
+        if db.query(User).filter(User.email == pending.email).first():
+            raise HTTPException(status_code=400, detail="Email already registered")
+        if db.query(User).filter(User.wallet_address == pending.wallet_address).first():
             raise HTTPException(status_code=400, detail="Wallet address is already associated with another user")
-        db_user.wallet_address = pending.wallet_address
-        db.delete(pending)
+
+        # Create user
+        db_user = User(
+            username=pending.username,
+            hashed_password=pending.hashed_password,
+            email=pending.email,
+            wallet_address=pending.wallet_address,
+            role="user",
+            is_active=True
+        )
+        db.add(db_user)
         db.commit()
         db.refresh(db_user)
+
+        # Delete pending registration
+        db.delete(pending)
+        db.commit()
+
+        # Generate token
+        access_token = create_access_token(data={"sub": db_user.username, "role": db_user.role})
+        active_users[db_user.username] = access_token
         logger.info(f"Confirmed registration for {db_user.username}, wallet: {db_user.wallet_address}")
-        return {"message": f"Registration confirmed for {db_user.username}"}
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "role": db_user.role
+        }
     except Exception as e:
         logger.error(f"Error in confirm_registration: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
@@ -406,8 +459,7 @@ async def confirm_registration(
 @app.get("/user/dashboard", response_model=dict)
 async def user_dashboard(current_user: User = Depends(get_user), db: Session = Depends(get_db)):
     try:
-        pending = db.query(PendingRegistration).filter(PendingRegistration.user_id == current_user.id).first()
-        status = "registered" if current_user.wallet_address else ("pending" if pending else "not_registered")
+        status = "registered" if current_user.wallet_address else "not_registered"
         
         active_purchase = db.query(UserPlanPurchase).filter(UserPlanPurchase.user_id == current_user.id).order_by(UserPlanPurchase.purchase_date.desc()).first()
         remaining_mb = 0
@@ -418,7 +470,7 @@ async def user_dashboard(current_user: User = Depends(get_user), db: Session = D
                 total_used_mb = db.query(DataUsage).filter(
                     DataUsage.user_id == current_user.id,
                     DataUsage.timestamp >= active_purchase.purchase_date
-                ).withEntities(func.sum(DataUsage.usage_mb)).scalar() or 0
+                ).with_entities(func.sum(DataUsage.usage_mb)).scalar() or 0
                 remaining_mb = max(0, plan.data_mb - total_used_mb)
                 plan_name = plan.name
 
@@ -435,7 +487,11 @@ async def user_dashboard(current_user: User = Depends(get_user), db: Session = D
 
 @app.get("/isp/dashboard", response_model=dict)
 async def isp_dashboard(current_user: User = Depends(get_isp)):
-    return {"message": f"Welcome to the ISP Dashboard, {current_user.username}!"}
+    try:
+        return {"message": f"Welcome to the ISP Dashboard, {current_user.username}!"}
+    except Exception as e:
+        logger.error(f"Error in isp_dashboard: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @app.post("/data-usage")
 async def log_data_usage(data: DataUsageRequest, current_user: User = Depends(get_user), db: Session = Depends(get_db)):
@@ -454,7 +510,7 @@ async def log_data_usage(data: DataUsageRequest, current_user: User = Depends(ge
         total_used_mb = db.query(DataUsage).filter(
             DataUsage.user_id == current_user.id,
             DataUsage.timestamp >= active_purchase.purchase_date
-        ).withEntities(func.sum(DataUsage.usage_mb)).scalar() or 0
+        ).with_entities(func.sum(DataUsage.usage_mb)).scalar() or 0
         
         if total_used_mb + data.usage_mb > plan.data_mb:
             raise HTTPException(status_code=400, detail="Data limit exceeded for the active plan")
@@ -505,7 +561,7 @@ async def update_wallet(wallet_data: WalletUpdate, current_user: User = Depends(
         raise e
     except Exception as e:
         logger.error(f"Error in update_wallet: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+        raise HTTPseudoException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @app.get("/users", response_model=List[UserSchema])
 async def get_all_users_endpoint(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
@@ -561,8 +617,7 @@ async def isp_log_data_usage(
         
         active_purchase = db.query(UserPlanPurchase).filter(UserPlanPurchase.user_id == target_user.id).order_by(UserPlanPurchase.purchase_date.desc()).first()
         if not active_purchase:
-            raise HTTPException(status_code=400, detail="User has no active plan")
-        
+            raise HTTPException(status_code=400, detail="User has no active llan")
         plan = db.query(WifiPlanModel).filter(WifiPlanModel.id == active_purchase.plan_id).first()
         if not plan:
             raise HTTPException(status_code=404, detail="Plan not found")
@@ -570,7 +625,7 @@ async def isp_log_data_usage(
         total_used_mb = db.query(DataUsage).filter(
             DataUsage.user_id == target_user.id,
             DataUsage.timestamp >= active_purchase.purchase_date
-        ).withEntities(func.sum(DataUsage.usage_mb)).scalar() or 0
+        ).with_entities(func.sum(DataUsage.usage_mb)).scalar() or 0
         
         if total_used_mb + usage_mb > plan.data_mb:
             raise HTTPException(status_code=400, detail="Data limit exceeded for the active plan")
@@ -706,7 +761,6 @@ async def purchase_plan(purchase: PlanPurchase, db: Session = Depends(get_db), c
         db.commit()
         db.refresh(purchase_record)
         
-        # Start simulation for this user
         with simulation_lock:
             active_simulations.add(current_user.id)
         logger.info(f"Started data usage simulation for user {current_user.username} after purchasing plan {db_plan.name}")
@@ -740,3 +794,136 @@ async def add_test_wifi_plan(db: Session = Depends(get_db)):
     except Exception as e:
         logger.error(f"Error in add_test_wifi_plan: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to add test WiFi plan: {str(e)}")
+
+@app.post("/help")
+async def submit_help_request(request: HelpRequestCreate, db: Session = Depends(get_db)):
+    try:
+        db_request = HelpRequest(
+            subject=request.subject,
+            message=request.message,
+            created_at=datetime.utcnow()
+        )
+        db.add(db_request)
+        db.commit()
+        db.refresh(db_request)
+        logger.info(f"Help request submitted: {request.subject}")
+        return {"message": "Help request submitted successfully"}
+    except Exception as e:
+        logger.error(f"Error in submit_help_request: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+@app.post("/feedback")
+async def submit_feedback_request(request: FeedbackRequestCreate, db: Session = Depends(get_db)):
+    try:
+        db_request = FeedbackRequest(
+            feedback=request.feedback,
+            created_at=datetime.utcnow()
+        )
+        db.add(db_request)
+        db.commit()
+        db.refresh(db_request)
+        logger.info(f"Feedback submitted")
+        return {"message": "Feedback submitted successfully"}
+    except Exception as e:
+        logger.error(f"Error in submit_feedback_request: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+@app.get("/isp/help-requests", response_model=List[HelpRequestResponse])
+async def get_help_requests(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
+    try:
+        logger.info(f"Fetching help requests for ISP {current_user.username}")
+        requests = db.query(HelpRequest).all()
+        return requests
+    except Exception as e:
+        logger.error(f"Error in get_help_requests: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+@app.get("/isp/feedback-requests", response_model=List[FeedbackRequestResponse])
+async def get_feedback_requests(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
+    try:
+        logger.info(f"Fetching feedback requests for ISP {current_user.username}")
+        requests = db.query(FeedbackRequest).all()
+        return requests
+    except Exception as e:
+        logger.error(f"Error in get_feedback_requests: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+async def send_admin_confirmation_email(email: str, username: str):
+    """Send a confirmation email to the admin after registration."""
+    subject = "Admin Registration Successful"
+    body = (
+        f"Dear {username},\n\n"
+        "Congratulations! Your admin account has been successfully registered as a WiFi Provider.\n"
+        "You can now log in to manage WiFi plans and user requests.\n\n"
+        "Best regards,\nThe Team"
+    )
+    await send_otp_email(email, body, subject=subject)
+
+@app.post("/register-admin", response_model=Token)
+async def register_admin(user: UserCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    try:
+        logger.info(f"Admin register attempt for username: {user.username}")
+        # Password strength check
+        strength = 0
+        if len(user.password) >= 8:
+            strength += 1
+        if any(c.isupper() for c in user.password):
+            strength += 1
+        if any(c.islower() for c in user.password):
+            strength += 1
+        if any(c.isdigit() for c in user.password):
+            strength += 1
+        if any(c in "!@#$%^&*(),.?\":{}|<>" for c in user.password):
+            strength += 1
+        if strength < 4:
+            raise HTTPException(
+                status_code=400,
+                detail="Password must be strong (at least 8 characters, including uppercase, lowercase, numbers, and special characters)"
+            )
+
+        # Check for existing user or pending registration
+        if db.query(User).filter(User.username == user.username).first():
+            raise HTTPException(status_code=400, detail="Username already registered")
+        if db.query(PendingRegistration).filter(PendingRegistration.username == user.username).first():
+            raise HTTPException(status_code=400, detail="Username is pending registration")
+        if db.query(User).filter(User.email == user.email).first():
+            raise HTTPException(status_code=400, detail="Email already registered")
+        if db.query(PendingRegistration).filter(PendingRegistration.email == user.email).first():
+            raise HTTPException(status_code=400, detail="Email is pending registration")
+        if not user.wallet_address or not user.wallet_address.startswith("0x") or len(user.wallet_address) != 42:
+            raise HTTPException(status_code=400, detail="Invalid wallet address format")
+        if db.query(User).filter(User.wallet_address == user.wallet_address).first():
+            raise HTTPException(status_code=400, detail="Wallet address is already associated with another user")
+        if db.query(PendingRegistration).filter(PendingRegistration.wallet_address == user.wallet_address).first():
+            raise HTTPException(status_code=400, detail="Wallet address is already pending registration")
+
+        # Hash password and create user
+        hashed_password = get_password_hash(user.password)
+        db_user = User(
+            username=user.username,
+            hashed_password=hashed_password,
+            email=user.email,
+            wallet_address=user.wallet_address,
+            role="wifi_provider",
+            is_active=True
+        )
+        db.add(db_user)
+        db.commit()
+        db.refresh(db_user)
+
+        # Generate token
+        access_token = create_access_token(data={"sub": user.username, "role": "wifi_provider"})
+        active_users[user.username] = access_token
+
+        # Send confirmation email
+        background_tasks.add_task(send_admin_confirmation_email, user.email, user.username)
+        logger.info(f"Admin registered: {user.username}")
+
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "role": "wifi_provider"
+        }
+    except Exception as e:
+        logger.error(f"Error in register_admin: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")

@@ -7,7 +7,44 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate(); // Fixed variable name
+  const [passwordStrength, setPasswordStrength] = useState("");
+  const navigate = useNavigate();
+
+  // Password strength checker
+  const checkPasswordStrength = (password) => {
+    let strength = 0;
+    const minLength = password.length >= 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    if (minLength) strength += 1;
+    if (hasUpperCase) strength += 1;
+    if (hasLowerCase) strength += 1;
+    if (hasNumbers) strength += 1;
+    if (hasSpecialChars) strength += 1;
+
+    switch (strength) {
+      case 0:
+      case 1:
+        return "Weak";
+      case 2:
+      case 3:
+        return "Moderate";
+      case 4:
+      case 5:
+        return "Strong";
+      default:
+        return "";
+    }
+  };
+
+  const handlePasswordChange = (e) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+    setPasswordStrength(checkPasswordStrength(newPassword));
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -47,11 +84,28 @@ const Login = () => {
     }
   };
 
+  // Helper function to get password strength color
+  const getStrengthColor = () => {
+    switch (passwordStrength) {
+      case "Weak":
+        return "text-red-400";
+      case "Moderate":
+        return "text-yellow-400";
+      case "Strong":
+        return "text-green-400";
+      default:
+        return "text-gray-400";
+    }
+  };
+
+  // Check if login button should be disabled
+  const isLoginDisabled = isLoading || passwordStrength !== "Strong";
+
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="bg-opacity-20 bg-white backdrop-blur-lg p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-4xl font-bold text-black text-center mb-6">Login</h2>
-        {error && <p className="text-red-400 text-center mb-4">{error}</p>}
+        {error && <p className="text-red-400 text處理-center mb-4">{error}</p>}
         <form onSubmit={handleLogin}>
           <div className="mb-4">
             <label htmlFor="username" className="block text-sm text-black font-medium mb-2">
@@ -87,15 +141,26 @@ const Login = () => {
               type="password"
               id="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
               className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-theme-blue"
               required
             />
+            {password && (
+              <p className={`text-sm mt-2 ${getStrengthColor()}`}>
+                Password Strength: {passwordStrength}
+                {passwordStrength !== "Strong" &&
+                  " - Password must be strong (at least 8 characters, including uppercase, lowercase, numbers, and special characters)."}
+              </p>
+            )}
           </div>
           <button
             type="submit"
-            className="w-full bg-theme-blue text-white py-3 rounded-full bg-black hover:bg-blue-700 transition duration-300"
-            disabled={isLoading}
+            className={`w-full py-3 rounded-full text-white transition duration-300 ${
+              isLoginDisabled
+                ? "bg-gray-600 cursor-not-allowed"
+                : "bg-theme-blue bg-black hover:bg-blue-700"
+            }`}
+            disabled={isLoginDisabled}
           >
             {isLoading ? "Loading..." : "Login"}
           </button>

@@ -21,12 +21,11 @@ class User(Base):
     role = Column(String, default="user", nullable=False)  # "user" or "wifi_provider"
     is_active = Column(Boolean, default=True)
     wallet_address = Column(String, unique=True, nullable=True)
-    email = Column(String, unique=True, nullable=False)  # Added email field
+    email = Column(String, unique=True, nullable=False)
 
     # Relationships
     data_usage = relationship("DataUsage", back_populates="user", cascade="all, delete-orphan")
     purchased_plans = relationship("UserPlanPurchase", back_populates="user", cascade="all, delete-orphan")
-    pending_registrations = relationship("PendingRegistration", back_populates="user", cascade="all, delete-orphan")
 
 
 class DataUsage(Base):
@@ -71,9 +70,24 @@ class PendingRegistration(Base):
     __tablename__ = "pending_registrations"
 
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
-    wallet_address = Column(String, unique=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    username = Column(String, unique=True, index=True, nullable=False)
+    hashed_password = Column(String, nullable=False)
+    email = Column(String, unique=True, index=True, nullable=False)
+    wallet_address = Column(String, unique=True, index=True, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
 
-    user = relationship("User", back_populates="pending_registrations")
+class HelpRequest(Base):
+    __tablename__ = "help_requests"
+
+    id = Column(Integer, primary_key=True, index=True)
+    subject = Column(String, nullable=False)
+    message = Column(String, nullable=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+
+class FeedbackRequest(Base):
+    __tablename__ = "feedback_requests"
+
+    id = Column(Integer, primary_key=True, index=True)
+    feedback = Column(String, nullable=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)

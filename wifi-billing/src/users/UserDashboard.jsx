@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { WalletContext } from "../context/WalletContext";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import Footer from "../components/Footer";
 
 const UserDashboard = () => {
   const [dataUsage, setDataUsage] = useState([]);
@@ -387,7 +388,7 @@ const UserDashboard = () => {
     : [0, 100];
 
   return (
-    <div className="min-h-screen p-8 bg-[linear-gradient(135deg,_#1a1a2e,_#9fc817)]">
+    <><div className="min-h-screen p-8 bg-[linear-gradient(135deg,_#1a1a2e,_#9fc817)]">
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold text-white">User Dashboard</h1>
@@ -435,7 +436,7 @@ const UserDashboard = () => {
             onClick={() => {
               setLocalError("");
               setWalletError("");
-            }}
+            } }
             className="mt-2 bg-gray-500 text-white py-1 px-2 rounded-full hover:bg-gray-600"
           >
             Clear Error
@@ -503,8 +504,7 @@ const UserDashboard = () => {
                     <YAxis domain={yAxisDomain} stroke="#ccc" tick={{ fill: "#ccc", fontSize: 12 }} />
                     <Tooltip
                       contentStyle={{ backgroundColor: "#333", border: "none", color: "#fff" }}
-                      labelStyle={{ color: "#fff" }}
-                    />
+                      labelStyle={{ color: "#fff" }} />
                     <Legend />
                     <Line
                       type="monotone"
@@ -512,16 +512,14 @@ const UserDashboard = () => {
                       stroke="#8884d8"
                       strokeWidth={3}
                       activeDot={{ r: 8 }}
-                      name="Usage (MB)"
-                    />
+                      name="Usage (MB)" />
                     <Line
                       type="monotone"
                       dataKey="cumulative_mb"
                       stroke="#82ca9d"
                       strokeWidth={3}
                       activeDot={{ r: 8 }}
-                      name="Cumulative Usage (MB)"
-                    />
+                      name="Cumulative Usage (MB)" />
                   </LineChart>
                 </ResponsiveContainer>
               ) : (
@@ -579,7 +577,8 @@ const UserDashboard = () => {
           </div>
         </div>
       )}
-    </div>
+    </div><Footer /></>
+
   );
 };
 
