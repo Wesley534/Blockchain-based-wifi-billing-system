@@ -1257,3 +1257,1428 @@ AttributeError: module 'bcrypt' has no attribute '__about__'
 2025-05-02 06:04:44,065 - main - INFO - Simulated 1.60 MB usage for user1 on plan test 4 (Remaining: 49897.38 MB)
 2025-05-02 06:05:14,350 - main - INFO - Simulated 0.44 MB usage for user1 on plan test 4 (Remaining: 49896.94 MB)
 2025-05-02 06:05:44,935 - main - INFO - Simulated 3.67 MB usage for user1 on plan test 4 (Remaining: 49893.27 MB)
+2025-05-02 06:06:15,146 - main - INFO - Simulated 4.05 MB usage for user1 on plan test 4 (Remaining: 49889.21 MB)
+2025-05-02 06:06:45,359 - main - INFO - Simulated 4.47 MB usage for user1 on plan test 4 (Remaining: 49884.75 MB)
+2025-05-02 06:07:15,965 - main - INFO - Simulated 0.45 MB usage for user1 on plan test 4 (Remaining: 49884.30 MB)
+2025-05-02 06:07:46,198 - main - INFO - Simulated 4.71 MB usage for user1 on plan test 4 (Remaining: 49879.58 MB)
+2025-05-02 06:08:16,398 - main - INFO - Simulated 4.16 MB usage for user1 on plan test 4 (Remaining: 49875.43 MB)
+2025-05-02 06:08:46,625 - main - INFO - Simulated 1.89 MB usage for user1 on plan test 4 (Remaining: 49873.54 MB)
+2025-05-02 06:09:16,842 - main - INFO - Simulated 0.60 MB usage for user1 on plan test 4 (Remaining: 49872.94 MB)
+2025-05-02 06:09:47,078 - main - INFO - Simulated 4.16 MB usage for user1 on plan test 4 (Remaining: 49868.77 MB)
+2025-05-02 06:10:17,331 - main - INFO - Simulated 4.08 MB usage for user1 on plan test 4 (Remaining: 49864.70 MB)
+2025-05-02 06:10:48,289 - main - INFO - Simulated 4.85 MB usage for user1 on plan test 4 (Remaining: 49859.85 MB)
+2025-05-02 06:11:18,556 - main - INFO - Simulated 2.17 MB usage for user1 on plan test 4 (Remaining: 49857.67 MB)
+2025-05-02 06:11:48,810 - main - INFO - Simulated 3.95 MB usage for user1 on plan test 4 (Remaining: 49853.72 MB)
+2025-05-02 06:12:19,089 - main - INFO - Simulated 4.16 MB usage for user1 on plan test 4 (Remaining: 49849.56 MB)
+2025-05-02 06:12:49,332 - main - INFO - Simulated 3.93 MB usage for user1 on plan test 4 (Remaining: 49845.64 MB)
+2025-05-02 06:13:19,520 - main - INFO - Simulated 1.47 MB usage for user1 on plan test 4 (Remaining: 49844.17 MB)
+2025-05-02 06:13:49,765 - main - INFO - Simulated 2.23 MB usage for user1 on plan test 4 (Remaining: 49841.93 MB)
+2025-05-02 06:14:19,980 - main - INFO - Simulated 2.68 MB usage for user1 on plan test 4 (Remaining: 49839.26 MB)
+2025-05-02 06:14:50,279 - main - INFO - Simulated 3.37 MB usage for user1 on plan test 4 (Remaining: 49835.89 MB)
+2025-05-02 06:15:00,431 - main - INFO - Verifying token for user: user1
+2025-05-02 06:15:00,442 - main - DEBUG - Checking role for user user1: user
+2025-05-02 06:15:04,112 - main - INFO - Verifying token for user: user1
+2025-05-02 06:15:04,119 - main - DEBUG - Checking role for user user1: user
+2025-05-02 06:15:05,110 - main - INFO - Verifying token for user: user1
+2025-05-02 06:15:05,114 - main - DEBUG - Checking role for user user1: user
+2025-05-02 06:15:18,590 - main - INFO - Verifying token for user: user1
+2025-05-02 06:15:18,596 - main - INFO - Verifying token for user: user1
+2025-05-02 06:15:20,530 - main - INFO - Simulated 2.08 MB usage for user1 on plan test 4 (Remaining: 49833.81 MB)
+2025-05-02 06:15:20,832 - main - INFO - Verifying token for user: user1
+2025-05-02 06:15:33,852 - main - INFO - Updated wallet address for user user1 to 0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e
+2025-05-02 06:15:33,887 - main - INFO - Verifying token for user: user1
+2025-05-02 06:15:33,890 - main - DEBUG - Checking role for user user1: user
+2025-05-02 06:15:33,911 - main - INFO - Verifying token for user: user1
+2025-05-02 06:15:50,780 - main - INFO - Simulated 1.79 MB usage for user1 on plan test 4 (Remaining: 49832.01 MB)
+2025-05-02 06:16:21,062 - main - INFO - Simulated 2.09 MB usage for user1 on plan test 4 (Remaining: 49829.92 MB)
+2025-05-02 06:16:58,885 - main - INFO - Database tables created successfully
+2025-05-02 06:16:58,909 - main - INFO - Started data usage simulation thread
+2025-05-02 06:16:58,909 - main - INFO - Data usage simulation thread started
+2025-05-02 06:16:58,909 - main - DEBUG - No users with active simulations
+2025-05-02 06:17:00,459 - main - INFO - Database tables created successfully
+2025-05-02 06:17:00,484 - main - INFO - Started data usage simulation thread
+2025-05-02 06:17:00,485 - main - INFO - Data usage simulation thread started
+2025-05-02 06:17:00,485 - main - DEBUG - No users with active simulations
+2025-05-02 06:17:30,486 - main - DEBUG - No users with active simulations
+2025-05-02 06:17:41,838 - main - INFO - Verifying token for user: user1
+2025-05-02 06:17:41,842 - main - INFO - Verifying token for user: user1
+2025-05-02 06:17:43,353 - main - INFO - Verifying token for user: user1
+2025-05-02 06:18:00,487 - main - DEBUG - No users with active simulations
+2025-05-02 06:18:19,146 - main - INFO - Login attempt for username: user1
+2025-05-02 06:18:19,153 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/home/wes/Desktop/wifi/backend/venv/lib/python3.11/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-05-02 06:18:19,216 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2025-05-02 06:18:19,216 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2025-05-02 06:18:19,632 - main - INFO - OTP sent for user user1
+2025-05-02 06:18:24,684 - emailutils - INFO - OTP sent to melissabarbara671@gmail.com
+2025-05-02 06:18:30,487 - main - DEBUG - No users with active simulations
+2025-05-02 06:18:43,112 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Linux"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMSIsInJvbGUiOiJ1c2VyIiwidGVtcCI6dHJ1ZSwiZXhwIjoxNzQ2MTU2NDk5fQ.u4gi8hZBrs190VCfF4vrZppMzhQJhbTXHSp8vCISLZw', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'sec-gpc': '1', 'accept-language': 'en-US,en;q=0.5', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd'}), body={'otp': '355851'}
+2025-05-02 06:18:43,112 - main - INFO - Parsed OTP: 355851, temp_token=eyJhbGciOi...
+2025-05-02 06:18:43,117 - main - INFO - OTP verified for user user1
+2025-05-02 06:18:43,246 - main - INFO - Verifying token for user: user1
+2025-05-02 06:18:43,253 - main - INFO - Verifying token for user: user1
+2025-05-02 06:18:46,050 - main - INFO - Verifying token for user: user1
+2025-05-02 06:18:54,771 - main - INFO - Updated wallet address for user user1 to 0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e
+2025-05-02 06:18:54,791 - main - INFO - Verifying token for user: user1
+2025-05-02 06:18:54,794 - main - DEBUG - Checking role for user user1: user
+2025-05-02 06:18:54,850 - main - INFO - Verifying token for user: user1
+2025-05-02 06:18:54,881 - main - DEBUG - Checking role for user user1: user
+2025-05-02 06:19:00,488 - main - DEBUG - No users with active simulations
+2025-05-02 06:19:30,488 - main - DEBUG - No users with active simulations
+2025-05-02 06:20:00,488 - main - DEBUG - No users with active simulations
+2025-05-02 06:20:30,489 - main - DEBUG - No users with active simulations
+2025-05-02 06:21:00,491 - main - DEBUG - No users with active simulations
+2025-05-02 06:21:22,029 - main - INFO - Verifying token for user: user1
+2025-05-02 06:21:30,492 - main - DEBUG - No users with active simulations
+2025-05-02 06:22:00,492 - main - DEBUG - No users with active simulations
+2025-05-02 06:22:30,493 - main - DEBUG - No users with active simulations
+2025-05-02 06:23:00,493 - main - DEBUG - No users with active simulations
+2025-05-02 06:23:30,493 - main - DEBUG - No users with active simulations
+2025-05-02 06:23:59,370 - main - INFO - Verifying token for user: user1
+2025-05-02 06:24:00,494 - main - DEBUG - No users with active simulations
+2025-05-02 06:24:30,494 - main - DEBUG - No users with active simulations
+2025-05-02 06:25:00,495 - main - DEBUG - No users with active simulations
+2025-05-02 06:25:30,495 - main - DEBUG - No users with active simulations
+2025-05-02 06:26:00,496 - main - DEBUG - No users with active simulations
+2025-05-02 06:26:30,497 - main - DEBUG - No users with active simulations
+2025-05-02 06:26:56,102 - main - INFO - Fetching WiFi plans for user user1
+2025-05-02 06:26:56,176 - main - INFO - Fetching WiFi plans for user user1
+2025-05-02 06:26:56,804 - main - INFO - Fetching WiFi plans for user user1
+2025-05-02 06:26:56,811 - main - INFO - Fetching WiFi plans for user user1
+2025-05-02 06:27:00,497 - main - DEBUG - No users with active simulations
+2025-05-02 06:27:30,498 - main - DEBUG - No users with active simulations
+2025-05-02 06:28:00,498 - main - DEBUG - No users with active simulations
+2025-05-02 06:28:16,289 - main - DEBUG - Checking role for user user1: user
+2025-05-02 06:28:16,294 - main - INFO - Recording plan purchase for user user1, plan_id 1
+2025-05-02 06:28:20,714 - main - INFO - Started data usage simulation for user user1 after purchasing plan test1
+2025-05-02 06:28:20,795 - main - INFO - Fetching WiFi plans for user user1
+2025-05-02 06:28:30,501 - main - INFO - Simulated 0.48 MB usage for user1 on plan test1 (Remaining: 79999.52 MB)
+2025-05-02 06:29:05,465 - main - INFO - Simulated 0.21 MB usage for user1 on plan test1 (Remaining: 79999.31 MB)
+2025-05-02 06:29:38,011 - main - INFO - Simulated 0.90 MB usage for user1 on plan test1 (Remaining: 79998.41 MB)
+2025-05-02 06:30:08,233 - main - INFO - Simulated 4.66 MB usage for user1 on plan test1 (Remaining: 79993.75 MB)
+2025-05-02 06:30:38,580 - main - INFO - Simulated 0.92 MB usage for user1 on plan test1 (Remaining: 79992.83 MB)
+2025-05-02 06:30:39,932 - main - INFO - Verifying token for user: user1
+2025-05-02 06:30:39,971 - main - DEBUG - Checking role for user user1: user
+2025-05-02 06:30:39,982 - main - INFO - Verifying token for user: user1
+2025-05-02 06:30:40,080 - main - DEBUG - Checking role for user user1: user
+2025-05-02 06:30:40,112 - main - DEBUG - Checking role for user user1: user
+2025-05-02 06:30:41,353 - main - DEBUG - Checking role for user user1: user
+2025-05-02 06:30:42,435 - main - INFO - Verifying token for user: user1
+2025-05-02 06:31:08,793 - main - INFO - Simulated 3.03 MB usage for user1 on plan test1 (Remaining: 79989.80 MB)
+2025-05-02 06:31:39,049 - main - INFO - Simulated 1.84 MB usage for user1 on plan test1 (Remaining: 79987.97 MB)
+2025-05-02 06:32:09,352 - main - INFO - Simulated 3.22 MB usage for user1 on plan test1 (Remaining: 79984.75 MB)
+2025-05-02 06:32:39,669 - main - INFO - Simulated 1.63 MB usage for user1 on plan test1 (Remaining: 79983.12 MB)
+2025-05-02 06:33:09,902 - main - INFO - Simulated 0.89 MB usage for user1 on plan test1 (Remaining: 79982.23 MB)
+2025-05-02 06:33:40,150 - main - INFO - Simulated 2.38 MB usage for user1 on plan test1 (Remaining: 79979.86 MB)
+2025-05-02 06:34:10,390 - main - INFO - Simulated 3.95 MB usage for user1 on plan test1 (Remaining: 79975.91 MB)
+2025-05-02 06:34:40,612 - main - INFO - Simulated 1.50 MB usage for user1 on plan test1 (Remaining: 79974.41 MB)
+2025-05-02 06:34:43,374 - main - INFO - Login attempt for username: Admin
+2025-05-02 06:34:44,076 - main - INFO - OTP sent for user Admin
+2025-05-02 06:34:49,195 - emailutils - INFO - OTP sent to peterwesley484@gmail.com
+2025-05-02 06:35:10,838 - main - INFO - Simulated 0.65 MB usage for user1 on plan test1 (Remaining: 79973.75 MB)
+2025-05-02 06:35:19,873 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Linux"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBZG1pbiIsInJvbGUiOiJ3aWZpX3Byb3ZpZGVyIiwidGVtcCI6dHJ1ZSwiZXhwIjoxNzQ2MTU3NDg0fQ.S6w7PHeqE-5JtnY1oMFY4Pyez4Hk9n2TtNWkoijywMo', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'sec-gpc': '1', 'accept-language': 'en-US,en;q=0.5', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd'}), body={'otp': '535584'}
+2025-05-02 06:35:19,873 - main - INFO - Parsed OTP: 535584, temp_token=eyJhbGciOi...
+2025-05-02 06:35:19,875 - main - INFO - OTP verified for user Admin
+2025-05-02 06:35:31,007 - main - INFO - Updated wallet address for user Admin to 0xC4Deb43c6B729cA2EA7508E5f4C39f0129A93E5d
+2025-05-02 06:35:31,067 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:35:32,124 - main - INFO - Updated wallet address for user Admin to 0xC4Deb43c6B729cA2EA7508E5f4C39f0129A93E5d
+2025-05-02 06:35:32,128 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:35:32,143 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:35:32,147 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:35:32,148 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:35:32,159 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:35:32,164 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:35:32,189 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:35:32,196 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:35:32,203 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:35:32,207 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:35:32,237 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:35:41,093 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:35:41,102 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:35:41,106 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:35:41,114 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:35:41,118 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:35:41,119 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:35:41,605 - main - INFO - Simulated 2.12 MB usage for user1 on plan test1 (Remaining: 79971.63 MB)
+2025-05-02 06:35:51,138 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:35:51,139 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:35:51,143 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:35:51,146 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:35:51,147 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:35:51,149 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:36:01,097 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:01,115 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:01,116 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:36:01,116 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:01,116 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:01,188 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:36:11,102 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:11,125 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:11,126 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:11,127 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:11,166 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:36:11,171 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:36:12,182 - main - INFO - Simulated 3.56 MB usage for user1 on plan test1 (Remaining: 79968.08 MB)
+2025-05-02 06:36:21,095 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:21,122 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:21,122 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:21,123 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:21,129 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:36:21,132 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:36:31,098 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:31,119 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:31,119 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:31,119 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:31,140 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:36:31,142 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:36:41,146 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:41,149 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:41,150 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:41,151 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:41,294 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:36:41,305 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:36:42,477 - main - INFO - Simulated 3.09 MB usage for user1 on plan test1 (Remaining: 79964.98 MB)
+2025-05-02 06:36:51,130 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:51,140 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:51,140 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:51,140 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:36:51,147 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:36:51,148 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:37:01,094 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:01,111 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:01,116 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:37:01,123 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:01,124 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:01,130 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:37:11,095 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:11,119 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:11,120 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:11,125 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:11,127 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:37:11,131 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:37:12,790 - main - INFO - Simulated 2.24 MB usage for user1 on plan test1 (Remaining: 79962.75 MB)
+2025-05-02 06:37:21,112 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:21,135 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:21,135 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:21,135 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:21,168 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:37:21,170 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:37:31,105 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:31,121 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:31,121 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:31,121 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:31,128 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:37:31,129 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:37:41,189 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:41,197 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:41,197 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:41,197 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:41,200 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:37:41,430 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:37:43,355 - main - INFO - Simulated 0.43 MB usage for user1 on plan test1 (Remaining: 79962.31 MB)
+2025-05-02 06:37:51,125 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:51,154 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:51,161 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:51,177 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:37:51,177 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:37:51,200 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:38:01,100 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:38:01,142 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:38:01,142 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:38:01,145 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:38:02,066 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:38:02,071 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:38:11,486 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:38:11,495 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:38:11,495 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:38:11,495 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:38:11,498 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:38:11,499 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:38:13,853 - main - INFO - Simulated 3.90 MB usage for user1 on plan test1 (Remaining: 79958.42 MB)
+2025-05-02 06:38:21,392 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:38:21,399 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:38:21,399 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:38:21,399 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:38:21,409 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:38:21,412 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:38:31,878 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:38:31,880 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:38:31,880 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:38:31,882 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:38:31,885 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:38:31,887 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:38:41,266 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:38:41,266 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:38:41,274 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:38:41,287 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:38:41,293 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:38:41,297 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:38:44,821 - main - INFO - Simulated 0.22 MB usage for user1 on plan test1 (Remaining: 79958.19 MB)
+2025-05-02 06:39:24,783 - main - INFO - Simulated 0.54 MB usage for user1 on plan test1 (Remaining: 79957.66 MB)
+2025-05-02 06:40:02,951 - main - INFO - Simulated 2.70 MB usage for user1 on plan test1 (Remaining: 79954.96 MB)
+2025-05-02 06:40:40,177 - main - INFO - Simulated 1.07 MB usage for user1 on plan test1 (Remaining: 79953.88 MB)
+2025-05-02 06:40:54,162 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:40:54,162 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:40:54,162 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:40:54,162 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:40:54,165 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:40:54,545 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:40:59,444 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:00,519 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:00,520 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:00,520 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:00,525 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:41:00,530 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:00,534 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:41:00,721 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:00,724 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:00,726 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:41:01,130 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,131 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:41:01,161 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,162 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:41:01,168 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,168 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,173 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:41:01,175 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,182 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,186 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:41:01,188 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,188 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,193 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:41:01,196 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,204 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,205 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:41:01,214 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,218 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,221 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:41:01,225 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,262 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,266 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,266 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,270 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:41:01,273 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,279 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:41:01,280 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,285 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,285 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:41:01,313 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,326 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,328 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:41:01,333 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,474 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,474 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,474 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,478 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:41:01,478 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,481 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:41:01,507 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,523 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,531 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:41:01,539 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,540 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,542 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,543 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:41:01,565 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,565 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,570 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:41:01,571 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:41:01,586 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,614 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,634 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,636 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,636 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,647 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:41:01,648 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:41:01,663 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,664 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,686 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,700 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:41:01,703 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,705 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,708 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:41:01,730 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,737 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:41:01,749 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:01,753 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:41:11,117 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:11,134 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:11,137 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:41:11,146 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:11,146 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:11,147 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:41:15,360 - main - INFO - Simulated 1.71 MB usage for user1 on plan test1 (Remaining: 79952.17 MB)
+2025-05-02 06:41:21,145 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:21,155 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:21,156 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:21,156 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:21,198 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:41:21,199 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:41:31,107 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:31,111 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:31,116 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:41:31,125 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:31,125 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:31,127 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:41:41,127 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:41,128 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:41,128 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:41,130 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:41:41,133 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:41:41,134 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:41:46,198 - main - INFO - Simulated 0.90 MB usage for user1 on plan test1 (Remaining: 79951.27 MB)
+2025-05-02 06:42:19,280 - main - INFO - Simulated 2.53 MB usage for user1 on plan test1 (Remaining: 79948.74 MB)
+2025-05-02 06:42:51,842 - main - INFO - Simulated 1.68 MB usage for user1 on plan test1 (Remaining: 79947.06 MB)
+2025-05-02 06:43:22,082 - main - INFO - Simulated 3.28 MB usage for user1 on plan test1 (Remaining: 79943.78 MB)
+2025-05-02 06:43:56,925 - main - INFO - Simulated 3.25 MB usage for user1 on plan test1 (Remaining: 79940.53 MB)
+2025-05-02 06:44:28,843 - main - INFO - Simulated 3.33 MB usage for user1 on plan test1 (Remaining: 79937.20 MB)
+2025-05-02 06:45:13,343 - main - INFO - Simulated 1.14 MB usage for user1 on plan test1 (Remaining: 79936.06 MB)
+2025-05-02 06:45:59,479 - main - INFO - Simulated 4.32 MB usage for user1 on plan test1 (Remaining: 79931.74 MB)
+2025-05-02 06:46:45,095 - main - INFO - Simulated 1.89 MB usage for user1 on plan test1 (Remaining: 79929.86 MB)
+2025-05-02 06:47:22,339 - main - INFO - Simulated 1.60 MB usage for user1 on plan test1 (Remaining: 79928.26 MB)
+2025-05-02 06:47:58,596 - main - INFO - Simulated 1.77 MB usage for user1 on plan test1 (Remaining: 79926.49 MB)
+2025-05-02 06:48:33,425 - main - INFO - Simulated 1.68 MB usage for user1 on plan test1 (Remaining: 79924.81 MB)
+2025-05-02 06:48:50,758 - main - WARNING - Wallet address 0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e already associated with another user
+2025-05-02 06:48:50,760 - main - WARNING - Wallet address 0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e already associated with another user
+2025-05-02 06:49:04,883 - main - INFO - Simulated 0.94 MB usage for user1 on plan test1 (Remaining: 79923.87 MB)
+2025-05-02 06:49:09,394 - main - INFO - Updated wallet address for user Admin to 0xC4Deb43c6B729cA2EA7508E5f4C39f0129A93E5d
+2025-05-02 06:49:09,620 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:09,623 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:09,627 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:09,727 - main - INFO - Updated wallet address for user Admin to 0xC4Deb43c6B729cA2EA7508E5f4C39f0129A93E5d
+2025-05-02 06:49:09,966 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:49:09,969 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:09,974 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:49:10,262 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:10,262 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:10,263 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:10,263 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:10,271 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:49:10,276 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:49:19,406 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:19,422 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:19,422 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:19,422 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:19,427 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:49:19,428 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:49:29,402 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:29,433 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:29,433 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:29,433 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:29,439 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:49:29,439 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:49:36,705 - main - INFO - Simulated 1.41 MB usage for user1 on plan test1 (Remaining: 79922.46 MB)
+2025-05-02 06:49:39,412 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:39,433 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:39,434 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:39,437 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:49:39,439 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:39,441 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:49:49,405 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:49,422 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:49,423 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:49,424 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:49,429 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:49:49,430 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:49:59,414 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:59,435 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:59,436 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:59,438 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:49:59,438 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:49:59,440 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:50:07,021 - main - INFO - Simulated 1.32 MB usage for user1 on plan test1 (Remaining: 79921.14 MB)
+2025-05-02 06:50:09,406 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:50:09,427 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:50:09,427 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:50:09,427 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:50:09,430 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'strftime'
+2025-05-02 06:50:09,431 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:50:37,266 - main - INFO - Simulated 1.12 MB usage for user1 on plan test1 (Remaining: 79920.02 MB)
+2025-05-02 06:51:07,631 - main - INFO - Simulated 4.15 MB usage for user1 on plan test1 (Remaining: 79915.87 MB)
+2025-05-02 06:51:37,871 - main - INFO - Simulated 0.96 MB usage for user1 on plan test1 (Remaining: 79914.91 MB)
+2025-05-02 06:51:47,889 - main - INFO - Database tables created successfully
+2025-05-02 06:51:47,930 - main - INFO - Started data usage simulation thread
+2025-05-02 06:51:47,930 - main - INFO - Data usage simulation thread started
+2025-05-02 06:51:47,930 - main - DEBUG - No users with active simulations
+2025-05-02 06:52:17,931 - main - DEBUG - No users with active simulations
+2025-05-02 06:52:40,980 - main - INFO - Login attempt for username: Admin
+2025-05-02 06:52:41,173 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/home/wes/Desktop/wifi/backend/venv/lib/python3.11/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-05-02 06:52:41,233 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2025-05-02 06:52:41,287 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2025-05-02 06:52:41,678 - main - INFO - OTP sent for user Admin
+2025-05-02 06:52:47,931 - main - DEBUG - No users with active simulations
+2025-05-02 06:52:48,391 - emailutils - INFO - OTP sent to peterwesley484@gmail.com
+2025-05-02 06:53:11,620 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Linux"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBZG1pbiIsInJvbGUiOiJ3aWZpX3Byb3ZpZGVyIiwidGVtcCI6dHJ1ZSwiZXhwIjoxNzQ2MTU4NTYxfQ.B-e-0YE_-Kgy56ho_W_ItnYCa5TDxxBL7EDavlEnQes', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'sec-gpc': '1', 'accept-language': 'en-US,en;q=0.5', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd'}), body={'otp': '912317'}
+2025-05-02 06:53:11,620 - main - INFO - Parsed OTP: 912317, temp_token=eyJhbGciOi...
+2025-05-02 06:53:11,622 - main - INFO - OTP verified for user Admin
+2025-05-02 06:53:17,932 - main - DEBUG - No users with active simulations
+2025-05-02 06:53:28,357 - main - INFO - Updated wallet address for user Admin to 0xC4Deb43c6B729cA2EA7508E5f4C39f0129A93E5d
+2025-05-02 06:53:28,541 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:53:28,542 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:53:28,542 - main - WARNING - User Admin does not have user role
+2025-05-02 06:53:28,547 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:53:28,547 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:53:29,102 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:53:37,949 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:53:37,961 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:53:37,961 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:53:37,962 - main - WARNING - User Admin does not have user role
+2025-05-02 06:53:37,961 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:53:37,964 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:53:47,932 - main - DEBUG - No users with active simulations
+2025-05-02 06:53:48,030 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:53:48,041 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:53:48,041 - main - WARNING - User Admin does not have user role
+2025-05-02 06:53:48,044 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:53:48,045 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:53:48,061 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:53:57,952 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:53:57,971 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:53:57,972 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:53:57,972 - main - WARNING - User Admin does not have user role
+2025-05-02 06:53:57,973 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:53:57,973 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:07,957 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:07,978 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:07,978 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:07,979 - main - WARNING - User Admin does not have user role
+2025-05-02 06:54:07,979 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:07,982 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:54:17,933 - main - DEBUG - No users with active simulations
+2025-05-02 06:54:17,955 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:17,974 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:17,977 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:17,977 - main - WARNING - User Admin does not have user role
+2025-05-02 06:54:17,987 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:17,993 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:54:27,948 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:27,972 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:27,972 - main - WARNING - User Admin does not have user role
+2025-05-02 06:54:27,973 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:27,975 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:54:27,975 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:37,958 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:37,958 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:37,958 - main - WARNING - User Admin does not have user role
+2025-05-02 06:54:37,963 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:37,970 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:37,985 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:54:47,933 - main - DEBUG - No users with active simulations
+2025-05-02 06:54:47,957 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:47,964 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:47,964 - main - WARNING - User Admin does not have user role
+2025-05-02 06:54:47,970 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:47,972 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:47,976 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:54:57,952 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:57,971 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:57,972 - main - WARNING - User Admin does not have user role
+2025-05-02 06:54:57,972 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:57,972 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:54:57,975 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:55:07,953 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:07,972 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:07,974 - main - WARNING - User Admin does not have user role
+2025-05-02 06:55:07,976 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:07,976 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:07,982 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:55:17,934 - main - DEBUG - No users with active simulations
+2025-05-02 06:55:17,952 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:17,963 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:17,964 - main - WARNING - User Admin does not have user role
+2025-05-02 06:55:17,971 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:17,972 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:17,977 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:55:27,953 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:27,970 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:27,971 - main - WARNING - User Admin does not have user role
+2025-05-02 06:55:27,972 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:27,973 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:27,974 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:55:37,955 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:37,977 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:37,978 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:37,978 - main - WARNING - User Admin does not have user role
+2025-05-02 06:55:37,985 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:37,987 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:55:47,934 - main - DEBUG - No users with active simulations
+2025-05-02 06:55:47,966 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:47,976 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:47,976 - main - WARNING - User Admin does not have user role
+2025-05-02 06:55:47,988 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:47,990 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:47,992 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:55:57,982 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:57,982 - main - WARNING - User Admin does not have user role
+2025-05-02 06:55:57,983 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:57,983 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:57,983 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:55:57,988 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:56:07,948 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:07,966 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:07,967 - main - WARNING - User Admin does not have user role
+2025-05-02 06:56:07,977 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:07,978 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:07,979 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:56:17,935 - main - DEBUG - No users with active simulations
+2025-05-02 06:56:17,954 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:17,968 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:17,968 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:17,968 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:17,968 - main - WARNING - User Admin does not have user role
+2025-05-02 06:56:17,970 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:56:27,949 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:27,970 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:27,970 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:27,971 - main - WARNING - User Admin does not have user role
+2025-05-02 06:56:27,971 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:27,975 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:56:37,964 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:37,981 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:37,984 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:37,984 - main - WARNING - User Admin does not have user role
+2025-05-02 06:56:38,000 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:38,005 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:56:47,936 - main - DEBUG - No users with active simulations
+2025-05-02 06:56:47,967 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:47,968 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:47,970 - main - WARNING - User Admin does not have user role
+2025-05-02 06:56:47,970 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:47,968 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:47,971 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:56:57,953 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:57,967 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:57,968 - main - WARNING - User Admin does not have user role
+2025-05-02 06:56:57,976 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:57,977 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:56:57,981 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:57:07,956 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:07,968 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:07,968 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:07,969 - main - WARNING - User Admin does not have user role
+2025-05-02 06:57:07,969 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:07,976 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:57:17,936 - main - DEBUG - No users with active simulations
+2025-05-02 06:57:17,948 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:17,957 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:17,957 - main - WARNING - User Admin does not have user role
+2025-05-02 06:57:17,970 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:17,971 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:17,971 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:57:27,960 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:27,987 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:27,988 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:27,989 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:27,993 - main - WARNING - User Admin does not have user role
+2025-05-02 06:57:27,995 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:57:37,952 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:37,967 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:37,967 - main - WARNING - User Admin does not have user role
+2025-05-02 06:57:37,975 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:37,975 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:37,979 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:57:47,937 - main - DEBUG - No users with active simulations
+2025-05-02 06:57:47,949 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:47,964 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:47,965 - main - WARNING - User Admin does not have user role
+2025-05-02 06:57:47,967 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:47,967 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:47,969 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:57:58,103 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:58,114 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:58,115 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:58,117 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:57:58,117 - main - WARNING - User Admin does not have user role
+2025-05-02 06:57:58,118 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:58:08,108 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:58:08,126 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:58:08,126 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:58:08,126 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:58:08,127 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:58:08,127 - main - WARNING - User Admin does not have user role
+2025-05-02 06:58:17,938 - main - DEBUG - No users with active simulations
+2025-05-02 06:58:18,105 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:58:18,116 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:58:18,117 - main - WARNING - User Admin does not have user role
+2025-05-02 06:58:18,125 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:58:18,125 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:58:18,125 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:58:28,108 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:58:28,118 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:58:28,118 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:58:28,118 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:58:28,119 - main - WARNING - User Admin does not have user role
+2025-05-02 06:58:28,123 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:58:38,108 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:58:38,112 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:58:38,113 - main - WARNING - User Admin does not have user role
+2025-05-02 06:58:38,119 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:58:38,119 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:58:38,122 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:58:47,939 - main - DEBUG - No users with active simulations
+2025-05-02 06:58:48,110 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:58:48,113 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:58:48,113 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:58:48,114 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:58:48,114 - main - WARNING - User Admin does not have user role
+2025-05-02 06:58:48,117 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:59:17,939 - main - DEBUG - No users with active simulations
+2025-05-02 06:59:34,978 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:59:34,979 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:59:34,981 - main - WARNING - User Admin does not have user role
+2025-05-02 06:59:34,985 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:59:34,985 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:59:34,993 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:59:37,949 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:59:37,972 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:59:37,972 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:59:37,972 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:59:37,974 - main - WARNING - User Admin does not have user role
+2025-05-02 06:59:37,975 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:59:47,940 - main - DEBUG - No users with active simulations
+2025-05-02 06:59:48,108 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:59:48,116 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:59:48,117 - main - WARNING - User Admin does not have user role
+2025-05-02 06:59:48,124 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:59:48,125 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:59:48,128 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 06:59:58,103 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:59:58,113 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:59:58,115 - main - WARNING - User Admin does not have user role
+2025-05-02 06:59:58,117 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:59:58,117 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 06:59:58,120 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 07:00:08,111 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:00:08,123 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:00:08,123 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:00:08,123 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:00:08,124 - main - WARNING - User Admin does not have user role
+2025-05-02 07:00:09,348 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 07:00:17,941 - main - DEBUG - No users with active simulations
+2025-05-02 07:00:18,117 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:00:18,117 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:00:18,118 - main - WARNING - User Admin does not have user role
+2025-05-02 07:00:18,134 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:00:18,134 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:00:18,136 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 07:00:28,110 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:00:28,116 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:00:28,116 - main - WARNING - User Admin does not have user role
+2025-05-02 07:00:28,123 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:00:28,127 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:00:28,128 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 07:00:38,226 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:00:38,227 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:00:38,227 - main - WARNING - User Admin does not have user role
+2025-05-02 07:00:38,227 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:00:38,227 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:00:38,229 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 07:00:47,941 - main - DEBUG - No users with active simulations
+2025-05-02 07:01:17,957 - main - DEBUG - No users with active simulations
+2025-05-02 07:01:44,180 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:01:44,187 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:01:44,187 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:01:44,187 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:01:44,197 - main - WARNING - User Admin does not have user role
+2025-05-02 07:01:44,283 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 07:01:47,957 - main - DEBUG - No users with active simulations
+2025-05-02 07:02:17,957 - main - DEBUG - No users with active simulations
+2025-05-02 07:02:48,358 - main - DEBUG - No users with active simulations
+2025-05-02 07:03:18,358 - main - DEBUG - No users with active simulations
+2025-05-02 07:03:49,306 - main - DEBUG - No users with active simulations
+2025-05-02 07:04:22,762 - main - DEBUG - No users with active simulations
+2025-05-02 07:04:53,791 - main - DEBUG - No users with active simulations
+2025-05-02 07:04:55,608 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:04:55,608 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:04:55,608 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:04:55,608 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:04:55,609 - main - WARNING - User Admin does not have user role
+2025-05-02 07:04:56,071 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 07:05:23,792 - main - DEBUG - No users with active simulations
+2025-05-02 07:05:53,793 - main - DEBUG - No users with active simulations
+2025-05-02 07:06:23,794 - main - DEBUG - No users with active simulations
+2025-05-02 07:06:53,797 - main - DEBUG - No users with active simulations
+2025-05-02 07:07:23,804 - main - DEBUG - No users with active simulations
+2025-05-02 07:07:53,627 - main - INFO - Database tables created successfully
+2025-05-02 07:07:53,659 - main - INFO - Started data usage simulation thread
+2025-05-02 07:07:53,660 - main - INFO - Data usage simulation thread started
+2025-05-02 07:07:53,660 - main - DEBUG - No users with active simulations
+2025-05-02 07:08:23,661 - main - DEBUG - No users with active simulations
+2025-05-02 07:08:53,661 - main - DEBUG - No users with active simulations
+2025-05-02 07:09:23,662 - main - DEBUG - No users with active simulations
+2025-05-02 07:09:53,663 - main - DEBUG - No users with active simulations
+2025-05-02 07:10:23,663 - main - DEBUG - No users with active simulations
+2025-05-02 07:10:53,663 - main - DEBUG - No users with active simulations
+2025-05-02 07:11:23,664 - main - DEBUG - No users with active simulations
+2025-05-02 07:11:53,678 - main - DEBUG - No users with active simulations
+2025-05-02 07:12:23,678 - main - DEBUG - No users with active simulations
+2025-05-02 07:12:53,679 - main - DEBUG - No users with active simulations
+2025-05-02 07:13:23,688 - main - DEBUG - No users with active simulations
+2025-05-02 07:13:44,789 - main - INFO - Login attempt for username: Admin
+2025-05-02 07:13:45,272 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/home/wes/Desktop/wifi/backend/venv/lib/python3.11/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-05-02 07:13:45,303 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2025-05-02 07:13:45,352 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2025-05-02 07:13:45,900 - main - INFO - OTP sent for user Admin
+2025-05-02 07:13:51,909 - emailutils - INFO - OTP sent to peterwesley484@gmail.com
+2025-05-02 07:13:53,688 - main - DEBUG - No users with active simulations
+2025-05-02 07:14:23,497 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Linux"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBZG1pbiIsInJvbGUiOiJ3aWZpX3Byb3ZpZGVyIiwidGVtcCI6dHJ1ZSwiZXhwIjoxNzQ2MTU5ODI1fQ.rJWWIMwrca2FscVmYKv-xm8e2mTN-D0Jn1tIsyIvruk', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'sec-gpc': '1', 'accept-language': 'en-US,en;q=0.5', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd'}), body={'otp': '222272'}
+2025-05-02 07:14:23,497 - main - INFO - Parsed OTP: 222272, temp_token=eyJhbGciOi...
+2025-05-02 07:14:23,502 - main - INFO - OTP verified for user Admin
+2025-05-02 07:14:23,690 - main - DEBUG - No users with active simulations
+2025-05-02 07:14:37,497 - main - INFO - Updated wallet address for user Admin to 0xC4Deb43c6B729cA2EA7508E5f4C39f0129A93E5d
+2025-05-02 07:14:37,758 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:14:37,758 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:14:37,758 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:14:37,758 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:14:37,760 - main - WARNING - User Admin does not have user role
+2025-05-02 07:14:37,763 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 07:14:47,668 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:14:47,673 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:14:47,673 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:14:47,673 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:14:47,688 - main - WARNING - User Admin does not have user role
+2025-05-02 07:14:47,771 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 07:14:53,691 - main - DEBUG - No users with active simulations
+2025-05-02 07:14:57,486 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:14:57,506 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:14:57,508 - main - WARNING - User Admin does not have user role
+2025-05-02 07:14:57,509 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:14:57,506 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:14:57,511 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 07:15:07,541 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:07,584 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:07,592 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:07,592 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:07,593 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 07:15:07,593 - main - WARNING - User Admin does not have user role
+2025-05-02 07:15:17,477 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:17,484 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:17,484 - main - WARNING - User Admin does not have user role
+2025-05-02 07:15:17,501 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:17,501 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:17,504 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 07:15:23,691 - main - DEBUG - No users with active simulations
+2025-05-02 07:15:27,476 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:27,656 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:27,656 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:27,656 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:27,657 - main - WARNING - User Admin does not have user role
+2025-05-02 07:15:27,659 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 07:15:37,482 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:37,516 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:37,517 - main - WARNING - User Admin does not have user role
+2025-05-02 07:15:37,518 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:37,519 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:37,520 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 07:15:47,486 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:47,501 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:47,501 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:47,501 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:47,502 - main - WARNING - User Admin does not have user role
+2025-05-02 07:15:47,504 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 07:15:53,692 - main - DEBUG - No users with active simulations
+2025-05-02 07:15:57,504 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:57,506 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:57,507 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:57,507 - main - WARNING - User Admin does not have user role
+2025-05-02 07:15:57,557 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:15:57,564 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 07:16:08,127 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:16:08,146 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:16:08,150 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:16:08,151 - main - WARNING - User Admin does not have user role
+2025-05-02 07:16:08,154 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:16:08,154 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 07:16:23,693 - main - DEBUG - No users with active simulations
+2025-05-02 07:16:53,693 - main - DEBUG - No users with active simulations
+2025-05-02 07:17:23,694 - main - DEBUG - No users with active simulations
+2025-05-02 07:17:53,694 - main - DEBUG - No users with active simulations
+2025-05-02 07:18:23,695 - main - DEBUG - No users with active simulations
+2025-05-02 07:18:53,695 - main - DEBUG - No users with active simulations
+2025-05-02 07:19:23,695 - main - DEBUG - No users with active simulations
+2025-05-02 07:19:53,696 - main - DEBUG - No users with active simulations
+2025-05-02 07:20:23,696 - main - DEBUG - No users with active simulations
+2025-05-02 07:20:53,697 - main - DEBUG - No users with active simulations
+2025-05-02 07:21:23,697 - main - DEBUG - No users with active simulations
+2025-05-02 07:21:53,698 - main - DEBUG - No users with active simulations
+2025-05-02 07:22:23,699 - main - DEBUG - No users with active simulations
+2025-05-02 07:22:53,699 - main - DEBUG - No users with active simulations
+2025-05-02 07:23:23,700 - main - DEBUG - No users with active simulations
+2025-05-02 07:23:29,193 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:23:29,193 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:23:29,194 - main - WARNING - User Admin does not have user role
+2025-05-02 07:23:29,545 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:23:29,560 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:23:29,561 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 07:23:37,480 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:23:37,514 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:23:37,514 - main - WARNING - User Admin does not have user role
+2025-05-02 07:23:37,517 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:23:37,518 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:23:37,520 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 07:23:48,137 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:23:48,137 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:23:48,138 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:23:48,138 - main - WARNING - User Admin does not have user role
+2025-05-02 07:23:48,139 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:23:48,147 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 07:23:53,701 - main - DEBUG - No users with active simulations
+2025-05-02 07:24:23,701 - main - DEBUG - No users with active simulations
+2025-05-02 07:24:53,781 - main - DEBUG - No users with active simulations
+2025-05-02 07:25:23,781 - main - DEBUG - No users with active simulations
+2025-05-02 07:25:36,984 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:25:36,984 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:25:36,984 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:25:36,984 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:25:37,112 - main - WARNING - User Admin does not have user role
+2025-05-02 07:25:37,114 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 07:25:37,131 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:25:37,141 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:25:37,141 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:25:37,142 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:25:37,142 - main - WARNING - User Admin does not have user role
+2025-05-02 07:25:37,146 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 07:25:46,845 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:25:46,865 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:25:46,865 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:25:46,866 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 07:25:46,866 - main - WARNING - User Admin does not have user role
+2025-05-02 07:25:46,867 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 07:25:53,782 - main - DEBUG - No users with active simulations
+2025-05-02 07:26:23,783 - main - DEBUG - No users with active simulations
+2025-05-02 07:26:53,785 - main - DEBUG - No users with active simulations
+2025-05-02 07:27:23,795 - main - DEBUG - No users with active simulations
+2025-05-02 07:27:33,854 - main - INFO - Login attempt for username: Admin
+2025-05-02 07:27:34,453 - main - INFO - OTP sent for user Admin
+2025-05-02 07:27:40,155 - emailutils - INFO - OTP sent to peterwesley484@gmail.com
+2025-05-02 07:27:53,502 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Linux"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBZG1pbiIsInJvbGUiOiJ3aWZpX3Byb3ZpZGVyIiwidGVtcCI6dHJ1ZSwiZXhwIjoxNzQ2MTYwNjU0fQ.tMEZHlpeFfcfm2Dxi1Ojx_A5VOM6RGF6XyVEFhM8H_Q', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'sec-gpc': '1', 'accept-language': 'en-US,en;q=0.5', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd'}), body={'otp': '222272'}
+2025-05-02 07:27:53,503 - main - INFO - Parsed OTP: 222272, temp_token=eyJhbGciOi...
+2025-05-02 07:27:53,654 - main - WARNING - Invalid OTP for user: Admin
+2025-05-02 07:27:53,797 - main - DEBUG - No users with active simulations
+2025-05-02 07:28:14,904 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Linux"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBZG1pbiIsInJvbGUiOiJ3aWZpX3Byb3ZpZGVyIiwidGVtcCI6dHJ1ZSwiZXhwIjoxNzQ2MTYwNjU0fQ.tMEZHlpeFfcfm2Dxi1Ojx_A5VOM6RGF6XyVEFhM8H_Q', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'sec-gpc': '1', 'accept-language': 'en-US,en;q=0.5', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd'}), body={'otp': '222272'}
+2025-05-02 07:28:14,904 - main - INFO - Parsed OTP: 222272, temp_token=eyJhbGciOi...
+2025-05-02 07:28:14,910 - main - WARNING - Invalid OTP for user: Admin
+2025-05-02 07:28:17,560 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Linux"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBZG1pbiIsInJvbGUiOiJ3aWZpX3Byb3ZpZGVyIiwidGVtcCI6dHJ1ZSwiZXhwIjoxNzQ2MTYwNjU0fQ.tMEZHlpeFfcfm2Dxi1Ojx_A5VOM6RGF6XyVEFhM8H_Q', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'sec-gpc': '1', 'accept-language': 'en-US,en;q=0.5', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd'}), body={'otp': '222272'}
+2025-05-02 07:28:17,560 - main - INFO - Parsed OTP: 222272, temp_token=eyJhbGciOi...
+2025-05-02 07:28:17,592 - main - WARNING - Invalid OTP for user: Admin
+2025-05-02 07:28:22,504 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Linux"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBZG1pbiIsInJvbGUiOiJ3aWZpX3Byb3ZpZGVyIiwidGVtcCI6dHJ1ZSwiZXhwIjoxNzQ2MTYwNjU0fQ.tMEZHlpeFfcfm2Dxi1Ojx_A5VOM6RGF6XyVEFhM8H_Q', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'sec-gpc': '1', 'accept-language': 'en-US,en;q=0.5', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd'}), body={'otp': '222272'}
+2025-05-02 07:28:22,504 - main - INFO - Parsed OTP: 222272, temp_token=eyJhbGciOi...
+2025-05-02 07:28:22,508 - main - WARNING - Invalid OTP for user: Admin
+2025-05-02 07:28:23,797 - main - DEBUG - No users with active simulations
+2025-05-02 07:28:43,208 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Linux"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBZG1pbiIsInJvbGUiOiJ3aWZpX3Byb3ZpZGVyIiwidGVtcCI6dHJ1ZSwiZXhwIjoxNzQ2MTYwNjU0fQ.tMEZHlpeFfcfm2Dxi1Ojx_A5VOM6RGF6XyVEFhM8H_Q', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'sec-gpc': '1', 'accept-language': 'en-US,en;q=0.5', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd'}), body={'otp': '551893'}
+2025-05-02 07:28:43,210 - main - INFO - Parsed OTP: 551893, temp_token=eyJhbGciOi...
+2025-05-02 07:28:43,214 - main - INFO - OTP verified for user Admin
+2025-05-02 07:28:53,798 - main - DEBUG - No users with active simulations
+2025-05-02 07:29:23,798 - main - DEBUG - No users with active simulations
+2025-05-02 07:29:54,211 - main - DEBUG - No users with active simulations
+2025-05-02 07:30:24,212 - main - DEBUG - No users with active simulations
+2025-05-02 07:30:55,012 - main - DEBUG - No users with active simulations
+2025-05-02 07:31:26,026 - main - DEBUG - No users with active simulations
+2025-05-02 10:28:13,068 - main - INFO - Database tables created successfully
+2025-05-02 10:28:13,180 - main - INFO - Started data usage simulation thread
+2025-05-02 10:28:13,180 - main - INFO - Data usage simulation thread started
+2025-05-02 10:28:13,181 - main - DEBUG - No users with active simulations
+2025-05-02 10:28:43,182 - main - DEBUG - No users with active simulations
+2025-05-02 10:29:13,182 - main - DEBUG - No users with active simulations
+2025-05-02 10:29:34,381 - main - INFO - Login attempt for username: Admin
+2025-05-02 10:29:34,445 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/home/wes/Desktop/wifi/backend/venv/lib/python3.11/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-05-02 10:29:34,472 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2025-05-02 10:29:34,472 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2025-05-02 10:29:34,839 - main - INFO - OTP sent for user Admin
+2025-05-02 10:29:38,722 - emailutils - INFO - OTP sent to peterwesley484@gmail.com
+2025-05-02 10:29:43,183 - main - DEBUG - No users with active simulations
+2025-05-02 10:29:58,780 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Linux"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBZG1pbiIsInJvbGUiOiJ3aWZpX3Byb3ZpZGVyIiwidGVtcCI6dHJ1ZSwiZXhwIjoxNzQ2MTcxNTc0fQ.I_44BA7N4cu6ccvmm2h7Orvh0iq1P3bICD0T330Q2AE', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'sec-gpc': '1', 'accept-language': 'en-US,en;q=0.5', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd'}), body={'otp': '610178'}
+2025-05-02 10:29:58,781 - main - INFO - Parsed OTP: 610178, temp_token=eyJhbGciOi...
+2025-05-02 10:29:58,784 - main - INFO - OTP verified for user Admin
+2025-05-02 10:30:13,183 - main - DEBUG - No users with active simulations
+2025-05-02 10:30:43,184 - main - DEBUG - No users with active simulations
+2025-05-02 10:31:13,184 - main - DEBUG - No users with active simulations
+2025-05-02 10:31:23,953 - main - INFO - Updated wallet address for user Admin to 0xC4Deb43c6B729cA2EA7508E5f4C39f0129A93E5d
+2025-05-02 10:31:24,329 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:31:24,456 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:31:24,468 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:31:24,468 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:31:24,469 - main - WARNING - User Admin does not have user role
+2025-05-02 10:31:24,470 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:31:33,358 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:31:33,367 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:31:33,368 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:31:33,368 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:31:33,368 - main - WARNING - User Admin does not have user role
+2025-05-02 10:31:33,372 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:31:43,185 - main - DEBUG - No users with active simulations
+2025-05-02 10:31:43,349 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:31:43,360 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:31:43,361 - main - WARNING - User Admin does not have user role
+2025-05-02 10:31:43,378 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:31:43,379 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:31:43,383 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:31:53,349 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:31:53,365 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:31:53,365 - main - WARNING - User Admin does not have user role
+2025-05-02 10:31:53,376 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:31:53,376 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:31:53,384 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:32:03,999 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:04,006 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:04,010 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:04,011 - main - WARNING - User Admin does not have user role
+2025-05-02 10:32:04,014 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:04,017 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:32:13,185 - main - DEBUG - No users with active simulations
+2025-05-02 10:32:14,008 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:14,009 - main - WARNING - User Admin does not have user role
+2025-05-02 10:32:14,018 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:14,035 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:14,035 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:14,040 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:32:23,997 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:24,009 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:24,010 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:24,011 - main - WARNING - User Admin does not have user role
+2025-05-02 10:32:24,010 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:24,012 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:32:34,018 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:34,123 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:34,123 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:34,124 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:34,124 - main - WARNING - User Admin does not have user role
+2025-05-02 10:32:34,146 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:32:35,916 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:35,945 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:35,951 - main - WARNING - User Admin does not have user role
+2025-05-02 10:32:35,952 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:35,953 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:35,963 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:32:43,186 - main - DEBUG - No users with active simulations
+2025-05-02 10:32:45,921 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:45,937 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:45,937 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:45,937 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:45,941 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:32:45,938 - main - WARNING - User Admin does not have user role
+2025-05-02 10:32:55,945 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:55,946 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:55,954 - main - WARNING - User Admin does not have user role
+2025-05-02 10:32:55,954 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:55,957 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:32:55,964 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:33:05,927 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:05,930 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:05,930 - main - WARNING - User Admin does not have user role
+2025-05-02 10:33:05,939 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:05,939 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:05,943 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:33:13,186 - main - DEBUG - No users with active simulations
+2025-05-02 10:33:15,925 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:15,933 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:15,938 - main - WARNING - User Admin does not have user role
+2025-05-02 10:33:15,939 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:15,940 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:15,945 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:33:26,004 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:26,019 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:26,021 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:26,021 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:26,024 - main - WARNING - User Admin does not have user role
+2025-05-02 10:33:26,026 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:33:35,994 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:36,004 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:36,012 - main - WARNING - User Admin does not have user role
+2025-05-02 10:33:36,016 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:36,016 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:36,024 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:33:43,187 - main - DEBUG - No users with active simulations
+2025-05-02 10:33:45,998 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:45,999 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:45,999 - main - WARNING - User Admin does not have user role
+2025-05-02 10:33:46,016 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:46,016 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:46,017 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:33:55,995 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:56,003 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:56,011 - main - WARNING - User Admin does not have user role
+2025-05-02 10:33:56,015 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:56,018 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:33:56,019 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:34:05,996 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:06,025 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:06,025 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:06,025 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:06,025 - main - WARNING - User Admin does not have user role
+2025-05-02 10:34:06,029 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:34:13,188 - main - DEBUG - No users with active simulations
+2025-05-02 10:34:15,994 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:16,003 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:16,004 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:16,004 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:16,005 - main - WARNING - User Admin does not have user role
+2025-05-02 10:34:16,006 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:34:25,993 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:26,000 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:26,000 - main - WARNING - User Admin does not have user role
+2025-05-02 10:34:26,010 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:26,011 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:26,012 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:34:35,995 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:36,004 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:36,006 - main - WARNING - User Admin does not have user role
+2025-05-02 10:34:36,010 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:36,010 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:36,012 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:34:43,188 - main - DEBUG - No users with active simulations
+2025-05-02 10:34:46,019 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:46,019 - main - WARNING - User Admin does not have user role
+2025-05-02 10:34:46,031 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:46,045 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:46,052 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:46,056 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:34:55,991 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:56,015 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:56,016 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:56,016 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:34:56,016 - main - WARNING - User Admin does not have user role
+2025-05-02 10:34:56,018 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:35:06,021 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:35:06,022 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:35:06,022 - main - WARNING - User Admin does not have user role
+2025-05-02 10:35:06,023 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:35:06,027 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:35:06,029 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:35:13,188 - main - DEBUG - No users with active simulations
+2025-05-02 10:35:43,189 - main - DEBUG - No users with active simulations
+2025-05-02 10:35:47,000 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:35:47,050 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:35:47,051 - main - WARNING - User Admin does not have user role
+2025-05-02 10:35:47,052 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:35:47,056 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:35:47,061 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:36:13,190 - main - DEBUG - No users with active simulations
+2025-05-02 10:36:43,190 - main - DEBUG - No users with active simulations
+2025-05-02 10:36:47,003 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:36:47,022 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:36:47,024 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:36:47,028 - main - WARNING - User Admin does not have user role
+2025-05-02 10:36:47,031 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:36:47,041 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:37:13,191 - main - DEBUG - No users with active simulations
+2025-05-02 10:37:43,192 - main - DEBUG - No users with active simulations
+2025-05-02 10:37:46,999 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:37:47,021 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:37:47,022 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:37:47,022 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:37:47,022 - main - WARNING - User Admin does not have user role
+2025-05-02 10:37:47,023 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:38:13,193 - main - DEBUG - No users with active simulations
+2025-05-02 10:38:43,199 - main - DEBUG - No users with active simulations
+2025-05-02 10:38:47,049 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:38:47,049 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:38:47,050 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:38:47,050 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:38:47,053 - main - WARNING - User Admin does not have user role
+2025-05-02 10:38:47,059 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:39:13,200 - main - DEBUG - No users with active simulations
+2025-05-02 10:39:43,200 - main - DEBUG - No users with active simulations
+2025-05-02 10:39:47,195 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:39:47,207 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:39:47,207 - main - WARNING - User Admin does not have user role
+2025-05-02 10:39:47,210 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:39:47,211 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:39:47,213 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:40:13,209 - main - DEBUG - No users with active simulations
+2025-05-02 10:40:43,210 - main - DEBUG - No users with active simulations
+2025-05-02 10:40:47,021 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:40:47,032 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:40:47,034 - main - WARNING - User Admin does not have user role
+2025-05-02 10:40:47,043 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:40:47,048 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:40:47,052 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:41:13,210 - main - DEBUG - No users with active simulations
+2025-05-02 10:41:43,210 - main - DEBUG - No users with active simulations
+2025-05-02 10:41:47,057 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:41:47,069 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:41:47,070 - main - WARNING - User Admin does not have user role
+2025-05-02 10:41:47,087 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:41:47,089 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:41:47,092 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:42:13,214 - main - DEBUG - No users with active simulations
+2025-05-02 10:42:43,214 - main - DEBUG - No users with active simulations
+2025-05-02 10:42:47,010 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:42:47,017 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:42:47,017 - main - WARNING - User Admin does not have user role
+2025-05-02 10:42:47,020 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:42:47,024 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:42:47,029 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:43:13,215 - main - DEBUG - No users with active simulations
+2025-05-02 10:43:43,215 - main - DEBUG - No users with active simulations
+2025-05-02 10:43:46,999 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:43:47,009 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:43:47,009 - main - WARNING - User Admin does not have user role
+2025-05-02 10:43:47,023 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:43:47,024 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:43:47,027 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:44:13,216 - main - DEBUG - No users with active simulations
+2025-05-02 10:44:43,216 - main - DEBUG - No users with active simulations
+2025-05-02 10:44:47,008 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:44:47,086 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:44:47,086 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:44:47,086 - main - WARNING - User Admin does not have user role
+2025-05-02 10:44:47,088 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:44:47,091 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:45:13,095 - main - INFO - Database tables created successfully
+2025-05-02 10:45:13,132 - main - INFO - Started data usage simulation thread
+2025-05-02 10:45:13,132 - main - INFO - Data usage simulation thread started
+2025-05-02 10:45:13,132 - main - DEBUG - No users with active simulations
+2025-05-02 10:45:43,134 - main - DEBUG - No users with active simulations
+2025-05-02 10:45:55,314 - main - INFO - Login attempt for username: Admin
+2025-05-02 10:45:55,866 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/home/wes/Desktop/wifi/backend/venv/lib/python3.11/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-05-02 10:45:56,022 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2025-05-02 10:45:56,023 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2025-05-02 10:45:56,383 - main - INFO - OTP sent for user Admin
+2025-05-02 10:46:00,615 - emailutils - INFO - OTP sent to peterwesley484@gmail.com
+2025-05-02 10:46:13,134 - main - DEBUG - No users with active simulations
+2025-05-02 10:46:20,700 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Linux"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBZG1pbiIsInJvbGUiOiJ3aWZpX3Byb3ZpZGVyIiwidGVtcCI6dHJ1ZSwiZXhwIjoxNzQ2MTcyNTU2fQ.FVL15VrSQoMTk9C5k7mhhqekXmxl6Oyg1CBZvrIu4Co', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'sec-ch-ua': '"Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'sec-gpc': '1', 'accept-language': 'en-US,en;q=0.5', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd'}), body={'otp': '494698'}
+2025-05-02 10:46:20,701 - main - INFO - Parsed OTP: 494698, temp_token=eyJhbGciOi...
+2025-05-02 10:46:20,703 - main - INFO - OTP verified for user Admin
+2025-05-02 10:46:43,135 - main - DEBUG - No users with active simulations
+2025-05-02 10:46:46,031 - main - INFO - Updated wallet address for user Admin to 0xC4Deb43c6B729cA2EA7508E5f4C39f0129A93E5d
+2025-05-02 10:46:46,047 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:46:46,048 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:46:46,048 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:46:46,047 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:46:46,668 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:46:46,674 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'isoformat'
+2025-05-02 10:46:46,674 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:46:54,846 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:46:54,857 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:46:54,865 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:46:54,867 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:46:54,868 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:46:54,870 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:46:54,878 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'isoformat'
+2025-05-02 10:47:04,844 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:04,859 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:04,861 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'isoformat'
+2025-05-02 10:47:04,862 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:04,863 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:04,865 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:47:04,869 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:47:13,262 - main - DEBUG - No users with active simulations
+2025-05-02 10:47:14,839 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:14,840 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:14,844 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'isoformat'
+2025-05-02 10:47:14,853 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:14,856 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:14,860 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:47:14,862 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:47:24,844 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:24,869 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:24,869 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:24,879 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:47:24,883 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'isoformat'
+2025-05-02 10:47:24,885 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:24,896 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:47:34,845 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:34,851 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:34,852 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:34,853 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:34,856 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'isoformat'
+2025-05-02 10:47:34,860 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:47:34,861 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:47:43,264 - main - DEBUG - No users with active simulations
+2025-05-02 10:47:45,022 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:45,033 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:45,036 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:45,036 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'isoformat'
+2025-05-02 10:47:45,037 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:45,040 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:47:45,042 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:47:55,050 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:55,073 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:55,073 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:55,074 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:47:55,104 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'isoformat'
+2025-05-02 10:47:55,117 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:47:55,130 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:48:04,995 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:48:05,013 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:48:05,014 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:48:05,016 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:48:05,019 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:48:05,020 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'isoformat'
+2025-05-02 10:48:05,022 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:48:13,264 - main - DEBUG - No users with active simulations
+2025-05-02 10:48:14,996 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:48:15,000 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:48:15,006 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'isoformat'
+2025-05-02 10:48:15,008 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:48:15,009 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:48:15,011 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:48:15,016 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:48:25,008 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:48:25,008 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:48:25,008 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:48:25,009 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:48:25,009 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:48:25,011 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'isoformat'
+2025-05-02 10:48:25,013 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:48:35,004 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:48:35,012 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:48:35,016 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'isoformat'
+2025-05-02 10:48:35,045 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:48:35,045 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:48:35,047 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:48:35,048 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:48:43,265 - main - DEBUG - No users with active simulations
+2025-05-02 10:48:47,074 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:48:47,074 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:48:47,074 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:48:47,074 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:48:47,078 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:48:47,081 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'isoformat'
+2025-05-02 10:48:47,082 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:49:13,265 - main - DEBUG - No users with active simulations
+2025-05-02 10:49:43,266 - main - DEBUG - No users with active simulations
+2025-05-02 10:49:47,038 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:49:47,090 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:49:47,100 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'isoformat'
+2025-05-02 10:49:47,101 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:49:47,101 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:49:47,103 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:49:47,104 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:50:13,266 - main - DEBUG - No users with active simulations
+2025-05-02 10:50:43,267 - main - DEBUG - No users with active simulations
+2025-05-02 10:50:47,018 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:50:47,033 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:50:47,038 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:50:47,046 - main - ERROR - Error in get_total_data_usage: 'str' object has no attribute 'isoformat'
+2025-05-02 10:50:47,053 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:50:47,062 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:50:47,065 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:51:13,267 - main - DEBUG - No users with active simulations
+2025-05-02 10:51:30,294 - main - INFO - Database tables created successfully
+2025-05-02 10:51:30,330 - main - INFO - Started data usage simulation thread
+2025-05-02 10:51:30,330 - main - INFO - Data usage simulation thread started
+2025-05-02 10:51:30,330 - main - DEBUG - No users with active simulations
+2025-05-02 10:51:30,420 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:51:30,420 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:51:30,421 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:51:30,421 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:51:30,450 - main - ERROR - Error in get_total_data_usage: fromisoformat: argument must be str
+2025-05-02 10:51:30,477 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:51:30,477 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:51:34,833 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:51:34,845 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:51:34,850 - main - ERROR - Error in get_total_data_usage: fromisoformat: argument must be str
+2025-05-02 10:51:34,851 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:51:34,852 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:51:34,853 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:51:34,855 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:52:00,331 - main - DEBUG - No users with active simulations
+2025-05-02 10:52:15,458 - main - INFO - Updated wallet address for user Admin to 0xC4Deb43c6B729cA2EA7508E5f4C39f0129A93E5d
+2025-05-02 10:52:15,481 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:52:15,481 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:52:15,481 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:52:15,481 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:52:17,115 - main - ERROR - Error in get_total_data_usage: fromisoformat: argument must be str
+2025-05-02 10:52:17,116 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:52:17,272 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:52:21,633 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:52:21,648 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:52:21,649 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:52:21,651 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:52:21,652 - main - ERROR - Error in get_total_data_usage: fromisoformat: argument must be str
+2025-05-02 10:52:21,653 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:52:21,657 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:52:30,535 - main - DEBUG - No users with active simulations
+2025-05-02 10:52:31,645 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:52:31,686 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:52:31,690 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:52:31,692 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:52:31,695 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:52:31,698 - main - ERROR - Error in get_total_data_usage: fromisoformat: argument must be str
+2025-05-02 10:52:31,699 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:52:41,635 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:52:41,656 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:52:41,666 - main - ERROR - Error in get_total_data_usage: fromisoformat: argument must be str
+2025-05-02 10:52:41,666 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:52:41,674 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:52:41,676 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:52:41,692 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:52:51,638 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:52:51,662 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:52:51,665 - main - ERROR - Error in get_total_data_usage: fromisoformat: argument must be str
+2025-05-02 10:52:51,665 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:52:51,667 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:52:51,669 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:52:51,670 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:53:00,536 - main - DEBUG - No users with active simulations
+2025-05-02 10:53:01,996 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:02,002 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:02,008 - main - ERROR - Error in get_total_data_usage: fromisoformat: argument must be str
+2025-05-02 10:53:02,012 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:02,012 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:02,014 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:53:02,015 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:53:12,156 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:12,168 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:12,168 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:12,169 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:12,171 - main - ERROR - Error in get_total_data_usage: fromisoformat: argument must be str
+2025-05-02 10:53:12,172 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:53:12,174 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:53:21,990 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:22,003 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:22,012 - main - ERROR - Error in get_total_data_usage: fromisoformat: argument must be str
+2025-05-02 10:53:22,027 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:22,027 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:22,028 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:53:22,029 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:53:30,536 - main - DEBUG - No users with active simulations
+2025-05-02 10:53:31,992 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:32,003 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:32,003 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:32,007 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:53:32,009 - main - ERROR - Error in get_total_data_usage: fromisoformat: argument must be str
+2025-05-02 10:53:32,010 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:32,011 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:53:41,994 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:42,016 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:42,016 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:42,016 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:42,021 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:53:42,022 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:53:42,026 - main - ERROR - Error in get_total_data_usage: fromisoformat: argument must be str
+2025-05-02 10:53:52,004 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:52,011 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:52,011 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:52,011 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-02 10:53:52,013 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-02 10:53:52,016 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-02 10:53:52,020 - main - ERROR - Error in get_total_data_usage: fromisoformat: argument must be str
+2025-05-02 10:54:00,537 - main - DEBUG - No users with active simulations
+2025-05-02 10:54:30,537 - main - DEBUG - No users with active simulations

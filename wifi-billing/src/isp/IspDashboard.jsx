@@ -4,6 +4,7 @@ import { ethers } from "ethers";
 import { WalletContext } from "../context/WalletContext";
 import { getEthToKesRate } from "../utils/exchangeRate";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { jsPDF } from "jspdf";
 import Footer from "../components/Footer";
 
 const ISPDashboard = () => {
@@ -22,6 +23,8 @@ const ISPDashboard = () => {
   } = useContext(WalletContext);
 
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]); // New state for filtered users
+  const [searchQuery, setSearchQuery] = useState(""); // New state for search query
   const [pendingRegistrations, setPendingRegistrations] = useState([]);
   const [totalUsageData, setTotalUsageData] = useState([]);
   const [cumulativeUsage, setCumulativeUsage] = useState([]);
@@ -33,7 +36,7 @@ const ISPDashboard = () => {
   const [isLoggingData, setIsLoggingData] = useState(false);
   const [isConfirmingRegistration, setIsConfirmingRegistration] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [ethToKesRate, setEthToKesRate] = useState(247789.20); // Fallback rate
+  const [ethToKesRate, setEthToKesRate] = useState(247789.20);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -146,6 +149,7 @@ const ISPDashboard = () => {
       const usersData = await response.json();
       if (usersData.length === 0) {
         setUsers([]);
+        setFilteredUsers([]); // Update filtered users
         setError("No users found in the system.");
         return;
       }
@@ -196,13 +200,23 @@ const ISPDashboard = () => {
           })
         );
         setUsers(enrichedUsers);
+        setFilteredUsers(enrichedUsers); // Initialize filtered users
       } else {
-        setUsers(usersData.map((user) => ({ ...user, totalUsage: 0, totalCostEth: 0, totalCostKes: 0, registrationStatus: "No contract" })));
+        const defaultUsers = usersData.map((user) => ({
+          ...user,
+          totalUsage: 0,
+          totalCostEth: 0,
+          totalCostKes: 0,
+          registrationStatus: "No contract",
+        }));
+        setUsers(defaultUsers);
+        setFilteredUsers(defaultUsers); // Initialize filtered users
         setError("Contract not initialized. Please connect your wallet.");
       }
     } catch (err) {
       setError("Failed to fetch users' data: " + err.message);
       setUsers([]);
+      setFilteredUsers([]);
       console.error("Fetch users data error:", err);
     }
   };
@@ -219,6 +233,9 @@ const ISPDashboard = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
+        if (response.status === 403) {
+          throw new Error("Access denied: User does not have the required role (wifi_provider).");
+        }
         throw new Error(errorData.detail || "Failed to fetch total data usage from database");
       }
 
@@ -228,8 +245,19 @@ const ISPDashboard = () => {
       let cumulative = 0;
       const cumulativeData = data.map((entry) => {
         const total_usage_mb = Math.floor(Number(entry.total_usage_mb));
+        let timestamp;
+        try {
+          timestamp = new Date(entry.timestamp);
+          if (isNaN(timestamp.getTime())) {
+            console.warn(`Invalid timestamp in entry: ${entry.timestamp}. Using current date.`);
+            timestamp = new Date();
+          }
+        } catch (e) {
+          console.warn(`Error parsing timestamp ${entry.timestamp}: ${e.message}. Using current date.`);
+          timestamp = new Date();
+        }
         cumulative += total_usage_mb;
-        return { ...entry, total_usage_mb, cumulative_mb: cumulative };
+        return { ...entry, total_usage_mb, cumulative_mb: cumulative, timestamp };
       });
       setCumulativeUsage(cumulativeData);
     } catch (err) {
@@ -247,12 +275,13 @@ const ISPDashboard = () => {
     }
 
     const userAddresses = users
-      .filter((user) => user.wallet_address && ethers.isAddress(user.wallet_address))
+      .filter((user) => user.wallet_address && ethers.isAddress(user.wallet_address) && user.registrationStatus === "Registered")
       .map((user) => ({ address: user.wallet_address, username: user.username }));
 
     if (!userAddresses.length) {
-      console.log("No users with valid wallet addresses to fetch transactions");
+      console.log("No users with valid wallet addresses or registered status to fetch transactions");
       setAllTransactions([]);
+      setError("No registered users with valid wallet addresses found.");
       return;
     }
 
@@ -261,6 +290,10 @@ const ISPDashboard = () => {
         userAddresses.map(async ({ address, username }) => {
           try {
             const txs = await contract.getTransactions(address);
+            if (txs.length === 0) {
+              console.log(`No transactions found for ${username} (${address})`);
+              return [];
+            }
             return txs.map((tx) => {
               const amountEth = Number(ethers.formatEther(tx.amount));
               return {
@@ -280,6 +313,11 @@ const ISPDashboard = () => {
         })
       );
       const flattenedTxs = allTxs.flat();
+      if (flattenedTxs.length === 0) {
+        setError("No transactions found for any users.");
+      } else {
+        setError("");
+      }
       setAllTransactions(flattenedTxs);
     } catch (err) {
       setError("Failed to fetch transactions: " + err.message);
@@ -453,6 +491,133 @@ const ISPDashboard = () => {
     navigate("/isp/requests");
   };
 
+  const downloadLogsAsPDF = () => {
+    try {
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const margin = 10;
+      let yOffset = 20;
+
+      doc.setFontSize(18);
+      doc.text("ISP Dashboard Logs", pageWidth / 2, yOffset, { align: "center" });
+      yOffset += 10;
+
+      doc.setFontSize(14);
+      doc.text("Total Data Usage History", margin, yOffset);
+      yOffset += 10;
+
+      if (cumulativeUsage.length > 0) {
+        doc.setFontSize(10);
+        const headers = ["Username", "Timestamp", "Daily Usage (MB)", "Cumulative Usage (MB)"];
+        const rows = cumulativeUsage.map((entry) => [
+          entry.username || "Unknown",
+          new Date(entry.timestamp).toLocaleString(),
+          entry.total_usage_mb,
+          entry.cumulative_mb,
+        ]);
+
+        const colWidths = [50, 50, 30, 40];
+        let xOffset = margin;
+
+        headers.forEach((header, index) => {
+          doc.text(header, xOffset, yOffset);
+          xOffset += colWidths[index];
+        });
+        yOffset += 10;
+
+        rows.forEach((row) => {
+          xOffset = margin;
+          row.forEach((cell, index) => {
+            doc.text(String(cell), xOffset, yOffset);
+            xOffset += colWidths[index];
+          });
+          yOffset += 8;
+          if (yOffset > doc.internal.pageSize.getHeight() - 20) {
+            doc.addPage();
+            yOffset = 20;
+          }
+        });
+      } else {
+        doc.setFontSize(10);
+        doc.text("No data usage history available.", margin, yOffset);
+        yOffset += 10;
+      }
+
+      yOffset += 10;
+      if (yOffset > doc.internal.pageSize.getHeight() - 20) {
+        doc.addPage();
+        yOffset = 20;
+      }
+
+      doc.setFontSize(14);
+      doc.text("Transaction History", margin, yOffset);
+      yOffset += 10;
+
+      if (allTransactions.length > 0) {
+        doc.setFontSize(10);
+        const headers = ["Username", "User Address", "Transaction ID", "Amount (ETH)", "Amount (KES)", "Timestamp", "Status"];
+        const rows = allTransactions.map((tx) => [
+          tx.username,
+          `${tx.userAddress.slice(0, 6)}...${tx.userAddress.slice(-4)}`,
+          tx.id,
+          tx.amountEth,
+          tx.amountKes,
+          tx.timestamp,
+          tx.status,
+        ]);
+
+        const colWidths = [30, 30, 20, 20, 20, 40, 20];
+        let xOffset = margin;
+
+        headers.forEach((header, index) => {
+          doc.text(header, xOffset, yOffset);
+          xOffset += colWidths[index];
+        });
+        yOffset += 10;
+
+        rows.forEach((row) => {
+          xOffset = margin;
+          row.forEach((cell, index) => {
+            doc.text(String(cell), xOffset, yOffset);
+            xOffset += colWidths[index];
+          });
+          yOffset += 8;
+          if (yOffset > doc.internal.pageSize.getHeight() - 20) {
+            doc.addPage();
+            yOffset = 20;
+          }
+        });
+      } else {
+        doc.setFontSize(10);
+        doc.text("No transactions available.", margin, yOffset);
+        yOffset += 10;
+      }
+
+      const currentDate = new Date().toISOString().substring(0, 10);
+      doc.save(`isp_logs_${currentDate}.pdf`);
+    } catch (err) {
+      setError("Failed to generate PDF: " + err.message);
+      console.error("PDF generation error:", err);
+    }
+  };
+
+  // New function to handle user search
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const query = searchQuery.trim().toLowerCase();
+    if (query === "") {
+      setFilteredUsers(users); // Reset to all users if query is empty
+      return;
+    }
+    const filtered = users.filter((user) => user.username.toLowerCase().includes(query));
+    setFilteredUsers(filtered);
+    if (filtered.length === 0) {
+      setError(`No users found matching "${query}".`);
+    } else {
+      setError("");
+    }
+  };
+
   const fetchAllData = async () => {
     setIsLoading(true);
     try {
@@ -479,7 +644,6 @@ const ISPDashboard = () => {
       return;
     }
 
-    // Don't fetch data until wallet is connected and confirmed as ISP
     if (isWalletConnected && contract && isISP) {
       fetchAllData();
       const interval = setInterval(() => {
@@ -619,8 +783,25 @@ const ISPDashboard = () => {
         </div>
 
         <div className="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
-          <h2 className="text-2xl font-semibold text-white mb-4">Users Overview</h2>
-          {users.length > 0 ? (
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-semibold text-white">Users Overview</h2>
+            <form onSubmit={handleSearch} className="flex space-x-2">
+              <input
+                type="text"
+                placeholder="Search by username"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="bg-gray-700 text-white p-2 rounded"
+              />
+              <button
+                type="submit"
+                className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600 transition duration-300"
+              >
+                Search
+              </button>
+            </form>
+          </div>
+          {filteredUsers.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full border-collapse border border-gray-600">
                 <thead>
@@ -635,7 +816,7 @@ const ISPDashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {users.map((user) => (
+                  {filteredUsers.map((user) => (
                     <tr key={user.id} className="bg-gray-600">
                       <td className="border border-gray-600 p-3 text-white">{user.username}</td>
                       <td className="border border-gray-600 p-3 text-white">{user.wallet_address || "None"}</td>
@@ -686,7 +867,15 @@ const ISPDashboard = () => {
         </div>
 
         <div className="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
-          <h2 className="text-2xl font-semibold text-white mb-4">Total Data Usage History</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-semibold text-white">Total Data Usage History</h2>
+            <button
+              onClick={downloadLogsAsPDF}
+              className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition duration-300"
+            >
+              Download Logs as PDF
+            </button>
+          </div>
           {chartData.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
@@ -824,7 +1013,15 @@ const ISPDashboard = () => {
         </div>
 
         <div className="bg-gray-800 rounded-lg shadow-lg p-6">
-          <h2 className="text-2xl font-semibold text-white mb-4">Transaction History</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-semibold text-white">Transaction History</h2>
+            <button
+              onClick={downloadLogsAsPDF}
+              className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition duration-300"
+            >
+              Download Logs as PDF
+            </button>
+          </div>
           {allTransactions.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full border-collapse border border-gray-600">

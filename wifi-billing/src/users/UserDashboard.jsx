@@ -10,8 +10,9 @@ const UserDashboard = () => {
   const [cumulativeUsage, setCumulativeUsage] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [billingReport, setBillingReport] = useState({ total_usage_mb: 0, total_cost_kes: 0 });
+  const [activePlan, setActivePlan] = useState(null); // New state for active plan
   const [localError, setLocalError] = useState("");
-  const [isSimulatingPayment, setIsSimulatingPayment] = useState(false);
+  const [isSimulatingPayment] = useState(false);
   const navigate = useNavigate();
   const {
     isWalletConnected,
@@ -115,6 +116,44 @@ const UserDashboard = () => {
     } catch (err) {
       setLocalError("Failed to fetch data usage from database: " + err.message);
       console.error("Fetch data usage error:", err);
+    }
+  };
+
+  // Fetch active plan
+  const fetchActivePlan = async () => {
+    try {
+      const token = localStorage.getItem("access_token");
+      if (!token) {
+        throw new Error("No authentication token found. Please log in again.");
+      }
+
+      const response = await fetch("http://127.0.0.1:8000/user/active-plan", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.status === 403) {
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("username");
+        navigate("/");
+        throw new Error("Session expired or access denied. Please log in again.");
+      }
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "Failed to fetch active plan");
+      }
+
+      const data = await response.json();
+      setActivePlan(data);
+    } catch (err) {
+      if (err.message.includes("No active plan found")) {
+        setActivePlan(null); // No active plan
+      } else {
+        setLocalError("Failed to fetch active plan: " + err.message);
+        console.error("Fetch active plan error:", err);
+      }
     }
   };
 
@@ -245,6 +284,7 @@ const UserDashboard = () => {
       }
 
       await fetchDataUsageFromDB();
+      await fetchActivePlan(); // Refresh active plan to update remaining MBs
       if (contract && userAddress) {
         await fetchDataUsageFromBlockchain();
       }
@@ -290,6 +330,7 @@ const UserDashboard = () => {
       await tx.wait();
 
       await fetchDataUsageFromDB();
+      await fetchActivePlan(); // Refresh active plan after payment
       await fetchTransactions();
       await fetchBillingReport();
 
@@ -324,6 +365,7 @@ const UserDashboard = () => {
     }
     console.log(`Fetching all data for ${userAddress}`);
     await fetchDataUsageFromDB();
+    await fetchActivePlan(); // Fetch active plan
     try {
       let isRegistered = false;
       try {
@@ -388,197 +430,222 @@ const UserDashboard = () => {
     : [0, 100];
 
   return (
-    <><div className="min-h-screen p-8 bg-[linear-gradient(135deg,_#1a1a2e,_#9fc817)]">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold text-white">User Dashboard</h1>
-        <div className="flex space-x-4 items-center">
-          {isWalletConnected && userAddress ? (
-            <>
-              <span className="text-white py-2 px-4">
-                Connected: {userAddress.slice(0, 6)}...{userAddress.slice(-4)}
-              </span>
-              <button
-                onClick={disconnectWallet}
-                className="bg-yellow-500 text-white py-2 px-4 rounded-full hover:bg-yellow-600 transition duration-300"
-              >
-                Disconnect Wallet
-              </button>
-            </>
-          ) : null}
-          <button
-            onClick={connectWallet}
-            className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600 transition duration-300"
-            disabled={isConnecting}
-          >
-            {isConnecting ? "Connecting..." : isWalletConnected ? "Update Wallet Address" : "Connect MetaMask"}
-          </button>
-          <button
-            onClick={() => navigate("/wifi-plans")}
-            className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition duration-300"
-          >
-            View WiFi Plans
-          </button>
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-red-600 transition duration-300"
-          >
-            Logout
-          </button>
-        </div>
-      </div>
-
-      {/* Error Message */}
-      {(localError || walletError) && (
-        <div className="mb-8 p-4 bg-red-500 text-white rounded-lg shadow-lg">
-          <p>{localError || walletError}</p>
-          <button
-            onClick={() => {
-              setLocalError("");
-              setWalletError("");
-            } }
-            className="mt-2 bg-gray-500 text-white py-1 px-2 rounded-full hover:bg-gray-600"
-          >
-            Clear Error
-          </button>
-        </div>
-      )}
-
-      {/* Wallet Connection Prompt */}
-      {!isWalletConnected && (
-        <div className="mb-8 p-6 bg-gray-800 rounded-lg shadow-lg text-center">
-          <p className="text-white mb-4">
-            {window.ethereum
-              ? "Connect your MetaMask wallet to Ganache to access blockchain features."
-              : "MetaMask is not installed. Please install MetaMask and connect to Ganache."}
-          </p>
-          {window.ethereum && (
+    <>
+      <div className="min-h-screen p-8 bg-[linear-gradient(135deg,_#1a1a2e,_#9fc817)]">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-4xl font-bold text-white">User Dashboard</h1>
+          <div className="flex space-x-4 items-center">
+            {isWalletConnected && userAddress ? (
+              <>
+                <span className="text-white py-2 px-4">
+                  Connected: {userAddress.slice(0, 6)}...{userAddress.slice(-4)}
+                </span>
+                <button
+                  onClick={disconnectWallet}
+                  className="bg-yellow-500 text-white py-2 px-4 rounded-full hover:bg-yellow-600 transition duration-300"
+                >
+                  Disconnect Wallet
+                </button>
+              </>
+            ) : null}
             <button
               onClick={connectWallet}
-              className="bg-blue-500 text-white py-2 px-6 rounded-full hover:bg-blue-600 transition duration-300"
+              className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600 transition duration-300"
               disabled={isConnecting}
             >
-              {isConnecting ? "Connecting..." : "Connect MetaMask"}
+              {isConnecting ? "Connecting..." : isWalletConnected ? "Update Wallet Address" : "Connect MetaMask"}
             </button>
-          )}
-        </div>
-      )}
-
-      {/* Dashboard Content */}
-      {isWalletConnected && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Billing Report Card */}
-          <div className="bg-gray-800 rounded-lg shadow-lg p-6 h-96 flex flex-col">
-            <h2 className="text-2xl font-semibold text-white mb-4">Billing Report</h2>
-            <div className="text-gray-300 flex-1">
-              <p className="mb-2">
-                Total Data Usage: <span className="font-bold text-white">{billingReport.total_usage_mb} MB</span>
-              </p>
-              <p>
-                Total Cost: <span className="font-bold text-white">{billingReport.total_cost_kes} KES</span>
-              </p>
-            </div>
+            <button
+              onClick={() => navigate("/wifi-plans")}
+              className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition duration-300"
+            >
+              View WiFi Plans
+            </button>
+            <button
+              onClick={handleLogout}
+              className="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-red-600 transition duration-300"
+            >
+              Logout
+            </button>
           </div>
+        </div>
 
-          {/* Data Usage History Card */}
-          <div className="bg-gray-800 rounded-lg shadow-lg p-6 h-96 flex flex-col lg:col-span-2">
-            <h2 className="text-2xl font-semibold text-white mb-4">Data Usage History (Real-Time)</h2>
-            <p className="mb-4 text-gray-300">
-              Current Session Usage: <span className="font-bold text-white">{totalUsage} MB</span>
+        {/* Error Message */}
+        {(localError || walletError) && (
+          <div className="mb-8 p-4 bg-red-500 text-white rounded-lg shadow-lg">
+            <p>{localError || walletError}</p>
+            <button
+              onClick={() => {
+                setLocalError("");
+                setWalletError("");
+              }}
+              className="mt-2 bg-gray-500 text-white py-1 px-2 rounded-full hover:bg-gray-600"
+            >
+              Clear Error
+            </button>
+          </div>
+        )}
+
+        {/* Wallet Connection Prompt */}
+        {!isWalletConnected && (
+          <div className="mb-8 p-6 bg-gray-800 rounded-lg shadow-lg text-center">
+            <p className="text-white mb-4">
+              {window.ethereum
+                ? "Connect your MetaMask wallet to Ganache to access blockchain features."
+                : "MetaMask is not installed. Please install MetaMask and connect to Ganache."}
             </p>
-            <div className="mb-4">
+            {window.ethereum && (
               <button
-                onClick={() => handleLogDataUsage(50)}
-                className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition duration-300"
-                disabled={isSimulatingPayment || !isWalletConnected || isConnecting}
+                onClick={connectWallet}
+                className="bg-blue-500 text-white py-2 px-6 rounded-full hover:bg-blue-600 transition duration-300"
+                disabled={isConnecting}
               >
-                Log 50 MB Usage (Test)
+                {isConnecting ? "Connecting..." : "Connect MetaMask"}
               </button>
+            )}
+          </div>
+        )}
+
+        {/* Dashboard Content */}
+        {isWalletConnected && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Billing Report Card */}
+            <div className="bg-gray-800 rounded-lg shadow-lg p-6 h-96 flex flex-col">
+              <h2 className="text-2xl font-semibold text-white mb-4">Billing Report</h2>
+              <div className="text-gray-300 flex-1">
+                <p className="mb-2">
+                  Total Data Usage: <span className="font-bold text-white">{totalUsage} MB</span>
+                </p>
+                <p>
+                  Total Cost: <span className="font-bold text-white">{billingReport.total_cost_kes} KES</span>
+                </p>
+              </div>
             </div>
-            <div className="flex-1">
-              {chartData.length > 0 ? (
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#444" />
-                    <XAxis dataKey="timestamp" stroke="#ccc" tick={{ fill: "#ccc", fontSize: 12 }} />
-                    <YAxis domain={yAxisDomain} stroke="#ccc" tick={{ fill: "#ccc", fontSize: 12 }} />
-                    <Tooltip
-                      contentStyle={{ backgroundColor: "#333", border: "none", color: "#fff" }}
-                      labelStyle={{ color: "#fff" }} />
-                    <Legend />
-                    <Line
-                      type="monotone"
-                      dataKey="usage_mb"
-                      stroke="#8884d8"
-                      strokeWidth={3}
-                      activeDot={{ r: 8 }}
-                      name="Usage (MB)" />
-                    <Line
-                      type="monotone"
-                      dataKey="cumulative_mb"
-                      stroke="#82ca9d"
-                      strokeWidth={3}
-                      activeDot={{ r: 8 }}
-                      name="Cumulative Usage (MB)" />
-                  </LineChart>
-                </ResponsiveContainer>
+
+            {/* Data Usage History Card */}
+            <div className="bg-gray-800 rounded-lg shadow-lg p-6 h-96 flex flex-col lg:col-span-2">
+              <h2 className="text-2xl font-semibold text-white mb-4">Data Usage History (Real-Time)</h2>
+              <p className="mb-4 text-gray-300">
+                Current Session Usage: <span className="font-bold text-white">{totalUsage} MB</span>
+              </p>
+              <div className="mb-4">
+                <button
+                  onClick={() => handleLogDataUsage(50)}
+                  className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition duration-300"
+                  disabled={isSimulatingPayment || !isWalletConnected || isConnecting || !activePlan}
+                >
+                  Log 50 MB Usage (Test)
+                </button>
+              </div>
+              <div className="flex-1">
+                {chartData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#444" />
+                      <XAxis dataKey="timestamp" stroke="#ccc" tick={{ fill: "#ccc", fontSize: 12 }} />
+                      <YAxis domain={yAxisDomain} stroke="#ccc" tick={{ fill: "#ccc", fontSize: 12 }} />
+                      <Tooltip
+                        contentStyle={{ backgroundColor: "#333", border: "none", color: "#fff" }}
+                        labelStyle={{ color: "#fff" }}
+                      />
+                      <Legend />
+                      <Line
+                        type="monotone"
+                        dataKey="usage_mb"
+                        stroke="#8884d8"
+                        strokeWidth={3}
+                        activeDot={{ r: 8 }}
+                        name="Usage (MB)"
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="cumulative_mb"
+                        stroke="#82ca9d"
+                        strokeWidth={3}
+                        activeDot={{ r: 8 }}
+                        name="Cumulative Usage (MB)"
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <p className="text-gray-300">No data usage history available.</p>
+                )}
+              </div>
+            </div>
+
+            {/* Active Plan Card (Replaces Simulate Payment Card) */}
+            <div className="bg-gray-800 rounded-lg shadow-lg p-6 h-96 flex flex-col">
+              <h2 className="text-2xl font-semibold text-white mb-4">Active Plan</h2>
+              <div className="text-gray-300 flex-1">
+                {activePlan ? (
+                  <>
+                    <p className="mb-2">
+                      Plan: <span className="font-bold text-white">{activePlan.plan_name}</span>
+                    </p>
+                    <p className="mb-2">
+                      Purchased: <span className="font-bold text-white">{new Date(activePlan.purchase_date).toLocaleString()}</span>
+                    </p>
+                    <p className="mb-4">
+                      Remaining: <span className="font-bold text-white">{activePlan.remaining_mb} MB</span>
+                    </p>
+                    <button
+                      onClick={handleSimulatePayment}
+                      className="bg-blue-500 text-white py-3 px-6 rounded-full hover:bg-blue-600 transition duration-300"
+                      disabled={totalUsage === 0 || !isWalletConnected || isSimulatingPayment || isConnecting}
+                    >
+                      {isSimulatingPayment ? "Processing..." : "Simulate Payment"}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <p className="mb-4">No active plan found. Please purchase a plan to continue accessing WiFi.</p>
+                    <button
+                      onClick={() => navigate("/wifi-plans")}
+                      className="bg-green-500 text-white py-3 px-6 rounded-full hover:bg-green-600 transition duration-300"
+                    >
+                      Go to WiFi Plans
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Transaction History Card */}
+            <div className="bg-gray-800 rounded-lg shadow-lg p-6 h-96 flex flex-col lg:col-span-2">
+              <h2 className="text-2xl font-semibold text-white mb-4">Transaction History</h2>
+              {transactions.length > 0 ? (
+                <div className="overflow-y-auto flex-1">
+                  <table className="w-full border-collapse border border-gray-600">
+                    <thead>
+                      <tr className="bg-gray-700">
+                        <th className="border border-gray-600 p-3 text-left text-gray-300">Transaction ID</th>
+                        <th className="border border-gray-600 p-3 text-left text-gray-300">Amount (KES)</th>
+                        <th className="border border-gray-600 p-3 text-left text-gray-300">Timestamp</th>
+                        <th className="border border-gray-600 p-3 text-left text-gray-300">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {transactions.map((tx) => (
+                        <tr key={tx.id} className="bg-gray-600">
+                          <td className="border border-gray-600 p-3 text-white">{tx.id}</td>
+                          <td className="border border-gray-600 p-3 text-white">{tx.amount}</td>
+                          <td className="border border-gray-600 p-3 text-white">{tx.timestamp}</td>
+                          <td className="border border-gray-600 p-3 text-white">{tx.status}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               ) : (
-                <p className="text-gray-300">No data usage history available.</p>
+                <p className="text-gray-300 flex-1">No transaction history available.</p>
               )}
             </div>
           </div>
-
-          {/* Simulate Payment Card */}
-          <div className="bg-gray-800 rounded-lg shadow-lg p-6 h-96 flex flex-col">
-            <h2 className="text-2xl font-semibold text-white mb-4">Simulate Payment</h2>
-            <div className="text-gray-300 flex-1">
-              <p className="mb-4">
-                You have used {totalUsage} MB. Simulate a payment to continue accessing WiFi.
-              </p>
-              <button
-                onClick={handleSimulatePayment}
-                className="bg-blue-500 text-white py-3 px-6 rounded-full hover:bg-blue-600 transition duration-300"
-                disabled={totalUsage === 0 || !isWalletConnected || isSimulatingPayment || isConnecting}
-              >
-                {isSimulatingPayment ? "Processing..." : "Simulate Payment"}
-              </button>
-            </div>
-          </div>
-
-          {/* Transaction History Card */}
-          <div className="bg-gray-800 rounded-lg shadow-lg p-6 h-96 flex flex-col lg:col-span-2">
-            <h2 className="text-2xl font-semibold text-white mb-4">Transaction History</h2>
-            {transactions.length > 0 ? (
-              <div className="overflow-y-auto flex-1">
-                <table className="w-full border-collapse border border-gray-600">
-                  <thead>
-                    <tr className="bg-gray-700">
-                      <th className="border border-gray-600 p-3 text-left text-gray-300">Transaction ID</th>
-                      <th className="border border-gray-600 p-3 text-left text-gray-300">Amount (KES)</th>
-                      <th className="border border-gray-600 p-3 text-left text-gray-300">Timestamp</th>
-                      <th className="border border-gray-600 p-3 text-left text-gray-300">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {transactions.map((tx) => (
-                      <tr key={tx.id} className="bg-gray-600">
-                        <td className="border border-gray-600 p-3 text-white">{tx.id}</td>
-                        <td className="border border-gray-600 p-3 text-white">{tx.amount}</td>
-                        <td className="border border-gray-600 p-3 text-white">{tx.timestamp}</td>
-                        <td className="border border-gray-600 p-3 text-white">{tx.status}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <p className="text-gray-300 flex-1">No transaction history available.</p>
-            )}
-          </div>
-        </div>
-      )}
-    </div><Footer /></>
-
+        )}
+      </div>
+      <Footer />
+    </>
   );
 };
 

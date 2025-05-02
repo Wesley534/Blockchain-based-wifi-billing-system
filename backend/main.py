@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import OperationalError
-from sqlalchemy import func
+from sqlalchemy import func, cast, DateTime
 from typing import List, Dict
 from database import Base, engine, get_db, SessionLocal
 from models import User, DataUsage, WifiPlan as WifiPlanModel, PlanDuration, PendingRegistration, UserPlanPurchase, HelpRequest, FeedbackRequest
@@ -255,7 +255,7 @@ async def login(user: UserLogin, background_tasks: BackgroundTasks, db: Session 
         logger.info(f"OTP sent for user {user.username}")
         return {
             "temp_token": temp_token,
-            "message": "OTP-starter for user {user.username}"
+            "message": f"OTP sent to {user.email}"
         }
     except HTTPException as e:
         raise e
@@ -286,7 +286,7 @@ async def verify_otp(otp_data: OTPVerificationRequest, temp_token: str = Depends
         # Check if user is in PendingRegistration
         db_pending = db.query(PendingRegistration).filter(PendingRegistration.username == username).first()
         if db_pending:
-            logger.WARNING(f"User {username} is pending registration")
+            logger.warning(f"User {username} is pending registration")
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Your registration is pending ISP approval. Please wait for confirmation."
@@ -346,22 +346,24 @@ async def logout(current_user: User = Depends(get_current_user)):
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 def get_user(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    """Ensure the user has the 'user' role for accessing user-specific endpoints."""
     logger.debug(f"Checking role for user {current_user.username}: {current_user.role}")
     if current_user.role != "user":
-        logger.warning(f"User {current_user.username} does not have user role")
+        logger.warning(f"User {current_user.username} does not have required role 'user'")
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="User does not have the required role: user",
+            detail="User does not have the required role: user"
         )
     return current_user
 
 def get_isp(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    """Ensure the user has the 'wifi_provider' role for accessing ISP-specific endpoints."""
     logger.debug(f"Checking role for user {current_user.username}: {current_user.role}")
     if current_user.role != "wifi_provider":
-        logger.warning(f"User {current_user.username} does not have wifi_provider role")
+        logger.warning(f"User {current_user.username} does not have required role 'wifi_provider'")
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="User does not have the required role: wifi_provider",
+            detail="User does not have the required role: wifi_provider"
         )
     return current_user
 
@@ -561,7 +563,7 @@ async def update_wallet(wallet_data: WalletUpdate, current_user: User = Depends(
         raise e
     except Exception as e:
         logger.error(f"Error in update_wallet: {str(e)}")
-        raise HTTPseudoException(status_code=500, detail=f"Internal server error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @app.get("/users", response_model=List[UserSchema])
 async def get_all_users_endpoint(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
@@ -583,19 +585,41 @@ async def get_all_isp_users_endpoint(current_user: User = Depends(get_isp), db: 
 
 @app.get("/isp/data-usage", response_model=List[dict])
 async def get_total_data_usage(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
+    """Fetch total data usage per user for ISP users with 'wifi_provider' role."""
     try:
-        all_usage = db.query(DataUsage).all()
-        usage_by_time = {}
-        for entry in all_usage:
-            timestamp = entry.timestamp.strftime("%Y-%m-%d %H:%M:%S")
-            if timestamp not in usage_by_time:
-                usage_by_time[timestamp] = 0
-            usage_by_time[timestamp] += entry.usage_mb
-        total_usage = [
-            {"timestamp": timestamp, "total_usage_mb": usage_mb}
-            for timestamp, usage_mb in usage_by_time.items()
-        ]
-        return sorted(total_usage, key=lambda x: x["timestamp"])
+        # Query total data usage per user with username
+        data_usage = (
+            db.query(
+                User.username,
+                func.sum(DataUsage.usage_mb).label("total_usage_mb"),
+                cast(func.min(DataUsage.timestamp), DateTime).label("timestamp")
+            )
+            .join(DataUsage, User.id == DataUsage.user_id)
+            .group_by(User.id, User.username)
+            .all()
+        )
+        
+        if not data_usage:
+            return []
+        
+        # Format the response
+        result = []
+        for entry in data_usage:
+            timestamp = entry.timestamp
+            # Fallback: Convert string timestamp to datetime if necessary
+            if isinstance(timestamp, str):
+                try:
+                    timestamp = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+                except ValueError as e:
+                    logger.error(f"Invalid timestamp format for user {entry.username}: {timestamp}")
+                    timestamp = datetime.utcnow()  # Use current time as fallback
+            result.append({
+                "username": entry.username,
+                "total_usage_mb": float(entry.total_usage_mb),
+                "timestamp": timestamp.isoformat()
+            })
+        logger.info(f"Fetched total data usage for ISP {current_user.username}")
+        return result
     except Exception as e:
         logger.error(f"Error in get_total_data_usage: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
@@ -617,7 +641,7 @@ async def isp_log_data_usage(
         
         active_purchase = db.query(UserPlanPurchase).filter(UserPlanPurchase.user_id == target_user.id).order_by(UserPlanPurchase.purchase_date.desc()).first()
         if not active_purchase:
-            raise HTTPException(status_code=400, detail="User has no active llan")
+            raise HTTPException(status_code=400, detail="User has no active plan")
         plan = db.query(WifiPlanModel).filter(WifiPlanModel.id == active_purchase.plan_id).first()
         if not plan:
             raise HTTPException(status_code=404, detail="Plan not found")
@@ -633,7 +657,7 @@ async def isp_log_data_usage(
         data_usage = DataUsage(user_id=target_user.id, usage_mb=usage_mb, timestamp=datetime.utcnow())
         db.add(data_usage)
         db.commit()
-        logger.info(f"Logged {usage_mb} MB usage for {username} by ISP")
+        logger.info(f"Logged {usage_mb} MB usage for {username} by ISP {current_user.username}")
         return {"message": f"Data usage of {usage_mb} MB logged successfully for {username}"}
     except Exception as e:
         logger.error(f"Error in isp_log_data_usage: {str(e)}")
@@ -643,6 +667,7 @@ async def isp_log_data_usage(
 async def get_wifi_plans_isp(current_user: User = Depends(get_isp), db: Session = Depends(get_db)):
     try:
         plans = db.query(WifiPlanModel).filter(WifiPlanModel.isp_id == current_user.id).all()
+        logger.info(f"Fetched WiFi plans for ISP {current_user.username}")
         return plans
     except Exception as e:
         logger.error(f"Error in get_wifi_plans_isp: {str(e)}")
@@ -926,4 +951,47 @@ async def register_admin(user: UserCreate, background_tasks: BackgroundTasks, db
         }
     except Exception as e:
         logger.error(f"Error in register_admin: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+@app.get("/user/active-plan", response_model=dict)
+async def get_active_plan(current_user: User = Depends(get_user), db: Session = Depends(get_db)):
+    try:
+        # Get the most recent plan purchase for the user
+        active_purchase = (
+            db.query(UserPlanPurchase)
+            .filter(UserPlanPurchase.user_id == current_user.id)
+            .order_by(UserPlanPurchase.purchase_date.desc())
+            .first()
+        )
+        
+        if not active_purchase:
+            raise HTTPException(status_code=404, detail="No active plan found")
+        
+        # Get the associated plan
+        plan = db.query(WifiPlanModel).filter(WifiPlanModel.id == active_purchase.plan_id).first()
+        if not plan:
+            raise HTTPException(status_code=404, detail="Plan not found")
+        
+        # Calculate total data usage since purchase
+        total_used_mb = (
+            db.query(func.sum(DataUsage.usage_mb))
+            .filter(
+                DataUsage.user_id == current_user.id,
+                DataUsage.timestamp >= active_purchase.purchase_date
+            )
+            .scalar() or 0
+        )
+        
+        # Calculate remaining MBs
+        remaining_mb = max(0, plan.data_mb - total_used_mb)
+        
+        return {
+            "plan_name": plan.name,
+            "purchase_date": active_purchase.purchase_date,
+            "remaining_mb": remaining_mb
+        }
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        logger.error(f"Error in get_active_plan: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
