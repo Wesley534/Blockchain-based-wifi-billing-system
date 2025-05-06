@@ -594,7 +594,7 @@ const UserDashboard = () => {
                       className="bg-blue-500 text-white py-3 px-6 rounded-full hover:bg-blue-600 transition duration-300"
                       disabled={totalUsage === 0 || !isWalletConnected || isSimulatingPayment || isConnecting}
                     >
-                      {isSimulatingPayment ? "Processing..." : "Simulate Payment"}
+                      {isSimulatingPayment ? "Processing..." : "Enjoy your connection!"}
                     </button>
                   </>
                 ) : (

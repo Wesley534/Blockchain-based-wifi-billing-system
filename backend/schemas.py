@@ -143,9 +143,12 @@ class FeedbackRequestResponse(BaseModel):
     id: int
     feedback: str
     created_at: datetime
+    reply: Optional[str] = None  # New field for admin's reply
+    replied_at: Optional[datetime] = None  # New field for reply timestamp
 
     class Config:
         from_attributes = True
+
 
 class TransactionResponse(BaseModel):
     username: str
@@ -154,4 +157,4 @@ class TransactionResponse(BaseModel):
     amount_kes: float
     amount_eth: float
     timestamp: str
-    status: str     
+    status: str

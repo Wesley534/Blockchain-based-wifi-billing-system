@@ -10,10 +10,10 @@ from database import Base, engine, get_db, SessionLocal
 from models import User, DataUsage, WifiPlan as WifiPlanModel, PlanDuration, PendingRegistration, UserPlanPurchase, HelpRequest, FeedbackRequest
 from schemas import (
     UserCreate, UserLogin, Token, DataUsageRequest, WalletUpdate, UserSchema,
-    WiFiPlan,WifiPlan, WifiPlanCreate, WifiPlanUpdate, WiFiPlan, PlanPurchase,
+    WiFiPlan, WifiPlanCreate, WifiPlanUpdate, WiFiPlan, PlanPurchase,WifiPlan,
     PendingRegistrationCreate, PendingRegistrationRequest, PendingRegistrationResponse,
     ConfirmRegistrationRequest, OTPVerificationRequest, HelpRequestCreate, HelpRequestResponse,
-    FeedbackRequestCreate, FeedbackRequestResponse,TransactionResponse
+    FeedbackRequestCreate, FeedbackRequestResponse, TransactionResponse
 )
 from auth import get_password_hash, authenticate_user, create_access_token, get_current_user
 from emailutils import generate_otp, send_otp_email
@@ -22,6 +22,7 @@ import logging
 import threading
 import random
 from datetime import datetime, timedelta
+from pydantic import BaseModel
 
 # Configure logging
 logging.basicConfig(
@@ -162,6 +163,19 @@ async def send_pending_email(email: str, username: str):
         "Thank you for registering with our service. Your registration is currently pending approval by the ISP.\n"
         "You will receive a confirmation email once your registration is approved.\n\n"
         "Best regards,\nThe Team"
+    )
+    await send_otp_email(email, body, subject=subject)
+
+async def send_feedback_reply_email(email: str, username: str, feedback: str, reply: str):
+    """Send an email to the user when their feedback receives a reply."""
+    subject = "Response to Your Feedback"
+    body = (
+        f"Dear {username},\n\n"
+        f"We have responded to your feedback:\n"
+        f"Feedback: {feedback}\n"
+        f"Reply: {reply}\n\n"
+        f"Thank you for your input!\n"
+        f"Best regards,\nThe Team"
     )
     await send_otp_email(email, body, subject=subject)
 
@@ -592,7 +606,7 @@ async def get_total_data_usage(current_user: User = Depends(get_isp), db: Sessio
             db.query(
                 User.username,
                 func.sum(DataUsage.usage_mb).label("total_usage_mb"),
-                func.min(DataUsage.timestamp).label("timestamp")  # Remove cast, let SQLAlchemy handle type
+                func.min(DataUsage.timestamp).label("timestamp")
             )
             .join(DataUsage, User.id == DataUsage.user_id)
             .group_by(User.id, User.username)
@@ -609,20 +623,17 @@ async def get_total_data_usage(current_user: User = Depends(get_isp), db: Sessio
             timestamp = entry.timestamp
             # Handle timestamp based on its type
             if isinstance(timestamp, datetime):
-                # Already a datetime, no need for fromisoformat
                 formatted_timestamp = timestamp.isoformat()
             elif isinstance(timestamp, str):
-                # Handle string timestamps (e.g., from inconsistent data)
                 try:
                     timestamp_dt = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
                     formatted_timestamp = timestamp_dt.isoformat()
                 except ValueError as e:
                     logger.error(f"Invalid timestamp format for user {entry.username}: {timestamp}")
-                    formatted_timestamp = datetime.utcnow().isoformat()  # Fallback
+                    formatted_timestamp = datetime.utcnow().isoformat()
             else:
-                # Handle unexpected types (e.g., None)
                 logger.warning(f"Unexpected timestamp type for user {entry.username}: {type(timestamp)}")
-                formatted_timestamp = datetime.utcnow().isoformat()  # Fallback
+                formatted_timestamp = datetime.utcnow().isoformat()
             
             result.append({
                 "username": entry.username,
@@ -849,19 +860,34 @@ async def submit_help_request(request: HelpRequestCreate, db: Session = Depends(
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @app.post("/feedback")
-async def submit_feedback_request(request: FeedbackRequestCreate, db: Session = Depends(get_db)):
+async def submit_feedback_request(
+    request: FeedbackRequestCreate,
+    current_user: User = Depends(get_user),
+    db: Session = Depends(get_db)
+):
     try:
         db_request = FeedbackRequest(
+            user_id=current_user.id,
             feedback=request.feedback,
             created_at=datetime.utcnow()
         )
         db.add(db_request)
         db.commit()
         db.refresh(db_request)
-        logger.info(f"Feedback submitted")
+        logger.info(f"Feedback submitted by user {current_user.username}")
         return {"message": "Feedback submitted successfully"}
     except Exception as e:
         logger.error(f"Error in submit_feedback_request: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+@app.get("/user/feedback", response_model=List[FeedbackRequestResponse])
+async def get_user_feedback(current_user: User = Depends(get_user), db: Session = Depends(get_db)):
+    try:
+        logger.info(f"Fetching feedback for user {current_user.username}")
+        feedback_requests = db.query(FeedbackRequest).filter(FeedbackRequest.user_id == current_user.id).all()
+        return feedback_requests
+    except Exception as e:
+        logger.error(f"Error in get_user_feedback: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @app.get("/isp/help-requests", response_model=List[HelpRequestResponse])
@@ -882,6 +908,51 @@ async def get_feedback_requests(current_user: User = Depends(get_isp), db: Sessi
         return requests
     except Exception as e:
         logger.error(f"Error in get_feedback_requests: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+class FeedbackReplyRequest(BaseModel):
+    reply: str
+
+@app.post("/isp/feedback-requests/{request_id}/reply")
+async def reply_to_feedback_request(
+    request_id: int,
+    reply_data: FeedbackReplyRequest,
+    background_tasks: BackgroundTasks,
+    current_user: User = Depends(get_isp),
+    db: Session = Depends(get_db)
+):
+    try:
+        logger.info(f"Submitting reply to feedback request {request_id} by ISP {current_user.username}")
+        feedback_request = db.query(FeedbackRequest).filter(FeedbackRequest.id == request_id).first()
+        if not feedback_request:
+            raise HTTPException(status_code=404, detail="Feedback request not found")
+        
+        if feedback_request.reply:
+            raise HTTPException(status_code=400, detail="Feedback request already has a reply")
+        
+        if not reply_data.reply.strip():
+            raise HTTPException(status_code=400, detail="Reply cannot be empty")
+        
+        feedback_request.reply = reply_data.reply
+        feedback_request.replied_at = datetime.utcnow()
+        db.commit()
+        db.refresh(feedback_request)
+        
+        # Send email notification to the user
+        user = db.query(User).filter(User.id == feedback_request.user_id).first()
+        if user:
+            background_tasks.add_task(
+                send_feedback_reply_email,
+                user.email,
+                user.username,
+                feedback_request.feedback,
+                reply_data.reply
+            )
+        
+        logger.info(f"Reply submitted to feedback request {request_id} by ISP {current_user.username}")
+        return {"message": "Reply submitted successfully"}
+    except Exception as e:
+        logger.error(f"Error in reply_to_feedback_request: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 async def send_admin_confirmation_email(email: str, username: str):
@@ -967,7 +1038,6 @@ async def register_admin(user: UserCreate, background_tasks: BackgroundTasks, db
 @app.get("/user/active-plan", response_model=dict)
 async def get_active_plan(current_user: User = Depends(get_user), db: Session = Depends(get_db)):
     try:
-        # Get the most recent plan purchase for the user
         active_purchase = (
             db.query(UserPlanPurchase)
             .filter(UserPlanPurchase.user_id == current_user.id)
@@ -978,12 +1048,10 @@ async def get_active_plan(current_user: User = Depends(get_user), db: Session = 
         if not active_purchase:
             raise HTTPException(status_code=404, detail="No active plan found")
         
-        # Get the associated plan
         plan = db.query(WifiPlanModel).filter(WifiPlanModel.id == active_purchase.plan_id).first()
         if not plan:
             raise HTTPException(status_code=404, detail="Plan not found")
         
-        # Calculate total data usage since purchase
         total_used_mb = (
             db.query(func.sum(DataUsage.usage_mb))
             .filter(
@@ -993,7 +1061,6 @@ async def get_active_plan(current_user: User = Depends(get_user), db: Session = 
             .scalar() or 0
         )
         
-        # Calculate remaining MBs
         remaining_mb = max(0, plan.data_mb - total_used_mb)
         
         return {
@@ -1006,17 +1073,12 @@ async def get_active_plan(current_user: User = Depends(get_user), db: Session = 
     except Exception as e:
         logger.error(f"Error in get_active_plan: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
-    
 
 @app.get("/isp/plan-purchases", response_model=List[TransactionResponse])
 async def get_plan_purchases(
     current_user: UserSchema = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """
-    Retrieve all plan purchases for the ISP transaction history.
-    Accessible only by users with the 'wifi_provider' role.
-    """
     logger.info(f"Starting get_plan_purchases for user: {current_user.username}")
     logger.debug(f"Checking role for user {current_user.username}: {current_user.role}")
 
