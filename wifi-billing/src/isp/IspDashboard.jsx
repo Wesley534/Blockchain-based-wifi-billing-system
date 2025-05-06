@@ -4,6 +4,8 @@ import { ethers } from "ethers";
 import { WalletContext } from "../context/WalletContext";
 import { getEthToKesRate } from "../utils/exchangeRate";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { jsPDF } from "jspdf";
+import Footer from "../components/Footer";
 
 const ISPDashboard = () => {
   const {
@@ -21,6 +23,8 @@ const ISPDashboard = () => {
   } = useContext(WalletContext);
 
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [pendingRegistrations, setPendingRegistrations] = useState([]);
   const [totalUsageData, setTotalUsageData] = useState([]);
   const [cumulativeUsage, setCumulativeUsage] = useState([]);
@@ -32,7 +36,7 @@ const ISPDashboard = () => {
   const [isLoggingData, setIsLoggingData] = useState(false);
   const [isConfirmingRegistration, setIsConfirmingRegistration] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [ethToKesRate, setEthToKesRate] = useState(247789.20); // Fallback rate
+  const [ethToKesRate, setEthToKesRate] = useState(247789.20);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -145,6 +149,7 @@ const ISPDashboard = () => {
       const usersData = await response.json();
       if (usersData.length === 0) {
         setUsers([]);
+        setFilteredUsers([]);
         setError("No users found in the system.");
         return;
       }
@@ -195,13 +200,23 @@ const ISPDashboard = () => {
           })
         );
         setUsers(enrichedUsers);
+        setFilteredUsers(enrichedUsers);
       } else {
-        setUsers(usersData.map((user) => ({ ...user, totalUsage: 0, totalCostEth: 0, totalCostKes: 0, registrationStatus: "No contract" })));
+        const defaultUsers = usersData.map((user) => ({
+          ...user,
+          totalUsage: 0,
+          totalCostEth: 0,
+          totalCostKes: 0,
+          registrationStatus: "No contract",
+        }));
+        setUsers(defaultUsers);
+        setFilteredUsers(defaultUsers);
         setError("Contract not initialized. Please connect your wallet.");
       }
     } catch (err) {
       setError("Failed to fetch users' data: " + err.message);
       setUsers([]);
+      setFilteredUsers([]);
       console.error("Fetch users data error:", err);
     }
   };
@@ -218,6 +233,9 @@ const ISPDashboard = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
+        if (response.status === 403) {
+          throw new Error("Access denied: User does not have the required role (wifi_provider).");
+        }
         throw new Error(errorData.detail || "Failed to fetch total data usage from database");
       }
 
@@ -227,8 +245,19 @@ const ISPDashboard = () => {
       let cumulative = 0;
       const cumulativeData = data.map((entry) => {
         const total_usage_mb = Math.floor(Number(entry.total_usage_mb));
+        let timestamp;
+        try {
+          timestamp = new Date(entry.timestamp);
+          if (isNaN(timestamp.getTime())) {
+            console.warn(`Invalid timestamp in entry: ${entry.timestamp}. Using current date.`);
+            timestamp = new Date();
+          }
+        } catch (e) {
+          console.warn(`Error parsing timestamp ${entry.timestamp}: ${e.message}. Using current date.`);
+          timestamp = new Date();
+        }
         cumulative += total_usage_mb;
-        return { ...entry, total_usage_mb, cumulative_mb: cumulative };
+        return { ...entry, total_usage_mb, cumulative_mb: cumulative, timestamp };
       });
       setCumulativeUsage(cumulativeData);
     } catch (err) {
@@ -238,51 +267,46 @@ const ISPDashboard = () => {
   };
 
   const fetchAllTransactions = async () => {
-    if (!contract) {
-      console.warn("Cannot fetch transactions: Contract not set");
-      setAllTransactions([]);
-      setError("Contract not initialized. Please connect your wallet.");
-      return;
-    }
-
-    const userAddresses = users
-      .filter((user) => user.wallet_address && ethers.isAddress(user.wallet_address))
-      .map((user) => ({ address: user.wallet_address, username: user.username }));
-
-    if (!userAddresses.length) {
-      console.log("No users with valid wallet addresses to fetch transactions");
-      setAllTransactions([]);
-      return;
-    }
-
     try {
-      const allTxs = await Promise.all(
-        userAddresses.map(async ({ address, username }) => {
-          try {
-            const txs = await contract.getTransactions(address);
-            return txs.map((tx) => {
-              const amountEth = Number(ethers.formatEther(tx.amount));
-              return {
-                userAddress: address,
-                username,
-                id: Number(tx.id),
-                amountEth: amountEth.toFixed(6),
-                amountKes: (amountEth * ethToKesRate).toFixed(2),
-                timestamp: new Date(Number(tx.timestamp) * 1000).toISOString().replace("T", " ").substring(0, 19),
-                status: tx.status,
-              };
-            });
-          } catch (err) {
-            console.warn(`Error fetching transactions for ${username} (${address}):`, err);
-            return [];
-          }
-        })
-      );
-      const flattenedTxs = allTxs.flat();
-      setAllTransactions(flattenedTxs);
+      const token = localStorage.getItem("access_token");
+      if (!token) throw new Error("No authentication token found. Please log in again.");
+  
+      const response = await fetch("http://127.0.0.1:8000/isp/plan-purchases", {
+        method: "GET",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || `Failed to fetch transactions (HTTP ${response.status})`);
+      }
+  
+      const transactions = await response.json();
+      if (transactions.length === 0) {
+        setError("No plan purchase transactions found.");
+        setAllTransactions([]);
+        return;
+      }
+  
+      // Format transactions for display
+      const formattedTransactions = transactions.map((tx, index) => ({
+        id: index + 1,
+        username: tx.username,
+        userAddress: tx.user_address || "None",
+        planName: tx.plan_name || "Unknown Plan",
+        amountEth: Number(tx.amount_eth).toFixed(6),
+        amountKes: Number(tx.amount_kes).toFixed(2),
+        timestamp: new Date(tx.timestamp).toISOString().replace("T", " ").substring(0, 19),
+        status: tx.status,
+      }));
+  
+      setAllTransactions(formattedTransactions);
+      setError("");
     } catch (err) {
-      setError("Failed to fetch transactions: " + err.message);
+      const errorMessage = `Failed to fetch transactions: ${err.message}`;
+      setError(errorMessage);
       console.error("Fetch transactions error:", err);
+      setAllTransactions([]);
     }
   };
 
@@ -448,6 +472,136 @@ const ISPDashboard = () => {
     navigate("/");
   };
 
+  const handleAdminRequests = () => {
+    navigate("/isp/requests");
+  };
+
+  const downloadLogsAsPDF = () => {
+    try {
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const margin = 10;
+      let yOffset = 20;
+
+      doc.setFontSize(18);
+      doc.text("ISP Dashboard Logs", pageWidth / 2, yOffset, { align: "center" });
+      yOffset += 10;
+
+      doc.setFontSize(14);
+      doc.text("Total Data Usage History", margin, yOffset);
+      yOffset += 10;
+
+      if (cumulativeUsage.length > 0) {
+        doc.setFontSize(10);
+        const headers = ["Username", "Timestamp", "Daily Usage (MB)", "Cumulative Usage (MB)"];
+        const rows = cumulativeUsage.map((entry) => [
+          entry.username || "Unknown",
+          new Date(entry.timestamp).toLocaleString(),
+          entry.total_usage_mb,
+          entry.cumulative_mb,
+        ]);
+
+        const colWidths = [50, 50, 30, 40];
+        let xOffset = margin;
+
+        headers.forEach((header, index) => {
+          doc.text(header, xOffset, yOffset);
+          xOffset += colWidths[index];
+        });
+        yOffset += 10;
+
+        rows.forEach((row) => {
+          xOffset = margin;
+          row.forEach((cell, index) => {
+            doc.text(String(cell), xOffset, yOffset);
+            xOffset += colWidths[index];
+          });
+          yOffset += 8;
+          if (yOffset > doc.internal.pageSize.getHeight() - 20) {
+            doc.addPage();
+            yOffset = 20;
+          }
+        });
+      } else {
+        doc.setFontSize(10);
+        doc.text("No data usage history available.", margin, yOffset);
+        yOffset += 10;
+      }
+
+      yOffset += 10;
+      if (yOffset > doc.internal.pageSize.getHeight() - 20) {
+        doc.addPage();
+        yOffset = 20;
+      }
+
+      doc.setFontSize(14);
+      doc.text("Transaction History", margin, yOffset);
+      yOffset += 10;
+
+      if (allTransactions.length > 0) {
+        doc.setFontSize(10);
+        const headers = ["Username", "User Address", "Plan Name", "Amount (ETH)", "Amount (KES)", "Timestamp", "Status"];
+        const rows = allTransactions.map((tx) => [
+          tx.username,
+          tx.userAddress,
+          tx.planName,
+          tx.amountEth,
+          tx.amountKes,
+          tx.timestamp,
+          tx.status,
+        ]);
+
+        const colWidths = [30, 30, 30, 20, 20, 40, 20];
+        let xOffset = margin;
+
+        headers.forEach((header, index) => {
+          doc.text(header, xOffset, yOffset);
+          xOffset += colWidths[index];
+        });
+        yOffset += 10;
+
+        rows.forEach((row) => {
+          xOffset = margin;
+          row.forEach((cell, index) => {
+            doc.text(String(cell), xOffset, yOffset);
+            xOffset += colWidths[index];
+          });
+          yOffset += 8;
+          if (yOffset > doc.internal.pageSize.getHeight() - 20) {
+            doc.addPage();
+            yOffset = 20;
+          }
+        });
+      } else {
+        doc.setFontSize(10);
+        doc.text("No transactions available.", margin, yOffset);
+        yOffset += 10;
+      }
+
+      const currentDate = new Date().toISOString().substring(0, 10);
+      doc.save(`isp_logs_${currentDate}.pdf`);
+    } catch (err) {
+      setError("Failed to generate PDF: " + err.message);
+      console.error("PDF generation error:", err);
+    }
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const query = searchQuery.trim().toLowerCase();
+    if (query === "") {
+      setFilteredUsers(users);
+      return;
+    }
+    const filtered = users.filter((user) => user.username.toLowerCase().includes(query));
+    setFilteredUsers(filtered);
+    if (filtered.length === 0) {
+      setError(`No users found matching "${query}".`);
+    } else {
+      setError("");
+    }
+  };
+
   const fetchAllData = async () => {
     setIsLoading(true);
     try {
@@ -474,7 +628,6 @@ const ISPDashboard = () => {
       return;
     }
 
-    // Don't fetch data until wallet is connected and confirmed as ISP
     if (isWalletConnected && contract && isISP) {
       fetchAllData();
       const interval = setInterval(() => {
@@ -509,344 +662,386 @@ const ISPDashboard = () => {
       : [0, 100];
 
   return (
-    <div className="min-h-screen p-8 bg-[linear-gradient(135deg,_#1a1a2e,_#9fc817)]">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold text-white">ISP Dashboard</h1>
-        <div className="flex space-x-4">
-          {isWalletConnected && userAddress ? (
-            <>
-              <span className="text-white py-2 px-4">
-                Connected: {userAddress.slice(0, 6)}...{userAddress.slice(-4)}
-              </span>
+    <>
+      <div className="min-h-screen p-8 bg-[linear-gradient(135deg,_#1a1a2e,_#9fc817)]">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-4xl font-bold text-white">ISP Dashboard</h1>
+          <div className="flex space-x-4">
+            {isWalletConnected && userAddress ? (
+              <>
+                <span className="text-white py-2 px-4">
+                  Connected: {userAddress.slice(0, 6)}...{userAddress.slice(-4)}
+                </span>
+                <button
+                  onClick={disconnectWallet}
+                  className="bg-yellow-500 text-white py-2 px-4 rounded-full hover:bg-yellow-600 transition duration-300"
+                >
+                  Disconnect Wallet
+                </button>
+                <button
+                  onClick={handleAdminRequests}
+                  className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600 transition duration-300"
+                >
+                  Admin Requests
+                </button>
+              </>
+            ) : (
               <button
-                onClick={disconnectWallet}
-                className="bg-yellow-500 text-white py-2 px-4 rounded-full hover:bg-yellow-600 transition duration-300"
+                onClick={connectWallet}
+                disabled={isConnecting}
+                className={`bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600 transition duration-300 ${
+                  isConnecting ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
-                Disconnect Wallet
+                {isConnecting ? "Connecting..." : "Connect MetaMask"}
               </button>
-            </>
-          ) : (
+            )}
             <button
-              onClick={connectWallet}
-              disabled={isConnecting}
-              className={`bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600 transition duration-300 ${
-                isConnecting ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+              onClick={handleLogout}
+              className="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-red-600 transition duration-300"
             >
-              {isConnecting ? "Connecting..." : "Connect MetaMask"}
+              Logout
             </button>
-          )}
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-red-600 transition duration-300"
-          >
-            Logout
-          </button>
+          </div>
         </div>
-      </div>
 
-      {error && (
-        <div className="mb-8 p-4 bg-red-500 text-white rounded-lg shadow-lg">
-          <p>{error}</p>
-          <button
-            onClick={() => {
-              setError("");
-              setWalletError("");
-            }}
-            className="mt-2 bg-gray-500 text-white py-1 px-2 rounded-full hover:bg-gray-600"
-          >
-            Clear
-          </button>
-        </div>
-      )}
-
-      {isLoading && (
-        <div className="mb-8 p-4 bg-blue-500 text-white rounded-lg shadow-lg">
-          <p>Loading dashboard data...</p>
-        </div>
-      )}
-
-      <div className="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
-        <h2 className="text-2xl font-semibold text-white mb-4">Pending Registrations</h2>
-        {pendingRegistrations.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse border border-gray-600">
-              <thead>
-                <tr className="bg-gray-700">
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">Username</th>
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">Wallet Address</th>
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">Created At</th>
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pendingRegistrations.map((pending) => (
-                  <tr key={pending.id} className="bg-gray-600">
-                    <td className="border border-gray-600 p-3 text-white">{pending.username}</td>
-                    <td className="border border-gray-600 p-3 text-white">{pending.wallet_address}</td>
-                    <td className="border border-gray-600 p-3 text-white">{pending.created_at}</td>
-                    <td className="border border-gray-600 p-3 text-white">
-                      <button
-                        onClick={() => handleConfirmRegistration(pending.id, pending.wallet_address)}
-                        disabled={isConfirmingRegistration}
-                        className={`bg-green-500 text-white py-1 px-2 rounded-full hover:bg-green-600 transition duration-300 ${
-                          isConfirmingRegistration ? "opacity-50 cursor-not-allowed" : ""
-                        }`}
-                      >
-                        {isConfirmingRegistration ? "Confirming..." : "Confirm"}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="text-gray-300">No pending registrations.</p>
-        )}
-      </div>
-
-      <div className="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
-        <h2 className="text-2xl font-semibold text-white mb-4">Users Overview</h2>
-        {users.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse border border-gray-600">
-              <thead>
-                <tr className="bg-gray-700">
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">Username</th>
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">Wallet Address</th>
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">Registration Status</th>
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">Total Usage (MB)</th>
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">Total Cost (ETH)</th>
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">Total Cost (KES)</th>
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">Log Data Usage</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((user) => (
-                  <tr key={user.id} className="bg-gray-600">
-                    <td className="border border-gray-600 p-3 text-white">{user.username}</td>
-                    <td className="border border-gray-600 p-3 text-white">{user.wallet_address || "None"}</td>
-                    <td className="border border-gray-600 p-3 text-white">{user.registrationStatus}</td>
-                    <td className="border border-gray-600 p-3 text-white">{user.totalUsage}</td>
-                    <td className="border border-gray-600 p-3 text-white">{user.totalCostEth}</td>
-                    <td className="border border-gray-600 p-3 text-white">{user.totalCostKes}</td>
-                    <td className="border border-gray-600 p-3 text-white">
-                      {user.wallet_address && user.registrationStatus === "Registered" ? (
-                        <form
-                          onSubmit={(e) => {
-                            e.preventDefault();
-                            const usage = e.target.elements.usage_mb.value;
-                            handleLogDataUsage(user.username, user.wallet_address, usage);
-                            e.target.reset();
-                          }}
-                        >
-                          <input
-                            type="number"
-                            name="usage_mb"
-                            placeholder="MB"
-                            className="bg-gray-700 text-white p-1 rounded mr-2 w-20"
-                            required
-                            min="1"
-                          />
-                          <button
-                            type="submit"
-                            disabled={isLoggingData}
-                            className={`bg-blue-500 text-white py-1 px-2 rounded-full hover:bg-blue-600 transition duration-300 ${
-                              isLoggingData ? "opacity-50 cursor-not-allowed" : ""
-                            }`}
-                          >
-                            Log
-                          </button>
-                        </form>
-                      ) : (
-                        "-"
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="text-gray-300">No users found.</p>
-        )}
-      </div>
-
-      <div className="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
-        <h2 className="text-2xl font-semibold text-white mb-4">Total Data Usage History</h2>
-        {chartData.length > 0 ? (
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#444" />
-              <XAxis dataKey="timestamp" stroke="#ccc" />
-              <YAxis domain={yAxisDomain} stroke="#ccc" />
-              <Tooltip contentStyle={{ backgroundColor: "#333", border: "none" }} />
-              <Legend />
-              <Line type="monotone" dataKey="total_usage_mb" stroke="#8884d8" name="Daily Usage (MB)" />
-              <Line type="monotone" dataKey="cumulative_mb" stroke="#82ca9d" name="Cumulative Usage (MB)" />
-            </LineChart>
-          </ResponsiveContainer>
-        ) : (
-          <p className="text-gray-300">No data usage history available.</p>
-        )}
-      </div>
-
-      <div className="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
-        <h2 className="text-2xl font-semibold text-white mb-4">Manage WiFi Plans</h2>
-        <form
-          onSubmit={(e) => (editingPlan ? handleEditPlan(e, editingPlan.id) : handleCreatePlan(e))}
-          className="mb-4 flex flex-col space-y-4"
-        >
-          <div className="flex space-x-4">
-            <input
-              type="text"
-              placeholder="Plan Name"
-              value={newPlan.name}
-              onChange={(e) => setNewPlan({ ...newPlan, name: e.target.value })}
-              className="bg-gray-700 text-white p-2 rounded flex-1"
-              required
-            />
-            <select
-              value={newPlan.duration}
-              onChange={(e) => setNewPlan({ ...newPlan, duration: e.target.value })}
-              className="bg-gray-700 text-white p-2 rounded"
-            >
-              <option value="hourly">Hourly</option>
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
-            </select>
-          </div>
-          <div className="flex space-x-4">
-            <input
-              type="number"
-              placeholder="Price (KES)"
-              value={newPlan.price_kes}
-              onChange={(e) => setNewPlan({ ...newPlan, price_kes: e.target.value })}
-              className="bg-gray-700 text-white p-2 rounded flex-1"
-              required
-              min="0"
-              step="0.01"
-            />
-            <input
-              type="number"
-              placeholder="Data (MB)"
-              value={newPlan.data_mb}
-              onChange={(e) => setNewPlan({ ...newPlan, data_mb: e.target.value })}
-              className="bg-gray-700 text-white p-2 rounded flex-1"
-              required
-              min="0"
-            />
-          </div>
-          <button
-            type="submit"
-            className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition duration-300"
-          >
-            {editingPlan ? "Update Plan" : "Create Plan"}
-          </button>
-          {editingPlan && (
+        {error && (
+          <div className="mb-8 p-4 bg-red-500 text-white rounded-lg shadow-lg">
+            <p>{error}</p>
             <button
-              type="button"
               onClick={() => {
-                setEditingPlan(null);
-                setNewPlan({ name: "", duration: "hourly", price_kes: "", data_mb: "" });
+                setError("");
+                setWalletError("");
               }}
-              className="bg-gray-500 text-white py-2 px-4 rounded-full hover:bg-gray-600 transition duration-300"
+              className="mt-2 bg-gray-500 text-white py-1 px-2 rounded-full hover:bg-gray-600"
             >
-              Cancel
+              Clear
             </button>
-          )}
-        </form>
-        {wifiPlans.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse border border-gray-600">
-              <thead>
-                <tr className="bg-gray-700">
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">Name</th>
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">Duration</th>
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">Price (KES)</th>
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">Price (ETH)</th>
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">Data (MB)</th>
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {wifiPlans.map((plan) => (
-                  <tr key={plan.id} className="bg-gray-600">
-                    <td className="border border-gray-600 p-3 text-white">{plan.name}</td>
-                    <td className="border border-gray-600 p-3 text-white">{plan.duration}</td>
-                    <td className="border border-gray-600 p-3 text-white">{plan.price_kes}</td>
-                    <td className="border border-gray-600 p-3 text-white">{plan.price_eth}</td>
-                    <td className="border border-gray-600 p-3 text-white">{plan.data_mb}</td>
-                    <td className="border border-gray-600 p-3 text-white">
-                      <button
-                        onClick={() => {
-                          setEditingPlan(plan);
-                          setNewPlan({
-                            name: plan.name,
-                            duration: plan.duration,
-                            price_kes: plan.price_kes,
-                            data_mb: plan.data_mb,
-                          });
-                        }}
-                        className="bg-yellow-500 text-white py-1 px-2 rounded-full hover:bg-yellow-600 mr-2"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDeletePlan(plan.id)}
-                        className="bg-red-500 text-white py-1 px-2 rounded-full hover:bg-red-600"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
-        ) : (
-          <p className="text-gray-300">No WiFi plans available.</p>
         )}
-      </div>
 
-      <div className="bg-gray-800 rounded-lg shadow-lg p-6">
-        <h2 className="text-2xl font-semibold text-white mb-4">Transaction History</h2>
-        {allTransactions.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse border border-gray-600">
-              <thead>
-                <tr className="bg-gray-700">
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">Username</th>
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">User Address</th>
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">Transaction ID</th>
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">Amount (ETH)</th>
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">Amount (KES)</th>
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">Timestamp</th>
-                  <th className="border border-gray-600 p-3 text-left text-gray-300">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {allTransactions.map((tx, index) => (
-                  <tr key={`${tx.userAddress}-${tx.id}-${index}`} className="bg-gray-600">
-                    <td className="border border-gray-600 p-3 text-white">{tx.username}</td>
-                    <td className="border border-gray-600 p-3 text-white">{tx.userAddress}</td>
-                    <td className="border border-gray-600 p-3 text-white">{tx.id}</td>
-                    <td className="border border-gray-600 p-3 text-white">{tx.amountEth}</td>
-                    <td className="border border-gray-600 p-3 text-white">{tx.amountKes}</td>
-                    <td className="border border-gray-600 p-3 text-white">{tx.timestamp}</td>
-                    <td className="border border-gray-600 p-3 text-white">{tx.status}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        {isLoading && (
+          <div className="mb-8 p-4 bg-blue-500 text-white rounded-lg shadow-lg">
+            <p>Loading dashboard data...</p>
           </div>
-        ) : (
-          <p className="text-gray-300">No transactions available.</p>
         )}
+
+        <div className="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
+          <h2 className="text-2xl font-semibold text-white mb-4">Pending Registrations</h2>
+          {pendingRegistrations.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse border border-gray-600">
+                <thead>
+                  <tr className="bg-gray-700">
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Username</th>
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Wallet Address</th>
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Created At</th>
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pendingRegistrations.map((pending) => (
+                    <tr key={pending.id} className="bg-gray-600">
+                      <td className="border border-gray-600 p-3 text-white">{pending.username}</td>
+                      <td className="border border-gray-600 p-3 text-white">{pending.wallet_address}</td>
+                      <td className="border border-gray-600 p-3 text-white">{pending.created_at}</td>
+                      <td className="border border-gray-600 p-3 text-white">
+                        <button
+                          onClick={() => handleConfirmRegistration(pending.id, pending.wallet_address)}
+                          disabled={isConfirmingRegistration}
+                          className={`bg-green-500 text-white py-1 px-2 rounded-full hover:bg-green-600 transition duration-300 ${
+                            isConfirmingRegistration ? "opacity-50 cursor-not-allowed" : ""
+                          }`}
+                        >
+                          {isConfirmingRegistration ? "Confirming..." : "Confirm"}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="text-gray-300">No pending registrations.</p>
+          )}
+        </div>
+
+        <div className="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-semibold text-white">Users Overview</h2>
+            <form onSubmit={handleSearch} className="flex space-x-2">
+              <input
+                type="text"
+                placeholder="Search by username"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="bg-gray-700 text-white p-2 rounded"
+              />
+              <button
+                type="submit"
+                className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600 transition duration-300"
+              >
+                Search
+              </button>
+            </form>
+          </div>
+          {filteredUsers.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse border border-gray-600">
+                <thead>
+                  <tr className="bg-gray-700">
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Username</th>
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Wallet Address</th>
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Registration Status</th>
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Total Usage (MB)</th>
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Total Cost (ETH)</th>
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Total Cost (KES)</th>
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Log Data Usage</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredUsers.map((user) => (
+                    <tr key={user.id} className="bg-gray-600">
+                      <td className="border border-gray-600 p-3 text-white">{user.username}</td>
+                      <td className="border border-gray-600 p-3 text-white">{user.wallet_address || "None"}</td>
+                      <td className="border border-gray-600 p-3 text-white">{user.registrationStatus}</td>
+                      <td className="border border-gray-600 p-3 text-white">{user.totalUsage}</td>
+                      <td className="border border-gray-600 p-3 text-white">{user.totalCostEth}</td>
+                      <td className="border border-gray-600 p-3 text-white">{user.totalCostKes}</td>
+                      <td className="border border-gray-600 p-3 text-white">
+                        {user.wallet_address && user.registrationStatus === "Registered" ? (
+                          <form
+                            onSubmit={(e) => {
+                              e.preventDefault();
+                              const usage = e.target.elements.usage_mb.value;
+                              handleLogDataUsage(user.username, user.wallet_address, usage);
+                              e.target.reset();
+                            }}
+                          >
+                            <input
+                              type="number"
+                              name="usage_mb"
+                              placeholder="MB"
+                              className="bg-gray-700 text-white p-1 rounded mr-2 w-20"
+                              required
+                              min="1"
+                            />
+                            <button
+                              type="submit"
+                              disabled={isLoggingData}
+                              className={`bg-blue-500 text-white py-1 px-2 rounded-full hover:bg-blue-600 transition duration-300 ${
+                                isLoggingData ? "opacity-50 cursor-not-allowed" : ""
+                              }`}
+                            >
+                              Log
+                            </button>
+                          </form>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="text-gray-300">No users found.</p>
+          )}
+        </div>
+
+        <div className="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-semibold text-white">Total Data Usage History</h2>
+            <button
+              onClick={downloadLogsAsPDF}
+              className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition duration-300"
+            >
+              Download Logs as PDF
+            </button>
+          </div>
+          {chartData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#444" />
+                <XAxis dataKey="timestamp" stroke="#ccc" />
+                <YAxis domain={yAxisDomain} stroke="#ccc" />
+                <Tooltip contentStyle={{ backgroundColor: "#333", border: "none" }} />
+                <Legend />
+                <Line type="monotone" dataKey="total_usage_mb" stroke="#8884d8" name="Daily Usage (MB)" />
+                <Line type="monotone" dataKey="cumulative_mb" stroke="#82ca9d" name="Cumulative Usage (MB)" />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <p className="text-gray-300">No data usage history available.</p>
+          )}
+        </div>
+
+        <div className="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
+          <h2 className="text-2xl font-semibold text-white mb-4">Manage WiFi Plans</h2>
+          <form
+            onSubmit={(e) => (editingPlan ? handleEditPlan(e, editingPlan.id) : handleCreatePlan(e))}
+            className="mb-4 flex flex-col space-y-4"
+          >
+            <div className="flex space-x-4">
+              <input
+                type="text"
+                placeholder="Plan Name"
+                value={newPlan.name}
+                onChange={(e) => setNewPlan({ ...newPlan, name: e.target.value })}
+                className="bg-gray-700 text-white p-2 rounded flex-1"
+                required
+              />
+              <select
+                value={newPlan.duration}
+                onChange={(e) => setNewPlan({ ...newPlan, duration: e.target.value })}
+                className="bg-gray-700 text-white p-2 rounded"
+              >
+                <option value="hourly">Hourly</option>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+              </select>
+            </div>
+            <div className="flex space-x-4">
+              <input
+                type="number"
+                placeholder="Price (KES)"
+                value={newPlan.price_kes}
+                onChange={(e) => setNewPlan({ ...newPlan, price_kes: e.target.value })}
+                className="bg-gray-700 text-white p-2 rounded flex-1"
+                required
+                min="0"
+                step="0.01"
+              />
+              <input
+                type="number"
+                placeholder="Data (MB)"
+                value={newPlan.data_mb}
+                onChange={(e) => setNewPlan({ ...newPlan, data_mb: e.target.value })}
+                className="bg-gray-700 text-white p-2 rounded flex-1"
+                required
+                min="0"
+              />
+            </div>
+            <button
+              type="submit"
+              className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition duration-300"
+            >
+              {editingPlan ? "Update Plan" : "Create Plan"}
+            </button>
+            {editingPlan && (
+              <button
+                type="button"
+                onClick={() => {
+                  setEditingPlan(null);
+                  setNewPlan({ name: "", duration: "hourly", price_kes: "", data_mb: "" });
+                }}
+                className="bg-gray-500 text-white py-2 px-4 rounded-full hover:bg-gray-600 transition duration-300"
+              >
+                Cancel
+              </button>
+            )}
+          </form>
+          {wifiPlans.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse border border-gray-600">
+                <thead>
+                  <tr className="bg-gray-700">
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Name</th>
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Duration</th>
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Price (KES)</th>
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Price (ETH)</th>
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Data (MB)</th>
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {wifiPlans.map((plan) => (
+                    <tr key={plan.id} className="bg-gray-600">
+                      <td className="border border-gray-600 p-3 text-white">{plan.name}</td>
+                      <td className="border border-gray-600 p-3 text-white">{plan.duration}</td>
+                      <td className="border border-gray-600 p-3 text-white">{plan.price_kes}</td>
+                      <td className="border border-gray-600 p-3 text-white">{plan.price_eth}</td>
+                      <td className="border border-gray-600 p-3 text-white">{plan.data_mb}</td>
+                      <td className="border border-gray-600 p-3 text-white">
+                        <button
+                          onClick={() => {
+                            setEditingPlan(plan);
+                            setNewPlan({
+                              name: plan.name,
+                              duration: plan.duration,
+                              price_kes: plan.price_kes,
+                              data_mb: plan.data_mb,
+                            });
+                          }}
+                          className="bg-yellow-500 text-white py-1 px-2 rounded-full hover:bg-yellow-600 mr-2"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeletePlan(plan.id)}
+                          className="bg-red-500 text-white py-1 px-2 rounded-full hover:bg-red-600"
+                        >
+                          Deactivate
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="text-gray-300">No WiFi plans available.</p>
+          )}
+        </div>
+
+        <div className="bg-gray-800 rounded-lg shadow-lg p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-semibold text-white">Transaction History</h2>
+            <button
+              onClick={downloadLogsAsPDF}
+              className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition duration-300"
+            >
+              Download Logs as PDF
+            </button>
+          </div>
+          {allTransactions.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse border border-gray-600">
+                <thead>
+                  <tr className="bg-gray-700">
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Username</th>
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">User Address</th>
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Plan Name</th>
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Amount (ETH)</th>
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Amount (KES)</th>
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Timestamp</th>
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {allTransactions.map((tx) => (
+                    <tr key={`${tx.userAddress}-${tx.id}`} className="bg-gray-600">
+                      <td className="border border-gray-600 p-3 text-white">{tx.username}</td>
+                      <td className="border border-gray-600 p-3 text-white">{tx.userAddress}</td>
+                      <td className="border border-gray-600 p-3 text-white">{tx.planName}</td>
+                      <td className="border border-gray-600 p-3 text-white">{tx.amountEth}</td>
+                      <td className="border border-gray-600 p-3 text-white">{tx.amountKes}</td>
+                      <td className="border border-gray-600 p-3 text-white">{tx.timestamp}</td>
+                      <td className="border border-gray-600 p-3 text-white">{tx.status}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="text-gray-300">No transactions available.</p>
+          )}
+        </div>
       </div>
-    </div>
+      <Footer />
+    </>
   );
 };
 

@@ -4,6 +4,7 @@ import { ethers } from "ethers";
 
 import { WalletContext } from "../context/WalletContext";
 import { getEthToKesRate } from "../utils/exchangeRate";
+import Footer from "../components/Footer";
 
 const WiFiPlans = () => {
   const [wifiPlans, setWifiPlans] = useState([]);
@@ -232,7 +233,7 @@ const WiFiPlans = () => {
   }, [navigate, isWalletConnected, userAddress, contract]);
 
   return (
-    <div className="min-h-screen p-8 bg-[linear-gradient(135deg,_#1a1a2e,_#9fc817)]">
+    <><div className="min-h-screen p-8 bg-[linear-gradient(135deg,_#1a1a2e,_#9fc817)]">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold text-white">WiFi Plans</h1>
         <div className="flex space-x-4 items-center">
@@ -244,9 +245,7 @@ const WiFiPlans = () => {
               <button
                 onClick={connectWallet}
                 disabled={isConnecting}
-                className={`bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600 transition duration-300 ${
-                  isConnecting ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className={`bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600 transition duration-300 ${isConnecting ? "opacity-50 cursor-not-allowed" : ""}`}
               >
                 {isConnecting ? "Connecting..." : "Update Wallet Address"}
               </button>
@@ -255,9 +254,7 @@ const WiFiPlans = () => {
             <button
               onClick={connectWallet}
               disabled={isConnecting}
-              className={`bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600 transition duration-300 ${
-                isConnecting ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+              className={`bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600 transition duration-300 ${isConnecting ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               {isConnecting ? "Connecting..." : "Connect MetaMask"}
             </button>
@@ -316,9 +313,7 @@ const WiFiPlans = () => {
                       <button
                         onClick={() => handlePurchasePlan(plan.id, plan.price_kes)}
                         disabled={isPurchasing || !isWalletConnected}
-                        className={`bg-green-500 text-white py-1 px-2 rounded-full hover:bg-green-600 transition duration-300 ${
-                          isPurchasing || !isWalletConnected ? "opacity-50 cursor-not-allowed" : ""
-                        }`}
+                        className={`bg-green-500 text-white py-1 px-2 rounded-full hover:bg-green-600 transition duration-300 ${isPurchasing || !isWalletConnected ? "opacity-50 cursor-not-allowed" : ""}`}
                       >
                         {isPurchasing ? "Purchasing..." : "Purchase"}
                       </button>
@@ -366,7 +361,8 @@ const WiFiPlans = () => {
           <p className="text-gray-300">No purchased plans.</p>
         )}
       </div>
-    </div>
+    </div><Footer /></>
+
   );
 };
 

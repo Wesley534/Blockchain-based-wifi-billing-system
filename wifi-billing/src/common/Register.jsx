@@ -12,12 +12,62 @@ const Register = () => {
   const [isMetaMaskInstalled, setIsMetaMaskInstalled] = useState(false);
   const [isRequestingRegistration, setIsRequestingRegistration] = useState(false);
   const [registrationStatus, setRegistrationStatus] = useState("not_registered");
+  const [passwordStrength, setPasswordStrength] = useState("");
   const navigate = useNavigate();
+
+  // Password strength checker
+  const checkPasswordStrength = (password) => {
+    let strength = 0;
+    const minLength = password.length >= 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    if (minLength) strength += 1;
+    if (hasUpperCase) strength += 1;
+    if (hasLowerCase) strength += 1;
+    if (hasNumbers) strength += 1;
+    if (hasSpecialChars) strength += 1;
+
+    switch (strength) {
+      case 0:
+      case 1:
+        return "Weak";
+      case 2:
+      case 3:
+        return "Moderate";
+      case 4:
+      case 5:
+        return "Strong";
+      default:
+        return "";
+    }
+  };
+
+  const handlePasswordChange = (e) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+    setPasswordStrength(checkPasswordStrength(newPassword));
+  };
+
+  // Helper function to get password strength color
+  const getStrengthColor = () => {
+    switch (passwordStrength) {
+      case "Weak":
+        return "text-red-400";
+      case "Moderate":
+        return "text-yellow-400";
+      case "Strong":
+        return "text-green-400";
+      default:
+        return "text-gray-400";
+    }
+  };
 
   useEffect(() => {
     if (typeof window.ethereum !== "undefined") {
       setIsMetaMaskInstalled(true);
-      // Listen for account changes
       window.ethereum.on("accountsChanged", handleAccountsChanged);
       return () => {
         window.ethereum.removeListener("accountsChanged", handleAccountsChanged);
@@ -46,12 +96,10 @@ const Register = () => {
     setError("");
     try {
       const provider = new ethers.BrowserProvider(window.ethereum);
-      // Force MetaMask to prompt account selection by requesting permissions
       await window.ethereum.request({
         method: "wallet_requestPermissions",
         params: [{ eth_accounts: {} }],
       });
-      // Get the selected account(s)
       const accounts = await provider.send("eth_accounts", []);
       if (accounts.length === 0) {
         throw new Error("No accounts selected in MetaMask.");
@@ -81,13 +129,23 @@ const Register = () => {
       setError("Please connect your MetaMask wallet before registering.");
       return;
     }
+    if (passwordStrength !== "Strong") {
+      setError("Password must be strong to register.");
+      return;
+    }
     setIsRequestingRegistration(true);
     setError("");
     try {
       const response = await fetch("http://127.0.0.1:8000/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password, role: "user", email }),
+        body: JSON.stringify({
+          username,
+          password,
+          email,
+          wallet_address: walletAddress,
+          role: "user"
+        }),
       });
 
       const data = await response.json();
@@ -95,29 +153,9 @@ const Register = () => {
         throw new Error(data.detail || "Failed to register user");
       }
 
-      const token = data.access_token;
-      localStorage.setItem("access_token", token);
-      localStorage.setItem("username", username);
-      localStorage.setItem("role", data.role);
-
-      const regResponse = await fetch("http://127.0.0.1:8000/request-registration", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ wallet_address: walletAddress }),
-      });
-
-      if (!regResponse.ok) {
-        const errorData = await regResponse.json();
-        throw new Error(errorData.detail || "Failed to request registration");
-      }
-
-      setError("Registration request submitted successfully. Awaiting ISP approval.");
+      setError("Registration request submitted successfully. Check your email for confirmation.");
       setRegistrationStatus("pending");
-      // Redirect to login after a short delay to show success message
-      setTimeout(() => navigate("/login"), 2000);
+      setTimeout(() => navigate("/login"), 3000);
     } catch (err) {
       setError("Failed to register: " + err.message);
       console.error("Registration error:", err);
@@ -125,6 +163,8 @@ const Register = () => {
       setIsRequestingRegistration(false);
     }
   };
+
+  const isRegisterDisabled = isLoading || isRequestingRegistration || passwordStrength !== "Strong";
 
   return (
     <div className="flex items-center justify-center min-h-screen">
@@ -176,10 +216,17 @@ const Register = () => {
               type="password"
               id="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
               className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-theme-blue"
               required
             />
+            {password && (
+              <p className={`text-sm mt-2 ${getStrengthColor()}`}>
+                Password Strength: {passwordStrength}
+                {passwordStrength !== "Strong" &&
+                  " - Password must be strong (at least 8 characters, including uppercase, lowercase, numbers, and special characters)."}
+              </p>
+            )}
           </div>
           <div className="mb-6">
             <button
@@ -198,8 +245,12 @@ const Register = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-theme-blue text-white py-3 rounded-full bg-black hover:bg-blue-700 transition duration-300"
-            disabled={isLoading || isRequestingRegistration}
+            className={`w-full py-3 rounded-full text-white transition duration-300 ${
+              isRegisterDisabled
+                ? "bg-gray-600 cursor-not-allowed"
+                : "bg-theme-blue bg-black hover:bg-blue-700"
+            }`}
+            disabled={isRegisterDisabled}
           >
             {isRequestingRegistration ? "Loading..." : "Request Registration"}
           </button>
