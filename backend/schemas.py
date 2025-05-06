@@ -146,3 +146,12 @@ class FeedbackRequestResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class TransactionResponse(BaseModel):
+    username: str
+    user_address: str
+    plan_name: str
+    amount_kes: float
+    amount_eth: float
+    timestamp: str
+    status: str     

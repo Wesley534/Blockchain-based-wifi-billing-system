@@ -23,8 +23,8 @@ const ISPDashboard = () => {
   } = useContext(WalletContext);
 
   const [users, setUsers] = useState([]);
-  const [filteredUsers, setFilteredUsers] = useState([]); // New state for filtered users
-  const [searchQuery, setSearchQuery] = useState(""); // New state for search query
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [pendingRegistrations, setPendingRegistrations] = useState([]);
   const [totalUsageData, setTotalUsageData] = useState([]);
   const [cumulativeUsage, setCumulativeUsage] = useState([]);
@@ -149,7 +149,7 @@ const ISPDashboard = () => {
       const usersData = await response.json();
       if (usersData.length === 0) {
         setUsers([]);
-        setFilteredUsers([]); // Update filtered users
+        setFilteredUsers([]);
         setError("No users found in the system.");
         return;
       }
@@ -200,7 +200,7 @@ const ISPDashboard = () => {
           })
         );
         setUsers(enrichedUsers);
-        setFilteredUsers(enrichedUsers); // Initialize filtered users
+        setFilteredUsers(enrichedUsers);
       } else {
         const defaultUsers = usersData.map((user) => ({
           ...user,
@@ -210,7 +210,7 @@ const ISPDashboard = () => {
           registrationStatus: "No contract",
         }));
         setUsers(defaultUsers);
-        setFilteredUsers(defaultUsers); // Initialize filtered users
+        setFilteredUsers(defaultUsers);
         setError("Contract not initialized. Please connect your wallet.");
       }
     } catch (err) {
@@ -267,61 +267,46 @@ const ISPDashboard = () => {
   };
 
   const fetchAllTransactions = async () => {
-    if (!contract) {
-      console.warn("Cannot fetch transactions: Contract not set");
-      setAllTransactions([]);
-      setError("Contract not initialized. Please connect your wallet.");
-      return;
-    }
-
-    const userAddresses = users
-      .filter((user) => user.wallet_address && ethers.isAddress(user.wallet_address) && user.registrationStatus === "Registered")
-      .map((user) => ({ address: user.wallet_address, username: user.username }));
-
-    if (!userAddresses.length) {
-      console.log("No users with valid wallet addresses or registered status to fetch transactions");
-      setAllTransactions([]);
-      setError("No registered users with valid wallet addresses found.");
-      return;
-    }
-
     try {
-      const allTxs = await Promise.all(
-        userAddresses.map(async ({ address, username }) => {
-          try {
-            const txs = await contract.getTransactions(address);
-            if (txs.length === 0) {
-              console.log(`No transactions found for ${username} (${address})`);
-              return [];
-            }
-            return txs.map((tx) => {
-              const amountEth = Number(ethers.formatEther(tx.amount));
-              return {
-                userAddress: address,
-                username,
-                id: Number(tx.id),
-                amountEth: amountEth.toFixed(6),
-                amountKes: (amountEth * ethToKesRate).toFixed(2),
-                timestamp: new Date(Number(tx.timestamp) * 1000).toISOString().replace("T", " ").substring(0, 19),
-                status: tx.status,
-              };
-            });
-          } catch (err) {
-            console.warn(`Error fetching transactions for ${username} (${address}):`, err);
-            return [];
-          }
-        })
-      );
-      const flattenedTxs = allTxs.flat();
-      if (flattenedTxs.length === 0) {
-        setError("No transactions found for any users.");
-      } else {
-        setError("");
+      const token = localStorage.getItem("access_token");
+      if (!token) throw new Error("No authentication token found. Please log in again.");
+  
+      const response = await fetch("http://127.0.0.1:8000/isp/plan-purchases", {
+        method: "GET",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || `Failed to fetch transactions (HTTP ${response.status})`);
       }
-      setAllTransactions(flattenedTxs);
+  
+      const transactions = await response.json();
+      if (transactions.length === 0) {
+        setError("No plan purchase transactions found.");
+        setAllTransactions([]);
+        return;
+      }
+  
+      // Format transactions for display
+      const formattedTransactions = transactions.map((tx, index) => ({
+        id: index + 1,
+        username: tx.username,
+        userAddress: tx.user_address || "None",
+        planName: tx.plan_name || "Unknown Plan",
+        amountEth: Number(tx.amount_eth).toFixed(6),
+        amountKes: Number(tx.amount_kes).toFixed(2),
+        timestamp: new Date(tx.timestamp).toISOString().replace("T", " ").substring(0, 19),
+        status: tx.status,
+      }));
+  
+      setAllTransactions(formattedTransactions);
+      setError("");
     } catch (err) {
-      setError("Failed to fetch transactions: " + err.message);
+      const errorMessage = `Failed to fetch transactions: ${err.message}`;
+      setError(errorMessage);
       console.error("Fetch transactions error:", err);
+      setAllTransactions([]);
     }
   };
 
@@ -555,18 +540,18 @@ const ISPDashboard = () => {
 
       if (allTransactions.length > 0) {
         doc.setFontSize(10);
-        const headers = ["Username", "User Address", "Transaction ID", "Amount (ETH)", "Amount (KES)", "Timestamp", "Status"];
+        const headers = ["Username", "User Address", "Plan Name", "Amount (ETH)", "Amount (KES)", "Timestamp", "Status"];
         const rows = allTransactions.map((tx) => [
           tx.username,
-          `${tx.userAddress.slice(0, 6)}...${tx.userAddress.slice(-4)}`,
-          tx.id,
+          tx.userAddress,
+          tx.planName,
           tx.amountEth,
           tx.amountKes,
           tx.timestamp,
           tx.status,
         ]);
 
-        const colWidths = [30, 30, 20, 20, 20, 40, 20];
+        const colWidths = [30, 30, 30, 20, 20, 40, 20];
         let xOffset = margin;
 
         headers.forEach((header, index) => {
@@ -601,12 +586,11 @@ const ISPDashboard = () => {
     }
   };
 
-  // New function to handle user search
   const handleSearch = (e) => {
     e.preventDefault();
     const query = searchQuery.trim().toLowerCase();
     if (query === "") {
-      setFilteredUsers(users); // Reset to all users if query is empty
+      setFilteredUsers(users);
       return;
     }
     const filtered = users.filter((user) => user.username.toLowerCase().includes(query));
@@ -999,7 +983,7 @@ const ISPDashboard = () => {
                           onClick={() => handleDeletePlan(plan.id)}
                           className="bg-red-500 text-white py-1 px-2 rounded-full hover:bg-red-600"
                         >
-                          Delete
+                          Deactivate
                         </button>
                       </td>
                     </tr>
@@ -1029,7 +1013,7 @@ const ISPDashboard = () => {
                   <tr className="bg-gray-700">
                     <th className="border border-gray-600 p-3 text-left text-gray-300">Username</th>
                     <th className="border border-gray-600 p-3 text-left text-gray-300">User Address</th>
-                    <th className="border border-gray-600 p-3 text-left text-gray-300">Transaction ID</th>
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Plan Name</th>
                     <th className="border border-gray-600 p-3 text-left text-gray-300">Amount (ETH)</th>
                     <th className="border border-gray-600 p-3 text-left text-gray-300">Amount (KES)</th>
                     <th className="border border-gray-600 p-3 text-left text-gray-300">Timestamp</th>
@@ -1037,11 +1021,11 @@ const ISPDashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {allTransactions.map((tx, index) => (
-                    <tr key={`${tx.userAddress}-${tx.id}-${index}`} className="bg-gray-600">
+                  {allTransactions.map((tx) => (
+                    <tr key={`${tx.userAddress}-${tx.id}`} className="bg-gray-600">
                       <td className="border border-gray-600 p-3 text-white">{tx.username}</td>
                       <td className="border border-gray-600 p-3 text-white">{tx.userAddress}</td>
-                      <td className="border border-gray-600 p-3 text-white">{tx.id}</td>
+                      <td className="border border-gray-600 p-3 text-white">{tx.planName}</td>
                       <td className="border border-gray-600 p-3 text-white">{tx.amountEth}</td>
                       <td className="border border-gray-600 p-3 text-white">{tx.amountKes}</td>
                       <td className="border border-gray-600 p-3 text-white">{tx.timestamp}</td>

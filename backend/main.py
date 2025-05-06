@@ -10,10 +10,10 @@ from database import Base, engine, get_db, SessionLocal
 from models import User, DataUsage, WifiPlan as WifiPlanModel, PlanDuration, PendingRegistration, UserPlanPurchase, HelpRequest, FeedbackRequest
 from schemas import (
     UserCreate, UserLogin, Token, DataUsageRequest, WalletUpdate, UserSchema,
-    WifiPlan, WifiPlanCreate, WifiPlanUpdate, WiFiPlan, PlanPurchase,
+    WiFiPlan,WifiPlan, WifiPlanCreate, WifiPlanUpdate, WiFiPlan, PlanPurchase,
     PendingRegistrationCreate, PendingRegistrationRequest, PendingRegistrationResponse,
     ConfirmRegistrationRequest, OTPVerificationRequest, HelpRequestCreate, HelpRequestResponse,
-    FeedbackRequestCreate, FeedbackRequestResponse
+    FeedbackRequestCreate, FeedbackRequestResponse,TransactionResponse
 )
 from auth import get_password_hash, authenticate_user, create_access_token, get_current_user
 from emailutils import generate_otp, send_otp_email
@@ -592,7 +592,7 @@ async def get_total_data_usage(current_user: User = Depends(get_isp), db: Sessio
             db.query(
                 User.username,
                 func.sum(DataUsage.usage_mb).label("total_usage_mb"),
-                cast(func.min(DataUsage.timestamp), DateTime).label("timestamp")
+                func.min(DataUsage.timestamp).label("timestamp")  # Remove cast, let SQLAlchemy handle type
             )
             .join(DataUsage, User.id == DataUsage.user_id)
             .group_by(User.id, User.username)
@@ -600,30 +600,41 @@ async def get_total_data_usage(current_user: User = Depends(get_isp), db: Sessio
         )
         
         if not data_usage:
+            logger.info("No data usage records found")
             return []
         
         # Format the response
         result = []
         for entry in data_usage:
             timestamp = entry.timestamp
-            # Fallback: Convert string timestamp to datetime if necessary
-            if isinstance(timestamp, str):
+            # Handle timestamp based on its type
+            if isinstance(timestamp, datetime):
+                # Already a datetime, no need for fromisoformat
+                formatted_timestamp = timestamp.isoformat()
+            elif isinstance(timestamp, str):
+                # Handle string timestamps (e.g., from inconsistent data)
                 try:
-                    timestamp = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+                    timestamp_dt = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+                    formatted_timestamp = timestamp_dt.isoformat()
                 except ValueError as e:
                     logger.error(f"Invalid timestamp format for user {entry.username}: {timestamp}")
-                    timestamp = datetime.utcnow()  # Use current time as fallback
+                    formatted_timestamp = datetime.utcnow().isoformat()  # Fallback
+            else:
+                # Handle unexpected types (e.g., None)
+                logger.warning(f"Unexpected timestamp type for user {entry.username}: {type(timestamp)}")
+                formatted_timestamp = datetime.utcnow().isoformat()  # Fallback
+            
             result.append({
                 "username": entry.username,
-                "total_usage_mb": float(entry.total_usage_mb),
-                "timestamp": timestamp.isoformat()
+                "total_usage_mb": float(entry.total_usage_mb) if entry.total_usage_mb is not None else 0.0,
+                "timestamp": formatted_timestamp
             })
         logger.info(f"Fetched total data usage for ISP {current_user.username}")
         return result
     except Exception as e:
         logger.error(f"Error in get_total_data_usage: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
-
+    
 @app.post("/isp/log-data-usage")
 async def isp_log_data_usage(
     data: dict,
@@ -995,3 +1006,80 @@ async def get_active_plan(current_user: User = Depends(get_user), db: Session = 
     except Exception as e:
         logger.error(f"Error in get_active_plan: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+    
+
+@app.get("/isp/plan-purchases", response_model=List[TransactionResponse])
+async def get_plan_purchases(
+    current_user: UserSchema = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Retrieve all plan purchases for the ISP transaction history.
+    Accessible only by users with the 'wifi_provider' role.
+    """
+    logger.info(f"Starting get_plan_purchases for user: {current_user.username}")
+    logger.debug(f"Checking role for user {current_user.username}: {current_user.role}")
+
+    if current_user.role != "wifi_provider":
+        logger.warning(f"Access denied for user {current_user.username}: not a wifi_provider")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: User does not have the required role (wifi_provider)."
+        )
+
+    try:
+        logger.debug("Executing database query for plan purchases")
+        purchases = (
+            db.query(UserPlanPurchase, User, WifiPlanModel)
+            .join(User, UserPlanPurchase.user_id == User.id, isouter=True)
+            .join(WifiPlanModel, UserPlanPurchase.plan_id == WifiPlanModel.id, isouter=True)
+            .all()
+        )
+
+        logger.info(f"Retrieved {len(purchases)} purchase records")
+
+        if not purchases:
+            logger.info("No purchase records found")
+            return []
+
+        response = []
+        for index, (purchase, user, plan) in enumerate(purchases):
+            logger.debug(f"Processing purchase record {index + 1}: purchase_id={purchase.id if purchase else 'None'}")
+            logger.debug(f"Purchase: {purchase.__dict__ if purchase else None}")
+            logger.debug(f"User: {user.__dict__ if user else None}")
+            logger.debug(f"Plan: {plan.__dict__ if plan else None}")
+
+            username = user.username if user and hasattr(user, 'username') else "Unknown"
+            user_address = purchase.user_address if purchase and hasattr(purchase, 'user_address') else "None"
+            plan_name = plan.name if plan and hasattr(plan, 'name') and plan.name else f"Plan ID {purchase.plan_id}" if purchase else "Unknown Plan"
+            amount_kes = purchase.price_kes if purchase and hasattr(purchase, 'price_kes') else 0.0
+            amount_eth = purchase.price_eth if purchase and hasattr(purchase, 'price_eth') else 0.0
+            timestamp = purchase.purchase_date.isoformat() if purchase and purchase.purchase_date else datetime.utcnow().isoformat()
+            status = "completed"
+
+            try:
+                response.append(
+                    TransactionResponse(
+                        username=username,
+                        user_address=user_address,
+                        plan_name=plan_name,
+                        amount_kes=amount_kes,
+                        amount_eth=amount_eth,
+                        timestamp=timestamp,
+                        status=status
+                    )
+                )
+                logger.debug(f"Successfully added purchase {index + 1} to response")
+            except Exception as e:
+                logger.error(f"Error processing purchase {index + 1}: {str(e)}")
+                raise
+
+        logger.info(f"Successfully formatted {len(response)} purchase records")
+        return response
+
+    except Exception as e:
+        logger.error(f"Failed to fetch plan purchases: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Internal server error: {str(e)}"
+        )
