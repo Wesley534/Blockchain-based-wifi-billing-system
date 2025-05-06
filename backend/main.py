@@ -241,10 +241,13 @@ async def login(user: UserLogin, background_tasks: BackgroundTasks, db: Session 
         # Check if user is in PendingRegistration
         db_pending = db.query(PendingRegistration).filter(PendingRegistration.username == user.username).first()
         if db_pending:
+            logger.warning(f"Login attempt by pending user: {user.username}")
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Your registration is pending ISP approval. Please wait for confirmation."
             )
+        
+        # Authenticate user
         db_user = authenticate_user(db, user.username, user.password)
         if not db_user:
             logger.warning(f"Authentication failed for username: {user.username}")
@@ -253,11 +256,24 @@ async def login(user: UserLogin, background_tasks: BackgroundTasks, db: Session 
                 detail="Incorrect username, password, or email",
                 headers={"WWW-Authenticate": "Bearer"},
             )
+        
+        # Check if user is rejected
+        if db_user.status == "rejected":
+            logger.warning(f"Login attempt by rejected user: {user.username}")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Your account has been rejected by the ISP."
+            )
+        
+        # Verify email
         if db_user.email != user.email:
+            logger.warning(f"Email mismatch for username: {user.username}")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Email does not match",
             )
+        
+        # Generate temporary token and OTP
         temp_token = create_access_token(
             data={"sub": user.username, "role": db_user.role, "temp": True},
             expires_delta=timedelta(minutes=10)
@@ -267,6 +283,7 @@ async def login(user: UserLogin, background_tasks: BackgroundTasks, db: Session 
         otp_store[db_user.id] = {"otp": otp, "expiry": expiry}
         background_tasks.add_task(send_otp_email, db_user.email, otp)
         logger.info(f"OTP sent for user {user.username}")
+        
         return {
             "temp_token": temp_token,
             "message": f"OTP sent to {user.email}"
@@ -1145,3 +1162,23 @@ async def get_plan_purchases(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Internal server error: {str(e)}"
         )
+    
+
+@app.post("/isp/reject-registration")
+async def reject_registration(
+    data: dict,  # Expect { "pending_id": int }
+    current_user: User = Depends(get_isp),
+    db: Session = Depends(get_db)
+):
+    pending = db.query(PendingRegistration).filter(PendingRegistration.id == data["pending_id"]).first()
+    if not pending:
+        raise HTTPException(status_code=404, detail="Pending registration not found")
+    
+    user = db.query(User).filter(User.username == pending.username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    user.status = "rejected"
+    db.delete(pending)
+    db.commit()
+    return {"message": f"User {user.username} rejected successfully"}

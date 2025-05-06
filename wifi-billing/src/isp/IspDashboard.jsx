@@ -35,8 +35,10 @@ const ISPDashboard = () => {
   const [error, setError] = useState("");
   const [isLoggingData, setIsLoggingData] = useState(false);
   const [isConfirmingRegistration, setIsConfirmingRegistration] = useState(false);
+  const [isRejectingRegistration, setIsRejectingRegistration] = useState(false); // New state for rejecting
   const [isLoading, setIsLoading] = useState(false);
   const [ethToKesRate, setEthToKesRate] = useState(247789.20);
+  const [reportType, setReportType] = useState("daily"); // New state for report type
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -128,6 +130,35 @@ const ISPDashboard = () => {
       console.error("Confirm registration error:", err);
     } finally {
       setIsConfirmingRegistration(false);
+    }
+  };
+
+  const handleRejectRegistration = async (pendingId, username) => {
+    setIsRejectingRegistration(true);
+    setError("");
+    try {
+      const token = localStorage.getItem("access_token");
+      if (!token) throw new Error("No authentication token found. Please log in again.");
+
+      const response = await fetch("http://127.0.0.1:8000/isp/reject-registration", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ pending_id: pendingId }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "Failed to reject registration");
+      }
+
+      await fetchPendingRegistrations();
+      await fetchAllUsersData();
+      setError(`Successfully rejected user ${username}`);
+    } catch (err) {
+      setError("Failed to reject registration: " + err.message);
+      console.error("Reject registration error:", err);
+    } finally {
+      setIsRejectingRegistration(false);
     }
   };
 
@@ -270,25 +301,24 @@ const ISPDashboard = () => {
     try {
       const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No authentication token found. Please log in again.");
-  
+
       const response = await fetch("http://127.0.0.1:8000/isp/plan-purchases", {
         method: "GET",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.detail || `Failed to fetch transactions (HTTP ${response.status})`);
       }
-  
+
       const transactions = await response.json();
       if (transactions.length === 0) {
         setError("No plan purchase transactions found.");
         setAllTransactions([]);
         return;
       }
-  
-      // Format transactions for display
+
       const formattedTransactions = transactions.map((tx, index) => ({
         id: index + 1,
         username: tx.username,
@@ -299,7 +329,7 @@ const ISPDashboard = () => {
         timestamp: new Date(tx.timestamp).toISOString().replace("T", " ").substring(0, 19),
         status: tx.status,
       }));
-  
+
       setAllTransactions(formattedTransactions);
       setError("");
     } catch (err) {
@@ -476,6 +506,34 @@ const ISPDashboard = () => {
     navigate("/isp/requests");
   };
 
+  const filterDataByTimeRange = (data, type) => {
+    const now = new Date();
+    let startDate;
+
+    switch (type) {
+      case "daily":
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        break;
+      case "weekly":
+        const day = now.getDay();
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (day === 0 ? 6 : day - 1));
+        break;
+      case "monthly":
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        break;
+      case "yearly":
+        startDate = new Date(now.getFullYear(), 0, 1);
+        break;
+      default:
+        return data;
+    }
+
+    return data.filter((entry) => {
+      const entryDate = new Date(entry.timestamp);
+      return entryDate >= startDate && entryDate <= now;
+    });
+  };
+
   const downloadLogsAsPDF = () => {
     try {
       const doc = new jsPDF();
@@ -483,18 +541,22 @@ const ISPDashboard = () => {
       const margin = 10;
       let yOffset = 20;
 
+      const reportTitle = `ISP ${reportType.charAt(0).toUpperCase() + reportType.slice(1)} Logs`;
       doc.setFontSize(18);
-      doc.text("ISP Dashboard Logs", pageWidth / 2, yOffset, { align: "center" });
+      doc.text(reportTitle, pageWidth / 2, yOffset, { align: "center" });
       yOffset += 10;
+
+      const filteredUsage = filterDataByTimeRange(cumulativeUsage, reportType);
+      const filteredTransactions = filterDataByTimeRange(allTransactions, reportType);
 
       doc.setFontSize(14);
-      doc.text("Total Data Usage History", margin, yOffset);
+      doc.text(`${reportType.charAt(0).toUpperCase() + reportType.slice(1)} Data Usage History`, margin, yOffset);
       yOffset += 10;
 
-      if (cumulativeUsage.length > 0) {
+      if (filteredUsage.length > 0) {
         doc.setFontSize(10);
         const headers = ["Username", "Timestamp", "Daily Usage (MB)", "Cumulative Usage (MB)"];
-        const rows = cumulativeUsage.map((entry) => [
+        const rows = filteredUsage.map((entry) => [
           entry.username || "Unknown",
           new Date(entry.timestamp).toLocaleString(),
           entry.total_usage_mb,
@@ -524,7 +586,7 @@ const ISPDashboard = () => {
         });
       } else {
         doc.setFontSize(10);
-        doc.text("No data usage history available.", margin, yOffset);
+        doc.text(`No data usage history available for ${reportType} report.`, margin, yOffset);
         yOffset += 10;
       }
 
@@ -535,13 +597,13 @@ const ISPDashboard = () => {
       }
 
       doc.setFontSize(14);
-      doc.text("Transaction History", margin, yOffset);
+      doc.text(`${reportType.charAt(0).toUpperCase() + reportType.slice(1)} Transaction History`, margin, yOffset);
       yOffset += 10;
 
-      if (allTransactions.length > 0) {
+      if (filteredTransactions.length > 0) {
         doc.setFontSize(10);
         const headers = ["Username", "User Address", "Plan Name", "Amount (ETH)", "Amount (KES)", "Timestamp", "Status"];
-        const rows = allTransactions.map((tx) => [
+        const rows = filteredTransactions.map((tx) => [
           tx.username,
           tx.userAddress,
           tx.planName,
@@ -574,12 +636,12 @@ const ISPDashboard = () => {
         });
       } else {
         doc.setFontSize(10);
-        doc.text("No transactions available.", margin, yOffset);
+        doc.text(`No transactions available for ${reportType} report.`, margin, yOffset);
         yOffset += 10;
       }
 
       const currentDate = new Date().toISOString().substring(0, 10);
-      doc.save(`isp_logs_${currentDate}.pdf`);
+      doc.save(`isp_${reportType}_logs_${currentDate}.pdf`);
     } catch (err) {
       setError("Failed to generate PDF: " + err.message);
       console.error("PDF generation error:", err);
@@ -736,7 +798,7 @@ const ISPDashboard = () => {
                     <th className="border border-gray-600 p-3 text-left text-gray-300">Username</th>
                     <th className="border border-gray-600 p-3 text-left text-gray-300">Wallet Address</th>
                     <th className="border border-gray-600 p-3 text-left text-gray-300">Created At</th>
-                    <th className="border border-gray-600 p-3 text-left text-gray-300">Action</th>
+                    <th className="border border-gray-600 p-3 text-left text-gray-300">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -745,15 +807,24 @@ const ISPDashboard = () => {
                       <td className="border border-gray-600 p-3 text-white">{pending.username}</td>
                       <td className="border border-gray-600 p-3 text-white">{pending.wallet_address}</td>
                       <td className="border border-gray-600 p-3 text-white">{pending.created_at}</td>
-                      <td className="border border-gray-600 p-3 text-white">
+                      <td className="border border-gray-600 p-3 text-white flex space-x-2">
                         <button
                           onClick={() => handleConfirmRegistration(pending.id, pending.wallet_address)}
-                          disabled={isConfirmingRegistration}
+                          disabled={isConfirmingRegistration || isRejectingRegistration}
                           className={`bg-green-500 text-white py-1 px-2 rounded-full hover:bg-green-600 transition duration-300 ${
-                            isConfirmingRegistration ? "opacity-50 cursor-not-allowed" : ""
+                            isConfirmingRegistration || isRejectingRegistration ? "opacity-50 cursor-not-allowed" : ""
                           }`}
                         >
                           {isConfirmingRegistration ? "Confirming..." : "Confirm"}
+                        </button>
+                        <button
+                          onClick={() => handleRejectRegistration(pending.id, pending.username)}
+                          disabled={isConfirmingRegistration || isRejectingRegistration}
+                          className={`bg-red-500 text-white py-1 px-2 rounded-full hover:bg-red-600 transition duration-300 ${
+                            isConfirmingRegistration || isRejectingRegistration ? "opacity-50 cursor-not-allowed" : ""
+                          }`}
+                        >
+                          {isRejectingRegistration ? "Rejecting..." : "Reject"}
                         </button>
                       </td>
                     </tr>
@@ -853,12 +924,24 @@ const ISPDashboard = () => {
         <div className="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-semibold text-white">Total Data Usage History</h2>
-            <button
-              onClick={downloadLogsAsPDF}
-              className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition duration-300"
-            >
-              Download Logs as PDF
-            </button>
+            <div className="flex space-x-4 items-center">
+              <select
+                value={reportType}
+                onChange={(e) => setReportType(e.target.value)}
+                className="bg-gray-700 text-white p-2 rounded"
+              >
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="yearly">Yearly</option>
+              </select>
+              <button
+                onClick={downloadLogsAsPDF}
+                className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition duration-300"
+              >
+                Download Logs as PDF
+              </button>
+            </div>
           </div>
           {chartData.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
@@ -999,12 +1082,24 @@ const ISPDashboard = () => {
         <div className="bg-gray-800 rounded-lg shadow-lg p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-semibold text-white">Transaction History</h2>
-            <button
-              onClick={downloadLogsAsPDF}
-              className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition duration-300"
-            >
-              Download Logs as PDF
-            </button>
+            <div className="flex space-x-4 items-center">
+              <select
+                value={reportType}
+                onChange={(e) => setReportType(e.target.value)}
+                className="bg-gray-700 text-white p-2 rounded"
+              >
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="yearly">Yearly</option>
+              </select>
+              <button
+                onClick={downloadLogsAsPDF}
+                className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition duration-300"
+              >
+                Download Logs as PDF
+              </button>
+            </div>
           </div>
           {allTransactions.length > 0 ? (
             <div className="overflow-x-auto">

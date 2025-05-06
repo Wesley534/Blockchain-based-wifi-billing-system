@@ -22,11 +22,12 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     wallet_address = Column(String, unique=True, nullable=True)
     email = Column(String, unique=True, nullable=False)
+    status = Column(String, nullable=False, default="pending")  # New column for status (pending, active, rejected)
 
     # Relationships
     data_usage = relationship("DataUsage", back_populates="user", cascade="all, delete-orphan")
     purchased_plans = relationship("UserPlanPurchase", back_populates="user", cascade="all, delete-orphan")
-    feedback_requests = relationship("FeedbackRequest", back_populates="user", cascade="all, delete-orphan")  # New relationship
+    feedback_requests = relationship("FeedbackRequest", back_populates="user", cascade="all, delete-orphan")
 
 
 class DataUsage(Base):

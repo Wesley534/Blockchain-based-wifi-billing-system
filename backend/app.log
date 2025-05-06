@@ -13358,3 +13358,535 @@ AttributeError: module 'bcrypt' has no attribute '__about__'
 2025-05-07 01:14:37,609 - main - INFO - Simulated 1.61 MB usage for user1 on plan test2 (Remaining: 866.29 MB)
 2025-05-07 01:15:07,830 - main - INFO - Simulated 4.79 MB usage for user1 on plan test2 (Remaining: 861.50 MB)
 2025-05-07 01:15:38,205 - main - INFO - Simulated 2.29 MB usage for user1 on plan test2 (Remaining: 859.21 MB)
+2025-05-07 01:16:08,407 - main - INFO - Simulated 0.63 MB usage for user1 on plan test2 (Remaining: 858.58 MB)
+2025-05-07 01:16:39,518 - main - INFO - Database tables created successfully
+2025-05-07 01:18:14,702 - main - INFO - Database tables created successfully
+2025-05-07 01:18:14,772 - main - INFO - Started data usage simulation thread
+2025-05-07 01:18:14,772 - main - INFO - Data usage simulation thread started
+2025-05-07 01:18:14,772 - main - DEBUG - No users with active simulations
+2025-05-07 01:18:44,774 - main - DEBUG - No users with active simulations
+2025-05-07 01:19:14,775 - main - DEBUG - No users with active simulations
+2025-05-07 01:19:44,776 - main - DEBUG - No users with active simulations
+2025-05-07 01:20:14,776 - main - DEBUG - No users with active simulations
+2025-05-07 01:20:44,777 - main - DEBUG - No users with active simulations
+2025-05-07 01:21:14,792 - main - DEBUG - No users with active simulations
+2025-05-07 01:21:44,792 - main - DEBUG - No users with active simulations
+2025-05-07 01:22:14,768 - main - INFO - Database tables created successfully
+2025-05-07 01:22:14,829 - main - INFO - Started data usage simulation thread
+2025-05-07 01:22:14,830 - main - INFO - Data usage simulation thread started
+2025-05-07 01:22:14,830 - main - DEBUG - No users with active simulations
+2025-05-07 01:22:44,831 - main - DEBUG - No users with active simulations
+2025-05-07 01:23:14,832 - main - DEBUG - No users with active simulations
+2025-05-07 01:23:44,832 - main - DEBUG - No users with active simulations
+2025-05-07 01:24:14,833 - main - DEBUG - No users with active simulations
+2025-05-07 01:24:44,833 - main - DEBUG - No users with active simulations
+2025-05-07 01:25:14,834 - main - DEBUG - No users with active simulations
+2025-05-07 01:25:44,834 - main - DEBUG - No users with active simulations
+2025-05-07 01:26:14,835 - main - DEBUG - No users with active simulations
+2025-05-07 01:26:28,571 - main - INFO - Login attempt for username: Admin
+2025-05-07 01:26:28,669 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/home/wes/Desktop/wifi/backend/venv/lib/python3.11/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-05-07 01:26:28,713 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2025-05-07 01:26:28,713 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2025-05-07 01:26:29,090 - main - WARNING - Authentication failed for username: Admin
+2025-05-07 01:26:44,836 - main - DEBUG - No users with active simulations
+2025-05-07 01:27:14,836 - main - DEBUG - No users with active simulations
+2025-05-07 01:27:44,836 - main - DEBUG - No users with active simulations
+2025-05-07 01:27:45,138 - main - INFO - Login attempt for username: Admin
+2025-05-07 01:27:45,499 - main - WARNING - Authentication failed for username: Admin
+2025-05-07 01:28:00,186 - main - INFO - Login attempt for username: Admin
+2025-05-07 01:28:00,532 - main - ERROR - Error in login: 'User' object has no attribute 'status'
+2025-05-07 01:28:14,837 - main - DEBUG - No users with active simulations
+2025-05-07 01:28:44,839 - main - DEBUG - No users with active simulations
+2025-05-07 01:29:14,840 - main - DEBUG - No users with active simulations
+2025-05-07 01:29:44,841 - main - DEBUG - No users with active simulations
+2025-05-07 01:30:09,768 - main - INFO - Database tables created successfully
+2025-05-07 01:30:09,805 - main - INFO - Started data usage simulation thread
+2025-05-07 01:30:09,805 - main - INFO - Data usage simulation thread started
+2025-05-07 01:30:09,805 - main - DEBUG - No users with active simulations
+2025-05-07 01:30:12,034 - main - INFO - Database tables created successfully
+2025-05-07 01:30:12,098 - main - INFO - Started data usage simulation thread
+2025-05-07 01:30:12,098 - main - INFO - Data usage simulation thread started
+2025-05-07 01:30:12,099 - main - DEBUG - No users with active simulations
+2025-05-07 01:30:14,213 - main - INFO - Database tables created successfully
+2025-05-07 01:30:14,265 - main - INFO - Started data usage simulation thread
+2025-05-07 01:30:14,266 - main - DEBUG - No users with active simulations
+2025-05-07 01:30:14,267 - main - INFO - Data usage simulation thread started
+2025-05-07 01:30:20,838 - main - INFO - Database tables created successfully
+2025-05-07 01:30:20,878 - main - INFO - Started data usage simulation thread
+2025-05-07 01:30:20,878 - main - INFO - Data usage simulation thread started
+2025-05-07 01:30:20,878 - main - DEBUG - No users with active simulations
+2025-05-07 01:30:27,836 - main - INFO - Database tables created successfully
+2025-05-07 01:30:27,885 - main - INFO - Started data usage simulation thread
+2025-05-07 01:30:27,885 - main - INFO - Data usage simulation thread started
+2025-05-07 01:30:27,886 - main - DEBUG - No users with active simulations
+2025-05-07 01:30:32,375 - main - INFO - Database tables created successfully
+2025-05-07 01:30:32,434 - main - INFO - Started data usage simulation thread
+2025-05-07 01:30:32,434 - main - INFO - Data usage simulation thread started
+2025-05-07 01:30:32,435 - main - DEBUG - No users with active simulations
+2025-05-07 01:30:40,665 - main - INFO - Database tables created successfully
+2025-05-07 01:30:40,719 - main - INFO - Started data usage simulation thread
+2025-05-07 01:30:40,719 - main - INFO - Data usage simulation thread started
+2025-05-07 01:30:40,720 - main - DEBUG - No users with active simulations
+2025-05-07 01:30:46,293 - main - INFO - Database tables created successfully
+2025-05-07 01:30:46,354 - main - INFO - Started data usage simulation thread
+2025-05-07 01:30:46,354 - main - INFO - Data usage simulation thread started
+2025-05-07 01:30:46,354 - main - DEBUG - No users with active simulations
+2025-05-07 01:30:51,858 - main - INFO - Database tables created successfully
+2025-05-07 01:30:51,898 - main - INFO - Started data usage simulation thread
+2025-05-07 01:30:51,898 - main - INFO - Data usage simulation thread started
+2025-05-07 01:30:51,898 - main - DEBUG - No users with active simulations
+2025-05-07 01:31:21,903 - main - DEBUG - No users with active simulations
+2025-05-07 01:31:25,429 - main - INFO - Database tables created successfully
+2025-05-07 01:31:25,483 - main - INFO - Started data usage simulation thread
+2025-05-07 01:31:25,483 - main - DEBUG - No users with active simulations
+2025-05-07 01:31:25,483 - main - INFO - Data usage simulation thread started
+2025-05-07 01:31:39,720 - main - INFO - Login attempt for username: Admin
+2025-05-07 01:31:39,835 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/home/wes/Desktop/wifi/backend/venv/lib/python3.11/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-05-07 01:31:39,836 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2025-05-07 01:31:39,837 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2025-05-07 01:31:40,205 - main - INFO - OTP sent for user Admin
+2025-05-07 01:31:45,790 - emailutils - INFO - OTP sent to peterwesley484@gmail.com
+2025-05-07 01:31:55,484 - main - DEBUG - No users with active simulations
+2025-05-07 01:32:25,486 - main - DEBUG - No users with active simulations
+2025-05-07 01:32:55,487 - main - DEBUG - No users with active simulations
+2025-05-07 01:33:25,487 - main - DEBUG - No users with active simulations
+2025-05-07 01:33:55,487 - main - DEBUG - No users with active simulations
+2025-05-07 01:34:25,488 - main - DEBUG - No users with active simulations
+2025-05-07 01:34:55,488 - main - DEBUG - No users with active simulations
+2025-05-07 01:35:25,489 - main - DEBUG - No users with active simulations
+2025-05-07 01:35:42,057 - main - INFO - Database tables created successfully
+2025-05-07 01:35:42,095 - main - INFO - Started data usage simulation thread
+2025-05-07 01:35:42,095 - main - INFO - Data usage simulation thread started
+2025-05-07 01:35:42,095 - main - DEBUG - No users with active simulations
+2025-05-07 01:36:12,096 - main - DEBUG - No users with active simulations
+2025-05-07 01:36:42,097 - main - DEBUG - No users with active simulations
+2025-05-07 01:36:53,933 - main - INFO - Database tables created successfully
+2025-05-07 01:36:53,972 - main - INFO - Started data usage simulation thread
+2025-05-07 01:36:53,972 - main - INFO - Data usage simulation thread started
+2025-05-07 01:36:53,972 - main - DEBUG - No users with active simulations
+2025-05-07 01:37:23,973 - main - DEBUG - No users with active simulations
+2025-05-07 01:37:24,101 - main - INFO - Login attempt for username: Admin
+2025-05-07 01:37:24,208 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/home/wes/Desktop/wifi/backend/venv/lib/python3.11/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-05-07 01:37:24,300 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2025-05-07 01:37:24,301 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2025-05-07 01:37:24,678 - main - INFO - OTP sent for user Admin
+2025-05-07 01:37:33,948 - emailutils - INFO - OTP sent to peterwesley484@gmail.com
+2025-05-07 01:37:46,966 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Linux"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBZG1pbiIsInJvbGUiOiJ3aWZpX3Byb3ZpZGVyIiwidGVtcCI6dHJ1ZSwiZXhwIjoxNzQ2NTcxNjQ0fQ.aAFvg9h6yXOPPQ31NgYT6aY7IaKbSxixhJ91RQ-3PH4', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'sec-ch-ua': '"Chromium";v="136", "Brave";v="136", "Not.A/Brand";v="99"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'sec-gpc': '1', 'accept-language': 'en-US,en;q=0.6', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd'}), body={'otp': '780055'}
+2025-05-07 01:37:46,967 - main - INFO - Parsed OTP: 780055, temp_token=eyJhbGciOi...
+2025-05-07 01:37:46,970 - main - INFO - OTP verified for user Admin
+2025-05-07 01:37:53,973 - main - DEBUG - No users with active simulations
+2025-05-07 01:38:23,974 - main - DEBUG - No users with active simulations
+2025-05-07 01:38:53,975 - main - DEBUG - No users with active simulations
+2025-05-07 01:39:24,574 - main - DEBUG - No users with active simulations
+2025-05-07 01:39:54,574 - main - DEBUG - No users with active simulations
+2025-05-07 01:40:24,814 - main - DEBUG - No users with active simulations
+2025-05-07 01:40:54,903 - main - DEBUG - No users with active simulations
+2025-05-07 01:41:25,032 - main - DEBUG - No users with active simulations
+2025-05-07 01:41:55,032 - main - DEBUG - No users with active simulations
+2025-05-07 01:42:25,205 - main - DEBUG - No users with active simulations
+2025-05-07 01:42:56,553 - main - DEBUG - No users with active simulations
+2025-05-07 01:43:26,970 - main - DEBUG - No users with active simulations
+2025-05-07 01:43:57,569 - main - DEBUG - No users with active simulations
+2025-05-07 01:44:27,961 - main - DEBUG - No users with active simulations
+2025-05-07 01:44:58,162 - main - DEBUG - No users with active simulations
+2025-05-07 01:45:29,227 - main - DEBUG - No users with active simulations
+2025-05-07 01:45:59,842 - main - DEBUG - No users with active simulations
+2025-05-07 01:46:31,451 - main - DEBUG - No users with active simulations
+2025-05-07 01:47:01,569 - main - DEBUG - No users with active simulations
+2025-05-07 01:47:31,759 - main - DEBUG - No users with active simulations
+2025-05-07 01:48:04,027 - main - DEBUG - No users with active simulations
+2025-05-07 01:48:29,814 - main - INFO - Updated wallet address for user Admin to 0xC4Deb43c6B729cA2EA7508E5f4C39f0129A93E5d
+2025-05-07 01:48:30,714 - main - INFO - Starting get_plan_purchases for user: Admin
+2025-05-07 01:48:30,715 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:48:30,715 - main - DEBUG - Executing database query for plan purchases
+2025-05-07 01:48:30,725 - main - INFO - Retrieved 1 purchase records
+2025-05-07 01:48:30,726 - main - DEBUG - Processing purchase record 1: purchase_id=1
+2025-05-07 01:48:30,726 - main - DEBUG - Purchase: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d603e90>, 'id': 1, 'user_address': '0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e', 'price_eth': 0.000436287852370429, 'user_id': 2, 'plan_id': 2, 'price_kes': 100.0, 'purchase_date': datetime.datetime(2025, 5, 6, 21, 46, 14, 899039)}
+2025-05-07 01:48:30,727 - main - DEBUG - User: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d603ef0>, 'id': 2, 'username': 'user1', 'hashed_password': '$2b$12$e5ICTs9BXjT0opl3RsKMzu9Uu.J0xpAKBx4F96Zn6rTH4s7.x/tAW', 'role': 'user', 'wallet_address': '0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e', 'status': 'active', 'is_active': True, 'email': 'melissabarbara671@gmail.com'}
+2025-05-07 01:48:30,727 - main - DEBUG - Plan: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d603f50>, 'id': 2, 'price_kes': 100.0, 'isp_id': 1, 'name': 'test2', 'duration': <PlanDuration.DAILY: 'daily'>, 'data_mb': 1000}
+2025-05-07 01:48:30,727 - main - DEBUG - Successfully added purchase 1 to response
+2025-05-07 01:48:30,728 - main - INFO - Successfully formatted 1 purchase records
+2025-05-07 01:48:30,737 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:48:30,737 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:48:30,739 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:48:30,739 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:48:30,754 - main - INFO - Fetched total data usage for ISP Admin
+2025-05-07 01:48:30,759 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-07 01:48:30,760 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-07 01:48:34,072 - main - DEBUG - No users with active simulations
+2025-05-07 01:48:34,105 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:48:34,107 - main - INFO - Starting get_plan_purchases for user: Admin
+2025-05-07 01:48:34,107 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:48:34,107 - main - DEBUG - Executing database query for plan purchases
+2025-05-07 01:48:34,109 - main - INFO - Retrieved 1 purchase records
+2025-05-07 01:48:34,110 - main - DEBUG - Processing purchase record 1: purchase_id=1
+2025-05-07 01:48:34,110 - main - DEBUG - Purchase: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d62c7d0>, 'id': 1, 'user_address': '0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e', 'price_eth': 0.000436287852370429, 'user_id': 2, 'plan_id': 2, 'price_kes': 100.0, 'purchase_date': datetime.datetime(2025, 5, 6, 21, 46, 14, 899039)}
+2025-05-07 01:48:34,110 - main - DEBUG - User: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d62c830>, 'id': 2, 'username': 'user1', 'hashed_password': '$2b$12$e5ICTs9BXjT0opl3RsKMzu9Uu.J0xpAKBx4F96Zn6rTH4s7.x/tAW', 'role': 'user', 'wallet_address': '0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e', 'status': 'active', 'is_active': True, 'email': 'melissabarbara671@gmail.com'}
+2025-05-07 01:48:34,110 - main - DEBUG - Plan: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d62c890>, 'id': 2, 'price_kes': 100.0, 'isp_id': 1, 'name': 'test2', 'duration': <PlanDuration.DAILY: 'daily'>, 'data_mb': 1000}
+2025-05-07 01:48:34,111 - main - DEBUG - Successfully added purchase 1 to response
+2025-05-07 01:48:34,111 - main - INFO - Successfully formatted 1 purchase records
+2025-05-07 01:48:34,121 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:48:34,121 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:48:34,123 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:48:34,125 - main - INFO - Fetched total data usage for ISP Admin
+2025-05-07 01:48:34,127 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-07 01:48:34,128 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-07 01:48:45,189 - main - INFO - Starting get_plan_purchases for user: Admin
+2025-05-07 01:48:45,190 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:48:45,190 - main - DEBUG - Executing database query for plan purchases
+2025-05-07 01:48:45,191 - main - INFO - Retrieved 1 purchase records
+2025-05-07 01:48:45,191 - main - DEBUG - Processing purchase record 1: purchase_id=1
+2025-05-07 01:48:45,191 - main - DEBUG - Purchase: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d62c710>, 'id': 1, 'user_address': '0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e', 'price_eth': 0.000436287852370429, 'user_id': 2, 'plan_id': 2, 'price_kes': 100.0, 'purchase_date': datetime.datetime(2025, 5, 6, 21, 46, 14, 899039)}
+2025-05-07 01:48:45,191 - main - DEBUG - User: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d62ca10>, 'id': 2, 'username': 'user1', 'hashed_password': '$2b$12$e5ICTs9BXjT0opl3RsKMzu9Uu.J0xpAKBx4F96Zn6rTH4s7.x/tAW', 'role': 'user', 'wallet_address': '0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e', 'status': 'active', 'is_active': True, 'email': 'melissabarbara671@gmail.com'}
+2025-05-07 01:48:45,191 - main - DEBUG - Plan: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d62ca70>, 'id': 2, 'price_kes': 100.0, 'isp_id': 1, 'name': 'test2', 'duration': <PlanDuration.DAILY: 'daily'>, 'data_mb': 1000}
+2025-05-07 01:48:45,191 - main - DEBUG - Successfully added purchase 1 to response
+2025-05-07 01:48:45,191 - main - INFO - Successfully formatted 1 purchase records
+2025-05-07 01:48:45,194 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:48:45,195 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:48:45,200 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:48:45,204 - main - INFO - Fetched total data usage for ISP Admin
+2025-05-07 01:48:45,206 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:48:45,207 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-07 01:48:45,209 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-07 01:48:52,871 - main - INFO - Starting get_plan_purchases for user: Admin
+2025-05-07 01:48:52,871 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:48:52,871 - main - DEBUG - Executing database query for plan purchases
+2025-05-07 01:48:52,952 - main - INFO - Retrieved 1 purchase records
+2025-05-07 01:48:52,952 - main - DEBUG - Processing purchase record 1: purchase_id=1
+2025-05-07 01:48:52,952 - main - DEBUG - Purchase: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d62d250>, 'id': 1, 'user_address': '0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e', 'price_eth': 0.000436287852370429, 'user_id': 2, 'plan_id': 2, 'price_kes': 100.0, 'purchase_date': datetime.datetime(2025, 5, 6, 21, 46, 14, 899039)}
+2025-05-07 01:48:52,953 - main - DEBUG - User: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d62d310>, 'id': 2, 'username': 'user1', 'hashed_password': '$2b$12$e5ICTs9BXjT0opl3RsKMzu9Uu.J0xpAKBx4F96Zn6rTH4s7.x/tAW', 'role': 'user', 'wallet_address': '0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e', 'status': 'active', 'is_active': True, 'email': 'melissabarbara671@gmail.com'}
+2025-05-07 01:48:52,953 - main - DEBUG - Plan: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d62d370>, 'id': 2, 'price_kes': 100.0, 'isp_id': 1, 'name': 'test2', 'duration': <PlanDuration.DAILY: 'daily'>, 'data_mb': 1000}
+2025-05-07 01:48:52,953 - main - DEBUG - Successfully added purchase 1 to response
+2025-05-07 01:48:52,953 - main - INFO - Successfully formatted 1 purchase records
+2025-05-07 01:48:52,956 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:48:52,956 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:48:52,956 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:48:52,956 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:48:53,101 - main - INFO - Fetched total data usage for ISP Admin
+2025-05-07 01:48:53,102 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-07 01:48:53,109 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-07 01:49:02,978 - main - INFO - Starting get_plan_purchases for user: Admin
+2025-05-07 01:49:02,979 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:02,979 - main - DEBUG - Executing database query for plan purchases
+2025-05-07 01:49:02,980 - main - INFO - Retrieved 1 purchase records
+2025-05-07 01:49:02,980 - main - DEBUG - Processing purchase record 1: purchase_id=1
+2025-05-07 01:49:02,980 - main - DEBUG - Purchase: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d62c770>, 'id': 1, 'user_address': '0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e', 'price_eth': 0.000436287852370429, 'user_id': 2, 'plan_id': 2, 'price_kes': 100.0, 'purchase_date': datetime.datetime(2025, 5, 6, 21, 46, 14, 899039)}
+2025-05-07 01:49:02,980 - main - DEBUG - User: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d62d250>, 'id': 2, 'username': 'user1', 'hashed_password': '$2b$12$e5ICTs9BXjT0opl3RsKMzu9Uu.J0xpAKBx4F96Zn6rTH4s7.x/tAW', 'role': 'user', 'wallet_address': '0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e', 'status': 'active', 'is_active': True, 'email': 'melissabarbara671@gmail.com'}
+2025-05-07 01:49:02,980 - main - DEBUG - Plan: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d62c6b0>, 'id': 2, 'price_kes': 100.0, 'isp_id': 1, 'name': 'test2', 'duration': <PlanDuration.DAILY: 'daily'>, 'data_mb': 1000}
+2025-05-07 01:49:02,980 - main - DEBUG - Successfully added purchase 1 to response
+2025-05-07 01:49:02,980 - main - INFO - Successfully formatted 1 purchase records
+2025-05-07 01:49:02,985 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:02,985 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:02,985 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:02,985 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:02,988 - main - INFO - Fetched total data usage for ISP Admin
+2025-05-07 01:49:03,080 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-07 01:49:03,455 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-07 01:49:04,073 - main - DEBUG - No users with active simulations
+2025-05-07 01:49:16,764 - main - INFO - Starting get_plan_purchases for user: Admin
+2025-05-07 01:49:16,815 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:16,815 - main - DEBUG - Executing database query for plan purchases
+2025-05-07 01:49:17,031 - main - INFO - Retrieved 1 purchase records
+2025-05-07 01:49:17,031 - main - DEBUG - Processing purchase record 1: purchase_id=1
+2025-05-07 01:49:17,032 - main - DEBUG - Purchase: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d62c770>, 'id': 1, 'user_address': '0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e', 'price_eth': 0.000436287852370429, 'user_id': 2, 'plan_id': 2, 'price_kes': 100.0, 'purchase_date': datetime.datetime(2025, 5, 6, 21, 46, 14, 899039)}
+2025-05-07 01:49:17,032 - main - DEBUG - User: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d62d3d0>, 'id': 2, 'username': 'user1', 'hashed_password': '$2b$12$e5ICTs9BXjT0opl3RsKMzu9Uu.J0xpAKBx4F96Zn6rTH4s7.x/tAW', 'role': 'user', 'wallet_address': '0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e', 'status': 'active', 'is_active': True, 'email': 'melissabarbara671@gmail.com'}
+2025-05-07 01:49:17,032 - main - DEBUG - Plan: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d62d070>, 'id': 2, 'price_kes': 100.0, 'isp_id': 1, 'name': 'test2', 'duration': <PlanDuration.DAILY: 'daily'>, 'data_mb': 1000}
+2025-05-07 01:49:17,033 - main - DEBUG - Successfully added purchase 1 to response
+2025-05-07 01:49:17,033 - main - INFO - Successfully formatted 1 purchase records
+2025-05-07 01:49:17,043 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:17,044 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:17,044 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:17,044 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:17,298 - main - INFO - Fetched total data usage for ISP Admin
+2025-05-07 01:49:17,301 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-07 01:49:17,305 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-07 01:49:22,811 - main - INFO - Starting get_plan_purchases for user: Admin
+2025-05-07 01:49:22,811 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:22,812 - main - DEBUG - Executing database query for plan purchases
+2025-05-07 01:49:22,813 - main - INFO - Retrieved 1 purchase records
+2025-05-07 01:49:22,813 - main - DEBUG - Processing purchase record 1: purchase_id=1
+2025-05-07 01:49:22,813 - main - DEBUG - Purchase: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d62cad0>, 'id': 1, 'user_address': '0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e', 'price_eth': 0.000436287852370429, 'user_id': 2, 'plan_id': 2, 'price_kes': 100.0, 'purchase_date': datetime.datetime(2025, 5, 6, 21, 46, 14, 899039)}
+2025-05-07 01:49:22,813 - main - DEBUG - User: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d62d910>, 'id': 2, 'username': 'user1', 'hashed_password': '$2b$12$e5ICTs9BXjT0opl3RsKMzu9Uu.J0xpAKBx4F96Zn6rTH4s7.x/tAW', 'role': 'user', 'wallet_address': '0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e', 'status': 'active', 'is_active': True, 'email': 'melissabarbara671@gmail.com'}
+2025-05-07 01:49:22,813 - main - DEBUG - Plan: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d62d970>, 'id': 2, 'price_kes': 100.0, 'isp_id': 1, 'name': 'test2', 'duration': <PlanDuration.DAILY: 'daily'>, 'data_mb': 1000}
+2025-05-07 01:49:22,814 - main - DEBUG - Successfully added purchase 1 to response
+2025-05-07 01:49:22,814 - main - INFO - Successfully formatted 1 purchase records
+2025-05-07 01:49:22,819 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:22,819 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:22,820 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-07 01:49:22,820 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:22,821 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:23,071 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-07 01:49:23,081 - main - INFO - Fetched total data usage for ISP Admin
+2025-05-07 01:49:33,992 - main - INFO - Starting get_plan_purchases for user: Admin
+2025-05-07 01:49:33,993 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:33,993 - main - DEBUG - Executing database query for plan purchases
+2025-05-07 01:49:33,996 - main - INFO - Retrieved 1 purchase records
+2025-05-07 01:49:33,996 - main - DEBUG - Processing purchase record 1: purchase_id=1
+2025-05-07 01:49:33,997 - main - DEBUG - Purchase: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d602990>, 'id': 1, 'user_address': '0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e', 'price_eth': 0.000436287852370429, 'user_id': 2, 'plan_id': 2, 'price_kes': 100.0, 'purchase_date': datetime.datetime(2025, 5, 6, 21, 46, 14, 899039)}
+2025-05-07 01:49:33,997 - main - DEBUG - User: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d602390>, 'id': 2, 'username': 'user1', 'hashed_password': '$2b$12$e5ICTs9BXjT0opl3RsKMzu9Uu.J0xpAKBx4F96Zn6rTH4s7.x/tAW', 'role': 'user', 'wallet_address': '0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e', 'status': 'active', 'is_active': True, 'email': 'melissabarbara671@gmail.com'}
+2025-05-07 01:49:33,997 - main - DEBUG - Plan: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739e855430>, 'id': 2, 'price_kes': 100.0, 'isp_id': 1, 'name': 'test2', 'duration': <PlanDuration.DAILY: 'daily'>, 'data_mb': 1000}
+2025-05-07 01:49:33,998 - main - DEBUG - Successfully added purchase 1 to response
+2025-05-07 01:49:33,998 - main - INFO - Successfully formatted 1 purchase records
+2025-05-07 01:49:34,013 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:34,014 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:34,016 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:34,016 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:34,025 - main - INFO - Fetched total data usage for ISP Admin
+2025-05-07 01:49:34,030 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-07 01:49:34,031 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-07 01:49:34,073 - main - DEBUG - No users with active simulations
+2025-05-07 01:49:43,000 - main - INFO - Starting get_plan_purchases for user: Admin
+2025-05-07 01:49:43,000 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:43,000 - main - DEBUG - Executing database query for plan purchases
+2025-05-07 01:49:43,001 - main - INFO - Retrieved 1 purchase records
+2025-05-07 01:49:43,002 - main - DEBUG - Processing purchase record 1: purchase_id=1
+2025-05-07 01:49:43,002 - main - DEBUG - Purchase: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739e7760f0>, 'id': 1, 'user_address': '0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e', 'price_eth': 0.000436287852370429, 'user_id': 2, 'plan_id': 2, 'price_kes': 100.0, 'purchase_date': datetime.datetime(2025, 5, 6, 21, 46, 14, 899039)}
+2025-05-07 01:49:43,002 - main - DEBUG - User: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739e776ed0>, 'id': 2, 'username': 'user1', 'hashed_password': '$2b$12$e5ICTs9BXjT0opl3RsKMzu9Uu.J0xpAKBx4F96Zn6rTH4s7.x/tAW', 'role': 'user', 'wallet_address': '0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e', 'status': 'active', 'is_active': True, 'email': 'melissabarbara671@gmail.com'}
+2025-05-07 01:49:43,031 - main - DEBUG - Plan: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739e7761b0>, 'id': 2, 'price_kes': 100.0, 'isp_id': 1, 'name': 'test2', 'duration': <PlanDuration.DAILY: 'daily'>, 'data_mb': 1000}
+2025-05-07 01:49:43,032 - main - DEBUG - Successfully added purchase 1 to response
+2025-05-07 01:49:43,032 - main - INFO - Successfully formatted 1 purchase records
+2025-05-07 01:49:43,040 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:43,040 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:43,040 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:43,040 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:43,049 - main - INFO - Fetched total data usage for ISP Admin
+2025-05-07 01:49:43,050 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-07 01:49:43,051 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-07 01:49:52,292 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:52,302 - main - INFO - Starting get_plan_purchases for user: Admin
+2025-05-07 01:49:52,303 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:52,303 - main - DEBUG - Executing database query for plan purchases
+2025-05-07 01:49:52,392 - main - INFO - Retrieved 1 purchase records
+2025-05-07 01:49:52,392 - main - DEBUG - Processing purchase record 1: purchase_id=1
+2025-05-07 01:49:52,392 - main - DEBUG - Purchase: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d62d430>, 'id': 1, 'user_address': '0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e', 'price_eth': 0.000436287852370429, 'user_id': 2, 'plan_id': 2, 'price_kes': 100.0, 'purchase_date': datetime.datetime(2025, 5, 6, 21, 46, 14, 899039)}
+2025-05-07 01:49:52,392 - main - DEBUG - User: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d62d0d0>, 'id': 2, 'username': 'user1', 'hashed_password': '$2b$12$e5ICTs9BXjT0opl3RsKMzu9Uu.J0xpAKBx4F96Zn6rTH4s7.x/tAW', 'role': 'user', 'wallet_address': '0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e', 'status': 'active', 'is_active': True, 'email': 'melissabarbara671@gmail.com'}
+2025-05-07 01:49:52,392 - main - DEBUG - Plan: {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f739d62db50>, 'id': 2, 'price_kes': 100.0, 'isp_id': 1, 'name': 'test2', 'duration': <PlanDuration.DAILY: 'daily'>, 'data_mb': 1000}
+2025-05-07 01:49:52,393 - main - DEBUG - Successfully added purchase 1 to response
+2025-05-07 01:49:52,393 - main - INFO - Successfully formatted 1 purchase records
+2025-05-07 01:49:52,400 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:52,401 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:52,401 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:52,403 - main - INFO - Fetching pending registrations for ISP Admin
+2025-05-07 01:49:52,408 - main - INFO - Fetched total data usage for ISP Admin
+2025-05-07 01:49:52,414 - main - INFO - Fetched WiFi plans for ISP Admin
+2025-05-07 01:49:59,536 - main - INFO - Verifying token for user: Admin
+2025-05-07 01:49:59,644 - main - INFO - Verifying token for user: Admin
+2025-05-07 01:49:59,660 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:49:59,660 - main - INFO - Fetching feedback requests for ISP Admin
+2025-05-07 01:50:00,280 - main - DEBUG - Checking role for user Admin: wifi_provider
+2025-05-07 01:50:00,281 - main - INFO - Fetching feedback requests for ISP Admin
+2025-05-07 01:50:04,074 - main - DEBUG - No users with active simulations
+2025-05-07 01:50:27,259 - main - INFO - Login attempt for username: user1
+2025-05-07 01:50:27,883 - main - INFO - OTP sent for user user1
+2025-05-07 01:50:34,074 - main - DEBUG - No users with active simulations
+2025-05-07 01:50:37,818 - emailutils - INFO - OTP sent to melissabarbara671@gmail.com
+2025-05-07 01:51:07,094 - main - DEBUG - No users with active simulations
+2025-05-07 01:51:39,706 - main - DEBUG - No users with active simulations
+2025-05-07 01:52:12,334 - main - DEBUG - No users with active simulations
+2025-05-07 01:52:42,647 - main - DEBUG - No users with active simulations
+2025-05-07 01:53:13,122 - main - DEBUG - No users with active simulations
+2025-05-07 01:53:44,046 - main - DEBUG - No users with active simulations
+2025-05-07 01:54:08,901 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Linux"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMSIsInJvbGUiOiJ1c2VyIiwidGVtcCI6dHJ1ZSwiZXhwIjoxNzQ2NTcyNDI3fQ.XDbTvtNHHQ2ZGkc80F6Z3DZ0ZTzhxxAUsHDB8mAa9Zk', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'sec-ch-ua': '"Chromium";v="136", "Brave";v="136", "Not.A/Brand";v="99"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'sec-gpc': '1', 'accept-language': 'en-US,en;q=0.6', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd'}), body={'otp': '624087'}
+2025-05-07 01:54:09,017 - main - INFO - Parsed OTP: 624087, temp_token=eyJhbGciOi...
+2025-05-07 01:54:14,466 - main - DEBUG - No users with active simulations
+2025-05-07 01:54:17,044 - main - INFO - OTP verified for user user1
+2025-05-07 01:54:19,781 - main - INFO - Verifying token for user: user1
+2025-05-07 01:54:19,784 - main - INFO - Verifying token for user: user1
+2025-05-07 01:54:19,790 - main - DEBUG - Checking role for user user1: user
+2025-05-07 01:54:21,875 - main - DEBUG - Checking role for user user1: user
+2025-05-07 01:54:22,037 - main - DEBUG - Checking role for user user1: user
+2025-05-07 01:54:23,754 - main - DEBUG - Checking role for user user1: user
+2025-05-07 01:54:31,094 - main - INFO - Verifying token for user: user1
+2025-05-07 01:54:45,280 - main - DEBUG - No users with active simulations
+2025-05-07 01:55:16,087 - main - DEBUG - No users with active simulations
+2025-05-07 01:55:46,093 - main - DEBUG - No users with active simulations
+2025-05-07 01:56:04,674 - main - INFO - Updated wallet address for user user1 to 0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e
+2025-05-07 01:56:04,680 - main - INFO - Updated wallet address for user user1 to 0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e
+2025-05-07 01:56:04,681 - main - INFO - Verifying token for user: user1
+2025-05-07 01:56:04,683 - main - INFO - Verifying token for user: user1
+2025-05-07 01:56:04,683 - main - DEBUG - Checking role for user user1: user
+2025-05-07 01:56:04,697 - main - DEBUG - Checking role for user user1: user
+2025-05-07 01:56:04,878 - main - INFO - Verifying token for user: user1
+2025-05-07 01:56:04,882 - main - DEBUG - Checking role for user user1: user
+2025-05-07 01:56:05,175 - main - DEBUG - Checking role for user user1: user
+2025-05-07 01:56:16,456 - main - DEBUG - No users with active simulations
+2025-05-07 01:56:17,117 - main - INFO - Verifying token for user: user1
+2025-05-07 01:56:17,119 - main - INFO - Verifying token for user: user1
+2025-05-07 01:56:20,931 - main - INFO - Verifying token for user: user1
+2025-05-07 01:56:20,951 - main - INFO - Verifying token for user: user1
+2025-05-07 01:56:20,952 - main - DEBUG - Checking role for user user1: user
+2025-05-07 01:56:20,973 - main - DEBUG - Checking role for user user1: user
+2025-05-07 01:56:21,028 - main - DEBUG - Checking role for user user1: user
+2025-05-07 01:56:21,050 - main - DEBUG - Checking role for user user1: user
+2025-05-07 01:56:26,890 - main - INFO - Verifying token for user: user1
+2025-05-07 01:56:26,896 - main - INFO - Verifying token for user: user1
+2025-05-07 01:56:46,457 - main - DEBUG - No users with active simulations
+2025-05-07 01:57:16,457 - main - DEBUG - No users with active simulations
+2025-05-07 01:57:46,458 - main - DEBUG - No users with active simulations
+2025-05-07 01:58:16,458 - main - DEBUG - No users with active simulations
+2025-05-07 01:58:46,458 - main - DEBUG - No users with active simulations
+2025-05-07 01:59:16,459 - main - DEBUG - No users with active simulations
+2025-05-07 01:59:46,459 - main - DEBUG - No users with active simulations
+2025-05-07 02:00:16,460 - main - DEBUG - No users with active simulations
+2025-05-07 02:00:35,410 - main - INFO - Verifying token for user: user1
+2025-05-07 02:00:46,460 - main - DEBUG - No users with active simulations
+2025-05-07 02:01:04,610 - main - INFO - Login attempt for username: user1
+2025-05-07 02:01:05,000 - main - INFO - OTP sent for user user1
+2025-05-07 02:01:09,216 - emailutils - INFO - OTP sent to melissabarbara671@gmail.com
+2025-05-07 02:01:16,461 - main - DEBUG - No users with active simulations
+2025-05-07 02:01:28,474 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Linux"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMSIsInJvbGUiOiJ1c2VyIiwidGVtcCI6dHJ1ZSwiZXhwIjoxNzQ2NTczMDY1fQ.C4rUCW90L07qDaOdwRnjbd-pXyLT3AOSlZDZLVfld1A', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'sec-ch-ua': '"Chromium";v="136", "Brave";v="136", "Not.A/Brand";v="99"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'sec-gpc': '1', 'accept-language': 'en-US,en;q=0.6', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd'}), body={'otp': '971866'}
+2025-05-07 02:01:28,475 - main - INFO - Parsed OTP: 971866, temp_token=eyJhbGciOi...
+2025-05-07 02:01:28,480 - main - INFO - OTP verified for user user1
+2025-05-07 02:01:28,554 - main - INFO - Verifying token for user: user1
+2025-05-07 02:01:28,603 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:01:28,617 - main - INFO - Verifying token for user: user1
+2025-05-07 02:01:28,644 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:01:28,664 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:01:28,700 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:01:36,220 - main - INFO - Verifying token for user: user1
+2025-05-07 02:01:36,224 - main - INFO - Verifying token for user: user1
+2025-05-07 02:01:46,461 - main - DEBUG - No users with active simulations
+2025-05-07 02:02:16,462 - main - DEBUG - No users with active simulations
+2025-05-07 02:02:46,465 - main - DEBUG - No users with active simulations
+2025-05-07 02:03:16,466 - main - DEBUG - No users with active simulations
+2025-05-07 02:03:46,466 - main - DEBUG - No users with active simulations
+2025-05-07 02:04:16,466 - main - DEBUG - No users with active simulations
+2025-05-07 02:04:44,383 - main - INFO - Login attempt for username: user1
+2025-05-07 02:04:44,725 - main - INFO - OTP sent for user user1
+2025-05-07 02:04:46,467 - main - DEBUG - No users with active simulations
+2025-05-07 02:04:50,400 - emailutils - INFO - OTP sent to melissabarbara671@gmail.com
+2025-05-07 02:05:02,936 - main - INFO - Received /verify-otp request: headers=Headers({'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'content-length': '16', 'sec-ch-ua-platform': '"Linux"', 'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMSIsInJvbGUiOiJ1c2VyIiwidGVtcCI6dHJ1ZSwiZXhwIjoxNzQ2NTczMjg0fQ.hIe0oAG1oZjydZSoPXqzHjWf0woscyS9I7sqpAaJfSA', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'sec-ch-ua': '"Chromium";v="136", "Brave";v="136", "Not.A/Brand";v="99"', 'content-type': 'application/json', 'sec-ch-ua-mobile': '?0', 'accept': '*/*', 'sec-gpc': '1', 'accept-language': 'en-US,en;q=0.6', 'origin': 'http://localhost:5173', 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://localhost:5173/', 'accept-encoding': 'gzip, deflate, br, zstd'}), body={'otp': '531444'}
+2025-05-07 02:05:02,937 - main - INFO - Parsed OTP: 531444, temp_token=eyJhbGciOi...
+2025-05-07 02:05:02,941 - main - INFO - OTP verified for user user1
+2025-05-07 02:05:03,068 - main - INFO - Verifying token for user: user1
+2025-05-07 02:05:03,085 - main - INFO - Verifying token for user: user1
+2025-05-07 02:05:16,467 - main - DEBUG - No users with active simulations
+2025-05-07 02:05:46,468 - main - DEBUG - No users with active simulations
+2025-05-07 02:06:16,469 - main - DEBUG - No users with active simulations
+2025-05-07 02:06:46,471 - main - DEBUG - No users with active simulations
+2025-05-07 02:06:58,065 - main - INFO - Verifying token for user: user1
+2025-05-07 02:07:16,471 - main - DEBUG - No users with active simulations
+2025-05-07 02:07:36,622 - main - INFO - Updated wallet address for user user1 to 0x8D4d45c7b26169E51ca8cab6AfB1058a8B10889e
+2025-05-07 02:07:36,682 - main - INFO - Verifying token for user: user1
+2025-05-07 02:07:36,689 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:07:37,022 - main - INFO - Verifying token for user: user1
+2025-05-07 02:07:37,077 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:07:41,467 - main - INFO - Verifying token for user: user1
+2025-05-07 02:07:41,470 - main - INFO - Verifying token for user: user1
+2025-05-07 02:07:46,472 - main - DEBUG - No users with active simulations
+2025-05-07 02:07:59,970 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:08:00,389 - main - INFO - Feedback submitted by user user1
+2025-05-07 02:08:16,472 - main - DEBUG - No users with active simulations
+2025-05-07 02:08:46,473 - main - DEBUG - No users with active simulations
+2025-05-07 02:09:16,573 - main - DEBUG - No users with active simulations
+2025-05-07 02:09:46,573 - main - DEBUG - No users with active simulations
+2025-05-07 02:10:16,600 - main - DEBUG - No users with active simulations
+2025-05-07 02:10:46,601 - main - DEBUG - No users with active simulations
+2025-05-07 02:11:16,601 - main - DEBUG - No users with active simulations
+2025-05-07 02:11:47,066 - main - DEBUG - No users with active simulations
+2025-05-07 02:12:17,350 - main - DEBUG - No users with active simulations
+2025-05-07 02:12:31,086 - main - INFO - Verifying token for user: user1
+2025-05-07 02:12:31,105 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:12:31,106 - main - INFO - Fetching feedback for user user1
+2025-05-07 02:12:37,960 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:12:39,061 - main - INFO - Feedback submitted by user user1
+2025-05-07 02:12:39,119 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:12:39,120 - main - INFO - Fetching feedback for user user1
+2025-05-07 02:12:47,632 - main - DEBUG - No users with active simulations
+2025-05-07 02:13:17,633 - main - DEBUG - No users with active simulations
+2025-05-07 02:13:47,647 - main - DEBUG - No users with active simulations
+2025-05-07 02:13:56,902 - main - INFO - Verifying token for user: user1
+2025-05-07 02:13:56,908 - main - INFO - Verifying token for user: user1
+2025-05-07 02:13:56,913 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:13:58,020 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:13:59,321 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:13:59,696 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:14:17,666 - main - DEBUG - No users with active simulations
+2025-05-07 02:14:47,667 - main - DEBUG - No users with active simulations
+2025-05-07 02:15:17,667 - main - DEBUG - No users with active simulations
+2025-05-07 02:15:47,668 - main - DEBUG - No users with active simulations
+2025-05-07 02:16:17,753 - main - DEBUG - No users with active simulations
+2025-05-07 02:16:29,001 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:16:29,589 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:16:30,142 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:16:30,146 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:16:47,754 - main - DEBUG - No users with active simulations
+2025-05-07 02:16:53,260 - main - INFO - Verifying token for user: user1
+2025-05-07 02:16:53,263 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:16:53,268 - main - INFO - Verifying token for user: user1
+2025-05-07 02:16:53,547 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:16:53,558 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:16:54,225 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:17:17,754 - main - DEBUG - No users with active simulations
+2025-05-07 02:17:47,755 - main - DEBUG - No users with active simulations
+2025-05-07 02:17:57,018 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:17:57,101 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:17:57,166 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:17:57,181 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:17:59,356 - main - INFO - Verifying token for user: user1
+2025-05-07 02:17:59,382 - main - INFO - Verifying token for user: user1
+2025-05-07 02:17:59,425 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:17:59,467 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:17:59,528 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:17:59,719 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:18:17,756 - main - DEBUG - No users with active simulations
+2025-05-07 02:18:22,343 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:18:22,357 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:18:22,521 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:18:22,533 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:18:24,255 - main - INFO - Verifying token for user: user1
+2025-05-07 02:18:24,263 - main - INFO - Verifying token for user: user1
+2025-05-07 02:18:24,264 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:18:24,557 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:18:24,577 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:18:24,748 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:18:45,076 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:18:45,084 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:18:45,195 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:18:45,202 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:18:47,756 - main - DEBUG - No users with active simulations
+2025-05-07 02:18:48,019 - main - INFO - Verifying token for user: user1
+2025-05-07 02:18:48,024 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:18:48,029 - main - INFO - Verifying token for user: user1
+2025-05-07 02:18:48,062 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:18:48,132 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:18:48,165 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:19:17,757 - main - DEBUG - No users with active simulations
+2025-05-07 02:19:29,616 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:19:29,649 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:19:29,944 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:19:29,950 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:19:31,214 - main - INFO - Verifying token for user: user1
+2025-05-07 02:19:31,231 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:19:31,243 - main - INFO - Verifying token for user: user1
+2025-05-07 02:19:31,363 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:19:31,393 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:19:31,542 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:19:42,809 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:19:42,838 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:19:42,948 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:19:42,999 - main - INFO - Fetching WiFi plans for user user1
+2025-05-07 02:19:45,943 - main - INFO - Verifying token for user: user1
+2025-05-07 02:19:45,952 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:19:45,955 - main - INFO - Verifying token for user: user1
+2025-05-07 02:19:45,965 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:19:46,053 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:19:46,183 - main - DEBUG - Checking role for user user1: user
+2025-05-07 02:19:47,757 - main - DEBUG - No users with active simulations
+2025-05-07 02:20:17,757 - main - DEBUG - No users with active simulations
+2025-05-07 02:20:47,758 - main - DEBUG - No users with active simulations
