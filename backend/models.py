@@ -22,10 +22,12 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     wallet_address = Column(String, unique=True, nullable=True)
     email = Column(String, unique=True, nullable=False)
+    status = Column(String, nullable=False, default="pending")  # New column for status (pending, active, rejected)
 
     # Relationships
     data_usage = relationship("DataUsage", back_populates="user", cascade="all, delete-orphan")
     purchased_plans = relationship("UserPlanPurchase", back_populates="user", cascade="all, delete-orphan")
+    feedback_requests = relationship("FeedbackRequest", back_populates="user", cascade="all, delete-orphan")
 
 
 class DataUsage(Base):
@@ -76,6 +78,7 @@ class PendingRegistration(Base):
     wallet_address = Column(String, unique=True, index=True, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
 
+
 class HelpRequest(Base):
     __tablename__ = "help_requests"
 
@@ -89,5 +92,10 @@ class FeedbackRequest(Base):
     __tablename__ = "feedback_requests"
 
     id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False)  # New column
     feedback = Column(String, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    reply = Column(String, nullable=True)
+    replied_at = Column(DateTime, nullable=True)
+
+    user = relationship("User", back_populates="feedback_requests")  # New relationship
